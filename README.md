@@ -1,6 +1,6 @@
 # mica-voice
 
-![CI](https://img.shields.io/badge/CI-passing-brightgreen)
+[![Java CI](https://github.com/lets-mica/mica-voice/actions/workflows/test-and-build.yml/badge.svg)](https://github.com/lets-mica/mica-voice/actions/workflows/test-and-build.yml)
 ![JDK 8/17/21/25](https://img.shields.io/badge/JDK-8%20%7C%2017%20%7C%2021%20%7C%2025-informational)
 [![Maven release](https://img.shields.io/maven-central/v/net.dreamlu/mica-voice-core.svg?style=flat-square)](https://central.sonatype.com/artifact/net.dreamlu/mica-voice-core/versions)
 ![Maven SNAPSHOT](https://img.shields.io/maven-metadata/v?metadataUrl=https://central.sonatype.com/repository/maven-snapshots/net/dreamlu/mica-voice-core/maven-metadata.xml)
