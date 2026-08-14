@@ -52,6 +52,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <!-- 插件版本 -->
         <maven-jar-plugin.version>3.5.1</maven-jar-plugin.version>
+        <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
         <maven-flatten.version>1.8.0</maven-flatten.version>
         <central-publishing-plugin.version>0.11.0</central-publishing-plugin.version>
         <!-- mica 生态 -->
@@ -140,13 +141,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.15.0</version>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                    <parameters>true</parameters>
-                </configuration>
             </plugin>
             <!-- Source attach：发布时附 sources.jar -->
             <plugin>
@@ -201,6 +195,17 @@
         </plugins>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                        <encoding>${project.build.sourceEncoding}</encoding>
+                        <parameters>true</parameters>
+                    </configuration>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
