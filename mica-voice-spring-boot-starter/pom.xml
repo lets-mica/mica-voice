@@ -30,13 +30,17 @@
             <groupId>net.dreamlu</groupId>
             <artifactId>mica-voice-core</artifactId>
         </dependency>
-
+        <!-- Spring Boot 自动装配 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
         <!-- Lombok（编译期） -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <scope>provided</scope>
         </dependency>
-
         <!-- mica-auto（编译期 starter 元数据生成）。
              mica-auto 自带 javax.annotation.processing.Processor SPI，无需在代码加 @AutoConfiguration 等注解，
              只需启用 maven-compiler-plugin 的 annotationProcessorPaths 即可。
@@ -46,28 +50,8 @@
         <dependency>
             <groupId>net.dreamlu</groupId>
             <artifactId>mica-auto</artifactId>
+            <scope>provided</scope>
         </dependency>
-
-        <!-- Spring Boot 自动装配 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-autoconfigure</artifactId>
-        </dependency>
-
-        <!-- Spring Web（@RestController 等），由 starter 内置 REST 端点使用 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <!-- 注解 @ConfigurationProperties 的元数据生成（可选但推荐） -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
-        </dependency>
-
         <!-- Test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

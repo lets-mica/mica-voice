@@ -8,6 +8,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -60,7 +61,7 @@ class AudioReadersTest {
 	void read_invalidBytes(@TempDir Path tmp) throws Exception {
 		// 写一个非 wav 文件（纯文本），WaveReader 应抛异常被包装成 AudioFormatException
 		Path fake = tmp.resolve("fake.wav");
-		Files.writeString(fake, "this is not a wav file");
+		Files.write(fake, "this is not a wav file".getBytes(UTF_8));
 		assertThrows(AudioFormatException.class,
 			() -> AudioReaders.read(fake.toFile()));
 	}

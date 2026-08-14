@@ -1,5 +1,6 @@
 package net.dreamlu.mica.voice.config;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,6 +26,7 @@ public class SpeakerConfig {
 		"3dspeaker_speech_campplus_sv_zh_en.onnx"
 	};
 
+	@Getter(AccessLevel.NONE)
 	private String[] modelCandidates;
 	private Integer threads;
 	private boolean debug;
@@ -47,6 +49,10 @@ public class SpeakerConfig {
 
 	public void setModelCandidates(String[] modelCandidates) {
 		this.modelCandidates = modelCandidates == null ? new String[0] : modelCandidates.clone();
+	}
+
+	public String[] getModelCandidates() {
+		return modelCandidates == null ? new String[0] : modelCandidates.clone();
 	}
 
 	public static final class Builder {

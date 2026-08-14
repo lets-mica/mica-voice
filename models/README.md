@@ -88,7 +88,13 @@ PARALLEL=8 bash models/scripts/download-models.sh tts   # 手动加大分段数�
 | `speaker` | `speaker` | 声纹模型 + 4 人测试音频 | ~95MB |
 | `all` | `all` | 以上全部 | ~1.4GB |
 
-> 提示：`sensevoice` / `x-asr` 走 HuggingFace（默认 hf-mirror.com 国内镜像，可用 `-Mirror huggingface` 或 `HF_BASE` 切换官方源），其余走 GitHub Releases。脚本支持多段并行与断点续传，已完整下载的文件自动跳过，中断后重跑即可续传。
+> 镜像说明：`sensevoice` / `x-asr` 走 HuggingFace，**默认 `hf-mirror.com`（HuggingFace 官方内容的国内反代镜像，国内无需科学上网）**。
+> 切换回官方源：
+>   - PowerShell：`-Mirror huggingface`
+>   - bash：`HF_BASE=https://huggingface.co bash models/scripts/download-models.sh sensevoice`
+>
+> ModelScope（魔搭）暂未提供这两个模型的官方同步仓库，所以脚本没有 ModelScope 选项。其余目标走 GitHub Releases。
+> 脚本支持多段并行与断点续传，已完整下载的文件自动跳过，中断后重跑即可续传。
 
 ## git 策略
 
