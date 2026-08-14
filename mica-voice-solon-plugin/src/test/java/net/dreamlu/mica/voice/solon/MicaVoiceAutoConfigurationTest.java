@@ -23,6 +23,7 @@ import org.noear.solon.SimpleSolonApp;
 import org.noear.solon.Utils;
 import org.noear.solon.core.AppContext;
 
+import java.io.File;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -33,8 +34,33 @@ import static org.junit.jupiter.api.Assertions.assertNull;
  *
  * <p>本测试只验证 starter 的装配条件 + 配置树绑定，避免触发任何 native 装配。
  * mica.voice.enabled=false → 装配类不激活；=true（默认）→ micaVoiceCoreProperties Bean 创建。
+ *
+ * <p>注意：由于 surefire {@code forkCount=0}，测试 JVM 的工作目录取决于启动 Maven 的目录
+ * （可能是项目根，也可能是模块目录）。默认 {@code models-dir=models} 是相对路径，
+ * 从模块目录运行时解析不到项目根的 models/。因此：
+ * <ul>
+ *   <li>不需要验证 native Service 创建的测试 → 禁用 ASR/TTS/Speaker 装配</li>
+ *   <li>需要验证 TTS/Speaker 创建的测试 → 通过 {@link #resolveModelsDir()} 动态定位</li>
+ * </ul>
  */
 class MicaVoiceAutoConfigurationTest {
+
+	/**
+	 * 推算项目根的 models 目录绝对路径（兼容从项目根或模块目录运行）。
+	 */
+	private static String resolveModelsDir() {
+		File dir = new File(System.getProperty("user.dir"));
+		File models = new File(dir, "models");
+		if (models.isDirectory()) {
+			return models.getAbsolutePath();
+		}
+		// 从模块目录运行时，models 在上级目录（项目根）
+		File parentModels = new File(dir.getParentFile(), "models");
+		if (parentModels.isDirectory()) {
+			return parentModels.getAbsolutePath();
+		}
+		return "models";
+	}
 
 	@Test
 	void shouldNotCreateCorePropertiesWhenDisabled() throws Throwable {
@@ -50,6 +76,11 @@ class MicaVoiceAutoConfigurationTest {
 	void shouldCreateCorePropertiesBeanByDefault() throws Throwable {
 		SimpleSolonApp app = new SimpleSolonApp(MicaVoiceAutoConfigurationTest.class);
 		app.cfg().put("mica.voice.enabled", "true");
+		// 只验证 MicaVoiceConfig Bean 创建，不需要 native Service
+		app.cfg().put("mica.voice.asr.offline.enabled", "false");
+		app.cfg().put("mica.voice.asr.online.enabled", "false");
+		app.cfg().put("mica.voice.tts.enabled", "false");
+		app.cfg().put("mica.voice.speaker.enabled", "false");
 		app.start(null);
 
 		MicaVoiceConfig coreProps =
@@ -112,6 +143,8 @@ class MicaVoiceAutoConfigurationTest {
 	void shouldNotCreateAsrServiceBeanWhenOfflineDisabled() throws Exception {
 		SimpleSolonApp app = new SimpleSolonApp(MicaVoiceAutoConfigurationTest.class);
 		app.cfg().put("mica.voice.enabled", "true");
+		// 动态定位 models 目录，确保 TTS/Speaker 能加载真实模型
+		app.cfg().put("mica.voice.models-dir", resolveModelsDir());
 		app.cfg().put("mica.voice.asr.offline.enabled", "false");
 		app.cfg().put("mica.voice.asr.online.enabled", "false");
 		AtomicReference<Throwable> reference = new AtomicReference<>();
@@ -146,6 +179,11 @@ class MicaVoiceAutoConfigurationTest {
 	void shouldBindCorePropertiesType() throws Throwable {
 		SimpleSolonApp app = new SimpleSolonApp(MicaVoiceAutoConfigurationTest.class);
 		app.cfg().put("mica.voice.enabled", "true");
+		// 只验证 MicaVoiceConfig 类型 Bean，不需要 native Service
+		app.cfg().put("mica.voice.asr.offline.enabled", "false");
+		app.cfg().put("mica.voice.asr.online.enabled", "false");
+		app.cfg().put("mica.voice.tts.enabled", "false");
+		app.cfg().put("mica.voice.speaker.enabled", "false");
 		app.start(null);
 
 		// core 属性类型应为 net.dreamlu.mica.voice.config.MicaVoiceConfig
