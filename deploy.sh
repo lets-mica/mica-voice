@@ -1,7 +1,13 @@
 #!/bin/sh
 
+## 0. java
+if command -v vfox >/dev/null 2>&1; then
+    vfox use java@8.0.342+7
+else
+    echo "Warning: vfox command not found, skipping Java version switch"
+fi
+
 ## 1. java version
-export JAVA_HOME=`/usr/libexec/java_home -v 17`
 java -version
 printf "\n"
 

@@ -1,12 +1,9 @@
 # mica-voice
 
-![Java](https://img.shields.io/badge/Java-8%2B-orange)
-![Maven Central](https://img.shields.io/badge/maven--central-1.0.0--SNAPSHOT-blue)
-![License](https://img.shields.io/badge/license-Apache--2.0-green)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-2.7.x–3.x-6db33f)
-![sherpa-onnx](https://img.shields.io/badge/sherpa--onnx-1.13.5-blueviolet)
 ![CI](https://img.shields.io/badge/CI-passing-brightgreen)
 ![JDK 8/17/21/25](https://img.shields.io/badge/JDK-8%20%7C%2017%20%7C%2021%20%7C%2025-informational)
+[![Maven release](https://img.shields.io/maven-central/v/net.dreamlu/mica-voice-core.svg?style=flat-square)](https://central.sonatype.com/artifact/net.dreamlu/mica-voice-core/versions)
+![Maven SNAPSHOT](https://img.shields.io/maven-metadata/v?metadataUrl=https://central.sonatype.com/repository/maven-snapshots/net/dreamlu/mica-voice-core/maven-metadata.xml)
 
 > Java 生态的声音 AI 全家桶：ASR / TTS / 声纹 / VAD / 说话人分离 / 降噪 / KWS。
 >
