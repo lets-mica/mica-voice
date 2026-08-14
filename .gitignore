@@ -1,0 +1,72 @@
+### gradle ###
+.gradle
+!gradle/wrapper/gradle-wrapper.jar
+
+### STS ###
+.settings/
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+bin/
+
+### IntelliJ IDEA ###
+!.idea/icon.png
+.idea
+out/
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+### AI Code ###
+.workbuddy
+.codegraph
+.claude
+.opencode
+-p
+
+### models ###
+# 模型文件不提交（大文件），仅保留 README 与 scripts/ 下的下载脚本
+models/*
+!models/README.md
+!models/scripts/
+!models/ppocr-v6/medium/*.zip
+
+### maven ###
+.flattened-pom.xml
+target/
+*.war
+*.ear
+*.zip
+*.tar
+*.tar.gz
+
+# logs #
+logs
+
+# temp ignore
+*.log
+*.cache
+*.diff
+*.patch
+*.tmp
+*.java~
+*.properties~
+*.xml~
+
+# system ignore
+.DS_Store
+Thumbs.db
+Servers
+.metadata
+gen_code

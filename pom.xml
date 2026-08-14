@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>net.dreamlu</groupId>
+    <artifactId>mica-voice</artifactId>
+    <version>${revision}</version>
+    <packaging>pom</packaging>
+    <name>${project.artifactId}</name>
+
+    <description>mica-voice multi-module aggregator: core SDK + Spring Boot starter + examples</description>
+    <url>https://github.com/lets-mica/mica-voice</url>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>L.cm</name>
+            <email>qq596392912@gmail.com</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git@github.com:lets-mica/mica-voice.git</connection>
+        <developerConnection>scm:git:git@github.com:lets-mica/mica-voice.git</developerConnection>
+        <url>https://github.com/lets-mica/mica-voice</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <modules>
+        <module>mica-voice-core</module>
+        <module>mica-voice-spring-boot-starter</module>
+        <module>mica-voice-examples</module>
+    </modules>
+
+    <!-- ===================== Properties ===================== -->
+    <properties>
+        <!-- 版本号（CI 通过 sed 读取此标签判断 SNAPSHOT） -->
+        <revision>1.0.0-SNAPSHOT</revision>
+        <!-- 公共配置 -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <!-- Java 版本。JDK 8 baseline：与 sherpa-onnx 1.13.5 兼容。 -->
+        <java.version>1.8</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <!-- 插件版本 -->
+        <maven-jar-plugin.version>3.5.1</maven-jar-plugin.version>
+        <maven-flatten.version>1.8.0</maven-flatten.version>
+        <central-publishing-plugin.version>0.11.0</central-publishing-plugin.version>
+        <!-- mica 生态 -->
+        <mica.sherpa.onnx.version>1.13.5</mica.sherpa.onnx.version>
+        <!-- mica-auto：编译期自动生成 spring.factories / spring-configuration-metadata 等元数据。
+            与 Spring Boot 版本配套：SB 2.7.x → mica-auto 2.x.x（最新稳定 2.3.5） -->
+        <mica.auto.version>2.3.5</mica.auto.version>
+        <!-- 常用依赖 -->
+        <slf4j.version>1.7.36</slf4j.version>
+        <lombok.version>1.18.34</lombok.version>
+        <!-- Spring Boot（starter 子模块用）。
+             锁 2.7.x：JDK 8 兼容的最高 SB 系列（JDK 17 也能跑），
+             与 mica-voice-core 的 JDK 8 baseline 一致。 -->
+        <spring.boot.version>2.7.18</spring.boot.version>
+    </properties>
+
+    <!-- ===================== Dependency Management ===================== -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- mica-voice 自家模块（version 通过 ${revision} 统一管理） -->
+            <dependency>
+                <groupId>net.dreamlu</groupId>
+                <artifactId>mica-voice-core</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.dreamlu</groupId>
+                <artifactId>mica-voice-spring-boot-starter</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <!-- mica-sherpa-onnx：内置 6 平台 native 的 fat jar -->
+            <dependency>
+                <groupId>net.dreamlu</groupId>
+                <artifactId>mica-sherpa-onnx</artifactId>
+                <version>${mica.sherpa.onnx.version}</version>
+            </dependency>
+            <!-- Logging -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <!-- Lombok：编译期生成 getter/setter/builder/equals/hashCode 等，
+                 仅在编译期生效，不参与运行时 classpath -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+                <scope>provided</scope>
+                <optional>true</optional>
+            </dependency>
+            <!-- mica-auto（编译期 starter 元数据生成） -->
+            <dependency>
+                <groupId>net.dreamlu</groupId>
+                <artifactId>mica-auto</artifactId>
+                <version>${mica.auto.version}</version>
+                <scope>provided</scope>
+                <optional>true</optional>
+            </dependency>
+            <!-- 注：Spring Boot 相关依赖不在父 POM 的 dependencyManagement 中声明，
+                 由 mica-voice-spring-boot-starter / mica-voice-examples 子模块各自
+                 import spring-boot-dependencies BOM，避免父 POM 解析阶段触发 BOM 下载。 -->
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- ===================== Repositories（中央快照） ===================== -->
+    <repositories>
+        <!-- 拉取快照版本的 mica-sherpa-onnx 等依赖 -->
+        <repository>
+            <name>Central Portal Snapshots</name>
+            <id>central-portal-snapshots</id>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <!-- ===================== Build ===================== -->
+    <build>
+        <plugins>
+            <!-- Java 编译：保留参数名（lombok + Spring / Spring Boot 需要） -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.15.0</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <parameters>true</parameters>
+                </configuration>
+            </plugin>
+            <!-- Source attach：发布时附 sources.jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.4.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+            </plugin>
+            <!-- flatten-maven-plugin：把 ${revision} 展开到 .flattened-pom.xml -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>${maven-flatten.version}</version>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>oss</flattenMode>
+                    <pomElements>
+                        <properties>remove</properties>
+                        <repositories>remove</repositories>
+                    </pomElements>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${maven-jar-plugin.version}</version>
+                    <configuration>
+                        <archive>
+                            <index>true</index>
+                            <manifest>
+                                <addBuildEnvironmentEntries>true</addBuildEnvironmentEntries>
+                                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            </manifest>
+                            <addMavenDescriptor>false</addMavenDescriptor>
+                        </archive>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.2.5</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>3.6.0</version>
+                </plugin>
+                <!-- 发布到 Central Portal -->
+                <plugin>
+                    <groupId>org.sonatype.central</groupId>
+                    <artifactId>central-publishing-maven-plugin</artifactId>
+                    <version>${central-publishing-plugin.version}</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <publishingServerId>central</publishingServerId>
+                        <autoPublish>true</autoPublish>
+                        <checksums>required</checksums>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <!-- ===================== Profiles ===================== -->
+    <profiles>
+        <!-- 默认 develop profile：开发期使用，含阿里云镜像加速依赖下载 -->
+        <profile>
+            <id>develop</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <repositories>
+                <repository>
+                    <id>aliyun</id>
+                    <name>aliyun</name>
+                    <url>https://maven.aliyun.com/repository/public/</url>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                </repository>
+            </repositories>
+        </profile>
+        <!-- snapshot profile：发布快照版本到 Central Portal -->
+        <profile>
+            <id>snapshot</id>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>central</id>
+                    <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+                </snapshotRepository>
+            </distributionManagement>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!-- release profile：发布正式版本，附 javadoc + GPG 签名 -->
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <!-- Javadoc -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.12.0</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- GPG -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.2.8</version>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <gpgArguments>
+                                <arg>--pinentry-mode</arg>
+                                <arg>loopback</arg>
+                            </gpgArguments>
+                        </configuration>
+                    </plugin>
+                    <!-- 发布到 Central Portal -->
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>

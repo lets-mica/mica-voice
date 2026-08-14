@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>net.dreamlu</groupId>
+        <artifactId>mica-voice</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>mica-voice-spring-boot-starter</artifactId>
+    <name>mica-voice-spring-boot-starter</name>
+    <description>Spring Boot 自动装配：mica.voice.* 配置即开箱即用，可选暴露 REST/CORS</description>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>net.dreamlu</groupId>
+            <artifactId>mica-voice-core</artifactId>
+        </dependency>
+
+        <!-- Lombok（编译期） -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+        <!-- mica-auto（编译期 starter 元数据生成）。
+             mica-auto 自带 javax.annotation.processing.Processor SPI，无需在代码加 @AutoConfiguration 等注解，
+             只需启用 maven-compiler-plugin 的 annotationProcessorPaths 即可。
+             编译期会扫描 spring.factories / org.springframework.boot.autoconfigure.AutoConfiguration.imports
+             风格的标准注解（@Configuration / @Bean / @ConditionalOnXxx / @ConfigurationProperties 等）
+             并自动生成对应的 META-INF 元数据。 -->
+        <dependency>
+            <groupId>net.dreamlu</groupId>
+            <artifactId>mica-auto</artifactId>
+        </dependency>
+
+        <!-- Spring Boot 自动装配 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+
+        <!-- Spring Web（@RestController 等），由 starter 内置 REST 端点使用 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- 注解 @ConfigurationProperties 的元数据生成（可选但推荐） -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Test -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <!-- 启用 lombok + mica-auto 注解处理器。
+                         mica-auto 会扫描 @Configuration 类并自动生成 spring.factories（SB 2.x）
+                         与 AutoConfiguration.imports（SB 3.x）两套元数据，让 starter 在 SB2 / SB3
+                         下都能直接被 spring.factories / AutoConfiguration 发现。 -->
+                    <annotationProcessorPaths combine.children="append">
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                        <path>
+                            <groupId>net.dreamlu</groupId>
+                            <artifactId>mica-auto</artifactId>
+                            <version>${mica.auto.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>net.dreamlu</groupId>
+        <artifactId>mica-voice</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>mica-voice-examples</artifactId>
+    <packaging>pom</packaging>
+    <name>mica-voice-examples</name>
+    <description>mica-voice 集成示例聚合：展示 mica-voice-core / mica-voice-spring-boot-starter 的实际用法</description>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <modules>
+        <module>mica-voice-example-console</module>
+        <module>mica-voice-example-spring-web</module>
+        <!-- 后续追加：
+             <module>mica-voice-example-mic-recorder</module>  浏览器麦克风 → WebSocket → 流式 ASR
+             <module>mica-voice-example-benchmark</module>     模型基准测试（WER / RTF）
+        -->
+    </modules>
+</project>
