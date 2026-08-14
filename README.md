@@ -149,8 +149,10 @@ mvn -pl mica-voice-examples/mica-voice-example-console -am package -DskipTests
 java -jar mica-voice-examples/mica-voice-example-console/target/mica-voice-example-console-1.0.0-SNAPSHOT.jar all
 
 # Spring Web 示例（REST + WebSocket 流式 ASR）
-cd mica-voice-examples/mica-voice-example-spring-web
-mvn spring-boot:run
+mvn -pl mica-voice-examples/mica-voice-example-spring-web -am package -DskipTests
+java -jar mica-voice-examples/mica-voice-example-spring-web/target/mica-voice-example-spring-web-1.0.0-SNAPSHOT.jar
+# 或开发时热启：cd mica-voice-examples/mica-voice-example-spring-web && mvn spring-boot:run
+# 默认监听 http://localhost:8080，模型目录用 -Dmica.voice.models-dir=E:/.../models 指定绝对路径
 ```
 
 各功能的完整调用示例见 `mica-voice-examples/mica-voice-example-console/src/main/java/com/mica/voice/example/console/` 下的 `AsrExample` / `SenseVoiceExample` / `OnlineAsrExample` / `TtsExample` / `SpeakerExample`。
