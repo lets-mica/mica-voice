@@ -23,5 +23,5 @@ else
 fi
 
 ## 4. deploy 发布正式版，
-mvn clean package deploy -P$profile -DskipTests
+mvn clean package deploy -P$profile -DskipTests -pl '!mica-voice-examples'
 

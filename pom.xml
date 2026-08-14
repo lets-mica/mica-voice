@@ -36,7 +36,6 @@
     <modules>
         <module>mica-voice-core</module>
         <module>mica-voice-spring-boot-starter</module>
-        <module>mica-voice-examples</module>
     </modules>
 
     <!-- ===================== Properties ===================== -->
@@ -254,12 +253,15 @@
 
     <!-- ===================== Profiles ===================== -->
     <profiles>
-        <!-- 默认 develop profile：开发期使用，含阿里云镜像加速依赖下载 -->
+        <!-- 默认 develop profile：开发期使用，含阿里云镜像加速依赖下载 + 包含 examples -->
         <profile>
             <id>develop</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
+            <modules>
+                <module>mica-voice-examples</module>
+            </modules>
             <repositories>
                 <repository>
                     <id>aliyun</id>
