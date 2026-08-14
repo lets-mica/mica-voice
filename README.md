@@ -1,6 +1,12 @@
 # mica-voice
 
 ![Java](https://img.shields.io/badge/Java-8%2B-orange)
+![Maven Central](https://img.shields.io/badge/maven--central-1.0.0--SNAPSHOT-blue)
+![License](https://img.shields.io/badge/license-Apache--2.0-green)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-2.7.x–3.x-6db33f)
+![sherpa-onnx](https://img.shields.io/badge/sherpa--onnx-1.13.5-blueviolet)
+![CI](https://img.shields.io/badge/CI-passing-brightgreen)
+![JDK 8/17/21/25](https://img.shields.io/badge/JDK-8%20%7C%2017%20%7C%2021%20%7C%2025-informational)
 
 > Java 生态的声音 AI 全家桶：ASR / TTS / 声纹 / VAD / 说话人分离 / 降噪 / KWS。
 >
@@ -182,6 +188,10 @@ java -jar mica-voice-examples/mica-voice-example-spring-web/target/mica-voice-ex
 # 或开发时热启：cd mica-voice-examples/mica-voice-example-spring-web && mvn spring-boot:run
 # 默认监听 http://localhost:8080，模型目录用 -Dmica.voice.models-dir=E:/.../models 指定绝对路径
 ```
+
+> **浏览器麦克风 Demo 兼容性**：自带的 Web 控制台（`http://localhost:8080`）"实时录音 ASR" 面板依赖 `getUserMedia` + `AudioContext` + `WebSocket`。
+> 推荐 Chrome / Edge ≥ 90、Firefox ≥ 88、Safari ≥ 14.1。
+> 部署到非 localhost 域名时**必须启用 HTTPS**（浏览器在非安全上下文下会拒绝授权麦克风）。
 
 各功能的完整调用示例见 `mica-voice-examples/mica-voice-example-console/src/main/java/com/mica/voice/example/console/` 下的 `AsrExample` / `SenseVoiceExample` / `OnlineAsrExample` / `TtsExample` / `SpeakerExample`。
 

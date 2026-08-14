@@ -1,0 +1,86 @@
+name: "💡 功能建议"
+description: "新模型家族、新能力、新接口、新配置项等增强建议。"
+labels: ["enhancement"]
+body:
+  - type: dropdown
+    id: capability
+    attributes:
+      label: 关联能力
+      description: 新功能归属的现有能力
+      options:
+        - "离线 ASR"
+        - "在线流式 ASR"
+        - "TTS 语音合成"
+        - "声纹识别"
+        - "VAD 语音活动检测"
+        - "说话人分离（Diarization）"
+        - "关键词唤醒（KWS）"
+        - "音频降噪（Denoise）"
+        - "WebSocket 流式 ASR"
+        - "横切：Spring Boot starter / 模型管理 / 文档 / CI"
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: 关联组件
+      options:
+        - "mica-voice-core（Java 公共 API）"
+        - "mica-voice-spring-boot-starter"
+        - "mica-voice-example-console"
+        - "mica-voice-example-spring-web"
+        - "models/scripts/ 下载脚本"
+        - "文档 / README / 示例"
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: 当前痛点 / 背景
+      description: 为什么需要这个功能？没有它时你是怎么 workaround 的？
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 期望的解决方案
+      description: 给出具体的 API/配置/接口设计；如有 sherpa-onnx 上游支持请一并说明
+      placeholder: |
+        建议在 MicaVoice 门面新增：
+          public static TranscribeService transcribeStreaming(
+              MicaVoiceProperties props, OnlineAsrConfig config, VadConfig vadConfig);
+        或在 AsrConfig 里增加 streamingChunkMs 字段...
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 备选方案
+      description: 你考虑过的其它实现路径及取舍
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 你认为的优先级
+      options:
+        - "P0 - 阻塞我使用"
+        - "P1 - 重要，影响生产可用性"
+        - "P2 - 锦上添花"
+        - "P3 - 好奇 / 探索性"
+  - type: textarea
+    id: contrib
+    attributes:
+      label: 你愿意贡献吗
+      description: 是否愿意提 PR？会大大提升被采纳概率
+      options:
+        - "愿意提交 PR"
+        - "需要 maintainer 协助"
+        - "仅建议，无 PR 计划"
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: 提交前自检
+      options:
+        - label: 已搜索现有 issue / discussions，未发现重复
+          required: true
+        - label: 与 mica-sherpa-onnx 上游能力保持兼容（或明确说明需要的 native 新增）
+          required: false

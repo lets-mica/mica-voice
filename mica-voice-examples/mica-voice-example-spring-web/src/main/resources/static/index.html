@@ -79,6 +79,11 @@
             <h2>实时录音 ASR（WebSocket 流式）</h2>
             <p>浏览器麦克风采集 → 16kHz 重采样 → 16-bit PCM → WebSocket binary 帧
                 → 后端 <code>OnlineAsrService</code> 流式识别 → 实时 partial 文本。</p>
+            <div class="hint" style="background:#fff8c5;border-left:3px solid #d4a72c;padding:8px 12px;border-radius:4px;margin:8px 0 16px">
+                <b>浏览器兼容：</b>需要支持 <code>getUserMedia</code> + <code>AudioContext</code> + <code>WebSocket</code>。
+                推荐 Chrome / Edge ≥ 90、Firefox ≥ 88、Safari ≥ 14.1。
+                <b>必须用 HTTPS 或 <code>http://localhost</code></b> 访问，裸 HTTP（非 localhost）下浏览器会拒绝授权麦克风。
+            </div>
             <div class="row">
                 <button id="rec-start" onclick="recorderStart()">开始录音</button>
                 <button id="rec-stop" class="danger" onclick="recorderStop()" disabled>停止并识别</button>

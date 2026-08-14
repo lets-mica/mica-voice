@@ -1,42 +1,70 @@
 package net.dreamlu.mica.voice.config;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * {@link MicaVoiceProperties} Builder / 校验测试。
+ */
 class MicaVoicePropertiesTest {
 
-	@Test
-	void defaults() {
-		MicaVoiceProperties p = new MicaVoiceProperties();
-		assertNotNull(p.getModelsDir());
-		assertNotNull(p.getOutputDir());
-		assertTrue(p.getThreads() > 0);
+	@AfterEach
+	void clearSysProps() {
+		System.clearProperty(MicaVoiceProperties.SYS_MODELS_DIR);
 	}
 
 	@Test
-	void builder(@TempDir File tmp) {
+	void defaultsFromConstructor() {
+		MicaVoiceProperties p = new MicaVoiceProperties();
+		assertEquals(new File("models"), p.getModelsDir());
+		assertEquals(new File("output"), p.getOutputDir());
+		assertEquals(2, p.getThreads());
+		assertFalse(p.isDebug());
+	}
+
+	@Test
+	void sysPropOverridesModelsDir(@TempDir File tmp) {
+		System.setProperty(MicaVoiceProperties.SYS_MODELS_DIR, tmp.getAbsolutePath());
+		MicaVoiceProperties p = new MicaVoiceProperties();
+		assertEquals(tmp, p.getModelsDir());
+	}
+
+	@Test
+	void builderChains() {
 		MicaVoiceProperties p = MicaVoiceProperties.builder()
-			.modelsDir(tmp)
-			.outputDir(new File(tmp, "out"))
+			.modelsDir("/tmp/m1")
+			.outputDir("/tmp/o1")
 			.threads(4)
 			.debug(true)
 			.build();
-		assertEquals(tmp, p.getModelsDir());
+		assertEquals(new File("/tmp/m1"), p.getModelsDir());
+		assertEquals(new File("/tmp/o1"), p.getOutputDir());
 		assertEquals(4, p.getThreads());
 		assertTrue(p.isDebug());
-		// ensureOutputDir 应自动创建
-		File out = p.ensureOutputDir();
-		assertTrue(out.isDirectory());
 	}
 
 	@Test
-	void invalidThreads() {
+	void threadsMustBePositive() {
 		MicaVoiceProperties p = new MicaVoiceProperties();
 		assertThrows(IllegalArgumentException.class, () -> p.setThreads(0));
 		assertThrows(IllegalArgumentException.class, () -> p.setThreads(-1));
+	}
+
+	@Test
+	void ensureOutputDir_createsDir(@TempDir File tmp) {
+		MicaVoiceProperties p = MicaVoiceProperties.builder()
+			.outputDir(new File(tmp, "nested/out"))
+			.build();
+		File got = p.ensureOutputDir();
+		assertTrue(got.isDirectory());
+		assertTrue(got.exists());
 	}
 }

@@ -32,6 +32,26 @@
 | `scripts/download-models.sh` | Linux / macOS | bash 版，慢网时自动调用 `parallel-download.sh` |
 | `scripts/parallel-download.sh` | Linux / macOS | 分段并行下载加速工具 |
 
+### 脚本支持的目标（target）一览
+
+| Target | 脚本对应 Mica 能力 | 说明 |
+| ------ | ----------------- | ---- |
+| `asr` | offline ASR (Paraformer zh) | sherpa-onnx Paraformer int8，~80MB |
+| `asr-online` | online ASR (Streaming Paraformer) | 流式 Paraformer 中英，~230MB |
+| `asr-sensevoice` | offline ASR (SenseVoice 多语言) | 中/英/日/韩/粤 + 情感/事件，~228MB |
+| `x-asr` | online ASR (X-ASR 960ms chunk) | Zipformer2 Transducer，~586MB |
+| `tts` | TTS (VITS icefall-aishell3) | 单说话人，~30MB |
+| `tts-fanchen` | TTS (VITS fanchen-C) | 187 说话人大模型，~290MB |
+| `speaker` | 声纹识别 | embedding 模型 + 4 人测试音频，~95MB |
+| `all` | 全部 v1.0 能力 | 上述之和，~1.4GB |
+
+> 当前脚本尚未提供 v1.1 能力的独立 target（`vad` / `denoise` / `kws` / `diarization`），
+> 这些模型需要单独从 sherpa-onnx release 的 [kws-models](https://github.com/k2-fsa/sherpa-onnx/releases/tag/kws-models) /
+> [denoise-models](https://github.com/k2-fsa/sherpa-onnx/releases/tag/denoise-models) /
+> [vad-models](https://github.com/snakers4/silero-vad) 下载到 `models/` 根目录。
+> Java 示例（`mica-voice-example-console`）的 `vad` / `denoise` / `kws` / `diarization` 命令已就绪，
+> 只需把对应模型文件放入 `models/` 即可。
+
 脚本基于**自身所在目录**定位模型目录（`models/scripts/` 的父目录即 `models/`），下载即落盘，无需移动。
 
 ## 下载方式

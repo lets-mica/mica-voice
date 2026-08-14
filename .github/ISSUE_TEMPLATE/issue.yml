@@ -1,0 +1,122 @@
+name: "问题咨询 / 反馈"
+description: "mica-voice 使用问题、使用咨询、模型/文档疑问都可使用本模板。"
+labels: ["question"]
+body:
+  - type: dropdown
+    id: os
+    attributes:
+      label: 操作系统
+      description: 必填，native 模型依赖与平台强绑定
+      options:
+        - "Windows"
+        - "Linux"
+        - "macOS"
+    validations:
+      required: true
+  - type: dropdown
+    id: arch
+    attributes:
+      label: CPU 架构
+      options:
+        - "x86_64 / amd64"
+        - "arm64 / aarch64"
+        - "x86 (32-bit)"
+        - "其它"
+    validations:
+      required: true
+  - type: dropdown
+    id: java
+    attributes:
+      label: JDK 版本
+      options:
+        - "JDK 8"
+        - "JDK 11"
+        - "JDK 17"
+        - "JDK 21"
+        - "JDK 25+"
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: 使用的组件
+      options:
+        - "mica-voice-core（纯 Java 门面）"
+        - "mica-voice-spring-boot-starter"
+        - "mica-voice-example-console"
+        - "mica-voice-example-spring-web"
+        - "models/scripts/ 下载脚本"
+        - "文档 / README"
+    validations:
+      required: true
+  - type: dropdown
+    id: capability
+    attributes:
+      label: 涉及的能力（v1.0/v1.1）
+      description: mica-voice 一次会装多个能力，选最贴近的那个
+      multiple: true
+      options:
+        - "离线 ASR（Paraformer / SenseVoice / Whisper 等）"
+        - "在线流式 ASR（Streaming Paraformer / X-ASR）"
+        - "TTS 语音合成"
+        - "声纹识别（注册 / 验证 / 搜索）"
+        - "VAD 语音活动检测"
+        - "说话人分离（Diarization）"
+        - "关键词唤醒（KWS）"
+        - "音频降噪（Denoise）"
+        - "WebSocket 流式 ASR（浏览器麦克风）"
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: mica-voice 版本
+      description: e.g. 1.0.0-SNAPSHOT；查看 mvn dependency:tree 中 mica-voice-core / starter 的 version
+      placeholder: "1.0.0-SNAPSHOT"
+    validations:
+      required: true
+  - type: input
+    id: sherpa-version
+    attributes:
+      label: mica-sherpa-onnx 版本
+      description: mvn dependency:tree 里的 mica-sherpa-onnx，native 行为问题多数与该版本相关
+      placeholder: "1.13.5"
+  - type: dropdown
+    id: install
+    attributes:
+      label: 模型获取方式
+      options:
+        - "已通过 models/scripts/download-models.* 下载"
+        - "手动下载放到 models/"
+        - "models/ 目录为空，正在排查"
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: 问题描述
+      description: |
+        详细说明使用场景 + 复现步骤 + 期望结果 + 实际结果。请务必附上：
+          1) mica.voice.* 相关 yaml/application 配置（注意脱敏）
+          2) 完整异常堆栈（不要只贴 message）
+          3) 模型目录列表（ls models/ 的输出）
+        一句话问题将被直接关闭。
+      placeholder: |
+        场景：xxx
+        配置：
+          mica:
+            voice:
+              models-dir: /opt/mica/models
+              asr:
+                offline:
+                  model-dir-name: sherpa-onnx-paraformer-zh-small-2024-03-09
+        复现步骤：
+          1. ...
+          2. ...
+        期望：
+        实际：
+        堆栈：
+          java.lang.RuntimeException: xxx
+            at ...
+    validations:
+      required: true

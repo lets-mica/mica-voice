@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: "💬 问答与使用讨论（推荐先用这里）"
+    url: https://github.com/lets-mica/mica-voice/discussions
+    about: "使用问题、模型选择疑问、API 用法等先在 Discussions 提问，作者和社区会更快回复。"
+  - name: "📖 mica-voice 文档"
+    url: https://github.com/lets-mica/mica-voice#快速开始maven-依赖集成
+    about: "README / models/README 已覆盖大部分入门与常见问题，先看这里能否解决。"
+  - name: "🔧 sherpa-onnx 上游问题"
+    url: https://github.com/k2-fsa/sherpa-onnx/issues
+    about: "模型推理本身、native 编译、平台兼容性等问题应先在上游仓库反馈。"
