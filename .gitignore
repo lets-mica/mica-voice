@@ -41,6 +41,7 @@ models/*
 !models/README.md
 !models/scripts/
 !models/ppocr-v6/medium/*.zip
+output/*
 
 ### maven ###
 .flattened-pom.xml

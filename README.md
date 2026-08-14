@@ -60,8 +60,13 @@ mica-voice 通过 Maven 依赖引入到你的项目，直接写代码即可，�
 模型不随 jar 分发（体积大），按需下载到 `models/` 目录（模型默认从当前目录 `models/` 加载，也可用 `-Dmica.voice.models-dir=E:/.../models` 指定绝对路径）：
 
 ```bash
-bash models/scripts/download-models.sh asr    # Linux / macOS，按需换 tts / speaker / all
-models\scripts\download-models.bat asr        # Windows
+# Linux / macOS
+bash models/scripts/download-models.sh asr          # 按需换 tts / speaker / vad / denoise / kws / diarization / all
+bash models/scripts/parallel-download.sh all        # 并行下载，适合 all 全量时加速
+
+# Windows（任选其一）
+models\scripts\download-models.bat asr              # CMD
+powershell -ExecutionPolicy Bypass -File models\scripts\download-models.ps1 asr   # PowerShell
 ```
 
 ### 3. 纯 Java：门面一行调用
@@ -95,7 +100,19 @@ public class AsrDemo {
 }
 ```
 
-TTS、声纹、VAD 等同理：`MicaVoice.tts(...)` / `MicaVoice.speaker(...)` / `MicaVoice.vad(...)` 门面获取对应服务，服务均实现 `AutoCloseable`，配合 try-with-resources 使用。
+其他能力同理，**`MicaVoice` 门面** 一行拿到对应服务（均实现 `AutoCloseable`，强烈建议 try-with-resources）：
+
+| 能力 | 门面方法 | 配置文件 |
+| ---- | -------- | -------- |
+| 离线 ASR | `MicaVoice.asr(props, AsrConfig)` | `AsrConfig` |
+| 在线流式 ASR | `MicaVoice.onlineAsr(props, OnlineAsrConfig)` / `onlineAsrTyped(...)` | `OnlineAsrConfig` |
+| 语音合成 TTS | `MicaVoice.tts(props, TtsConfig)` | `TtsConfig` |
+| 声纹识别 | `MicaVoice.speaker(props, SpeakerConfig)` | `SpeakerConfig` |
+| 语音活动检测 VAD | `MicaVoice.vad(props, VadConfig)` | `VadConfig` |
+| 说话人分离 | `MicaVoice.diarization(props, DiarizationConfig)` | `DiarizationConfig` |
+| 关键词唤醒 KWS | `MicaVoice.kws(props, KwsConfig)` | `KwsConfig` |
+| 音频降噪 | `MicaVoice.denoise(props, DenoiseConfig)` | `DenoiseConfig` |
+| 分离 + 转写 | `MicaVoice.transcribe(diarizationService, asrService)` | 组合 `DiarizationConfig` + `AsrConfig` |
 
 ### 4. Spring Boot：注入即用
 
@@ -111,7 +128,18 @@ mica:
         model-type: PARAFORMER
 ```
 
-代码里直接注入 `AsrService`（另有 `OnlineAsrService` / `TtsService` / `SpeakerService` 等 Bean，容器关闭时自动释放 native 资源）：
+代码里直接注入 `AsrService` 即可（starter 自动装配 8 个 Service Bean，容器关闭时统一释放 native 资源）：
+
+| Bean | 能力 | 对应 starter 类 |
+| ---- | ---- | --------------- |
+| `AsrService` | 离线 ASR | `AsrAutoConfiguration` |
+| `OnlineAsrService` | 在线流式 ASR | `AsrAutoConfiguration` |
+| `TtsService` | 语音合成 | `TtsAutoConfiguration` |
+| `SpeakerService` | 声纹识别 | `SpeakerAutoConfiguration` |
+| `VadService` | 语音活动检测 | `VadAutoConfiguration` |
+| `DiarizationService` | 说话人分离 | `DiarizationAutoConfiguration` |
+| `KwsService` | 关键词唤醒 | `KwsAutoConfiguration` |
+| `DenoiseService` | 音频降噪 | `DenoiseAutoConfiguration` |
 
 ```java
 @RestController
