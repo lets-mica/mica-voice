@@ -29,7 +29,7 @@ class MicaVoiceAutoConfigurationTest {
 			assertThat(ctx).hasNotFailed();
 			assertThat(ctx).doesNotHaveBean("micaVoiceCoreProperties");
 			// starter 的 MicaVoiceProperties 仍由 @EnableConfigurationProperties 注册
-			assertThat(ctx).hasSingleBean(net.dreamlu.mica.voice.autoconfigure.MicaVoiceProperties.class);
+			assertThat(ctx).hasSingleBean(MicaVoiceProperties.class);
 		});
 	}
 
@@ -38,10 +38,10 @@ class MicaVoiceAutoConfigurationTest {
 		runner.run(ctx -> {
 			assertThat(ctx).hasNotFailed();
 			assertThat(ctx).hasBean("micaVoiceCoreProperties");
-			assertThat(ctx).hasSingleBean(net.dreamlu.mica.voice.autoconfigure.MicaVoiceProperties.class);
+			assertThat(ctx).hasSingleBean(MicaVoiceProperties.class);
 
 			// starter 的 MicaVoiceProperties（yml 输入）
-			net.dreamlu.mica.voice.autoconfigure.MicaVoiceProperties p = ctx.getBean(net.dreamlu.mica.voice.autoconfigure.MicaVoiceProperties.class);
+			MicaVoiceProperties p = ctx.getBean(MicaVoiceProperties.class);
 			assertThat(p.getModelsDir()).isEqualTo("models");
 			assertThat(p.getOutputDir()).isEqualTo("output");
 			assertThat(p.getThreads()).isEqualTo(2);
@@ -79,7 +79,7 @@ class MicaVoiceAutoConfigurationTest {
 		).run(ctx -> {
 			assertThat(ctx).hasNotFailed();
 
-			net.dreamlu.mica.voice.autoconfigure.MicaVoiceProperties p = ctx.getBean(net.dreamlu.mica.voice.autoconfigure.MicaVoiceProperties.class);
+			MicaVoiceProperties p = ctx.getBean(MicaVoiceProperties.class);
 			assertThat(p.getModelsDir()).isEqualTo("/tmp/test-models");
 			assertThat(p.getOutputDir()).isEqualTo("/tmp/test-output");
 			assertThat(p.getThreads()).isEqualTo(8);
@@ -136,7 +136,7 @@ class MicaVoiceAutoConfigurationTest {
 	 * {@link MicaVoiceProperties} 注册成可绑定的 Bean。
 	 */
 	@Configuration(proxyBeanMethods = false)
-	@EnableConfigurationProperties(net.dreamlu.mica.voice.autoconfigure.MicaVoiceProperties.class)
+	@EnableConfigurationProperties(MicaVoiceProperties.class)
 	static class TestConfig {
 	}
 }

@@ -18,6 +18,7 @@ package net.dreamlu.mica.voice.solon;
 
 import lombok.extern.slf4j.Slf4j;
 import net.dreamlu.mica.voice.config.KwsConfig;
+import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import net.dreamlu.mica.voice.core.MicaVoice;
 import net.dreamlu.mica.voice.kws.KwsService;
 import org.noear.solon.annotation.Bean;
@@ -38,7 +39,7 @@ public class KwsAutoConfiguration {
 		onBeanName = "micaVoiceCoreProperties",
 		onExpression = "${mica.voice.kws.enabled:false} == true")
 	public KwsService micaVoiceKwsService(MicaVoiceProperties props,
-	                                      net.dreamlu.mica.voice.config.MicaVoiceConfig coreProps) {
+	                                      MicaVoiceConfig coreProps) {
 		MicaVoiceProperties.Kws cfg = props.getKws();
 		KwsConfig kwsConfig = KwsConfig.builder()
 			.modelDirName(cfg.getModelDirName())

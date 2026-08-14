@@ -18,6 +18,7 @@ package net.dreamlu.mica.voice.solon;
 
 import lombok.extern.slf4j.Slf4j;
 import net.dreamlu.mica.voice.config.DiarizationConfig;
+import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import net.dreamlu.mica.voice.core.MicaVoice;
 import net.dreamlu.mica.voice.diarization.DiarizationService;
 import org.noear.solon.annotation.Bean;
@@ -39,7 +40,7 @@ public class DiarizationAutoConfiguration {
 		onBeanName = "micaVoiceCoreProperties",
 		onExpression = "${mica.voice.diarization.enabled:false} == true")
 	public DiarizationService micaVoiceDiarizationService(@Inject MicaVoiceProperties props,
-	                                                      @Inject net.dreamlu.mica.voice.config.MicaVoiceConfig coreProps) {
+	                                                      @Inject MicaVoiceConfig coreProps) {
 		MicaVoiceProperties.Diarization cfg = props.getDiarization();
 		DiarizationConfig diarConfig = DiarizationConfig.builder()
 			.segmentationModelFileName(cfg.getSegmentationModelFileName())

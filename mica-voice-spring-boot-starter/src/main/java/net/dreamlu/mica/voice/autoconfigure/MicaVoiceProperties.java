@@ -2,6 +2,7 @@ package net.dreamlu.mica.voice.autoconfigure;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.dreamlu.mica.voice.config.SpeakerConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
@@ -164,7 +165,7 @@ public class MicaVoiceProperties {
 		/**
 		 * 候选模型名（按优先级），用 {@code modelsDir/} 根目录或同名子目录
 		 */
-		private String[] modelCandidates = net.dreamlu.mica.voice.config.SpeakerConfig.DEFAULT_MODEL_CANDIDATES;
+		private String[] modelCandidates = SpeakerConfig.DEFAULT_MODEL_CANDIDATES;
 		private long embeddingTimeoutMs = 30_000L;
 	}
 

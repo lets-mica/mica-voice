@@ -2,6 +2,7 @@ package net.dreamlu.mica.voice.autoconfigure;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -39,9 +40,9 @@ public class MicaVoiceAutoConfiguration {
 	 * 该 Bean 是 core 层各 Service 构造时的统一入口（命名 micaVoiceCoreProperties）。
 	 */
 	@Bean(name = "micaVoiceCoreProperties")
-	public net.dreamlu.mica.voice.config.MicaVoiceConfig coreProperties() {
-		net.dreamlu.mica.voice.config.MicaVoiceConfig p =
-			new net.dreamlu.mica.voice.config.MicaVoiceConfig();
+	public MicaVoiceConfig coreProperties() {
+		MicaVoiceConfig p =
+			new MicaVoiceConfig();
 		p.setModelsDir(new File(props.getModelsDir()));
 		p.setOutputDir(new File(props.getOutputDir()));
 		if (props.getThreads() != null) {

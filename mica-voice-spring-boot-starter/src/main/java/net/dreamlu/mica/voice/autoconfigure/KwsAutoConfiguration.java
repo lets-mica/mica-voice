@@ -3,6 +3,7 @@ package net.dreamlu.mica.voice.autoconfigure;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dreamlu.mica.voice.config.KwsConfig;
+import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import net.dreamlu.mica.voice.core.MicaVoice;
 import net.dreamlu.mica.voice.kws.KwsService;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -27,7 +28,7 @@ import org.springframework.context.annotation.Configuration;
 @AutoConfigureAfter(MicaVoiceAutoConfiguration.class)
 public class KwsAutoConfiguration {
 
-	private final net.dreamlu.mica.voice.config.MicaVoiceConfig coreProps;
+	private final MicaVoiceConfig coreProps;
 	private final MicaVoiceProperties props;
 
 	@Bean(destroyMethod = "close")

@@ -17,6 +17,7 @@
 package net.dreamlu.mica.voice.solon;
 
 import lombok.extern.slf4j.Slf4j;
+import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import net.dreamlu.mica.voice.config.VadConfig;
 import net.dreamlu.mica.voice.core.MicaVoice;
 import net.dreamlu.mica.voice.vad.VadService;
@@ -41,7 +42,7 @@ public class VadAutoConfiguration {
 		onBeanName = "micaVoiceCoreProperties",
 		onExpression = "${mica.voice.vad.enabled:false} == true")
 	public VadService micaVoiceVadService(@Inject MicaVoiceProperties props,
-	                                      @Inject net.dreamlu.mica.voice.config.MicaVoiceConfig coreProps) {
+	                                      @Inject MicaVoiceConfig coreProps) {
 		MicaVoiceProperties.Vad cfg = props.getVad();
 		VadConfig.ModelType type;
 		try {

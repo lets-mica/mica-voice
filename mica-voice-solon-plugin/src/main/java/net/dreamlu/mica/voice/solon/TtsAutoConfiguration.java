@@ -17,6 +17,7 @@
 package net.dreamlu.mica.voice.solon;
 
 import lombok.extern.slf4j.Slf4j;
+import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import net.dreamlu.mica.voice.config.TtsConfig;
 import net.dreamlu.mica.voice.core.MicaVoice;
 import net.dreamlu.mica.voice.tts.TtsService;
@@ -41,7 +42,7 @@ public class TtsAutoConfiguration {
 		onBeanName = "micaVoiceCoreProperties",
 		onExpression = "${mica.voice.tts.enabled:true} == true")
 	public TtsService micaVoiceTtsService(MicaVoiceProperties props,
-	                                      net.dreamlu.mica.voice.config.MicaVoiceConfig coreProps) {
+	                                      MicaVoiceConfig coreProps) {
 		MicaVoiceProperties.Tts cfg = props.getTts();
 		TtsConfig.ModelType type;
 		try {

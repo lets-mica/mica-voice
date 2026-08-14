@@ -17,6 +17,7 @@
 package net.dreamlu.mica.voice.solon;
 
 import lombok.extern.slf4j.Slf4j;
+import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import net.dreamlu.mica.voice.core.MicaVoice;
 import org.noear.solon.annotation.Bean;
 import org.noear.solon.annotation.Condition;
@@ -50,10 +51,10 @@ public class MicaVoiceAutoConfiguration {
 	 * @param props yml 配置属性
 	 * @return 转换后的 core 属性
 	 */
-	@Bean(name = "micaVoiceCoreProperties")
-	public net.dreamlu.mica.voice.config.MicaVoiceConfig coreProperties(@Inject MicaVoiceProperties props) {
-		net.dreamlu.mica.voice.config.MicaVoiceConfig p =
-			new net.dreamlu.mica.voice.config.MicaVoiceConfig();
+	@Bean(name = "micaVoiceCoreProperties", typed = true)
+	public MicaVoiceConfig coreProperties(@Inject MicaVoiceProperties props) {
+		MicaVoiceConfig p =
+			new MicaVoiceConfig();
 		p.setModelsDir(new File(props.getModelsDir()));
 		p.setOutputDir(new File(props.getOutputDir()));
 		if (props.getThreads() != null) {

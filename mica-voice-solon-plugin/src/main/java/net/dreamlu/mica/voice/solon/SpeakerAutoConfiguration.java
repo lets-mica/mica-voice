@@ -17,6 +17,7 @@
 package net.dreamlu.mica.voice.solon;
 
 import lombok.extern.slf4j.Slf4j;
+import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import net.dreamlu.mica.voice.config.SpeakerConfig;
 import net.dreamlu.mica.voice.core.MicaVoice;
 import net.dreamlu.mica.voice.speaker.SpeakerService;
@@ -42,7 +43,7 @@ public class SpeakerAutoConfiguration {
 		onBeanName = "micaVoiceCoreProperties",
 		onExpression = "${mica.voice.speaker.enabled:true} == true")
 	public SpeakerService micaVoiceSpeakerService(@Inject MicaVoiceProperties props,
-	                                              @Inject net.dreamlu.mica.voice.config.MicaVoiceConfig coreProps) {
+	                                              @Inject MicaVoiceConfig coreProps) {
 		MicaVoiceProperties.Speaker cfg = props.getSpeaker();
 		SpeakerConfig speakerConfig = SpeakerConfig.builder()
 			.modelCandidates(cfg.getModelCandidates() == null

@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.dreamlu.mica.voice.asr.AsrService;
 import net.dreamlu.mica.voice.asr.OnlineAsrService;
 import net.dreamlu.mica.voice.config.AsrConfig;
+import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import net.dreamlu.mica.voice.config.OnlineAsrConfig;
 import net.dreamlu.mica.voice.core.MicaVoice;
 import org.noear.solon.annotation.Bean;
@@ -64,7 +65,7 @@ public class AsrAutoConfiguration {
 		onBeanName = "micaVoiceCoreProperties",
 		onExpression = "${mica.voice.asr.offline.enabled:true} == true")
 	public AsrService micaVoiceOfflineAsrService(MicaVoiceProperties props,
-	                                            net.dreamlu.mica.voice.config.MicaVoiceConfig coreProps) {
+	                                            MicaVoiceConfig coreProps) {
 		MicaVoiceProperties.Asr.Offline cfg = props.getAsr().getOffline();
 		AsrConfig asrConfig = AsrConfig.builder()
 			.modelDirName(cfg.getModelDirName())
@@ -86,7 +87,7 @@ public class AsrAutoConfiguration {
 		onBeanName = "micaVoiceCoreProperties",
 		onExpression = "${mica.voice.asr.online.enabled:false} == true")
 	public OnlineAsrService micaVoiceOnlineAsrService(@Inject MicaVoiceProperties props,
-	                                                 @Inject net.dreamlu.mica.voice.config.MicaVoiceConfig coreProps) {
+	                                                 @Inject MicaVoiceConfig coreProps) {
 		MicaVoiceProperties.Asr.Online cfg = props.getAsr().getOnline();
 		OnlineAsrConfig onlineConfig = OnlineAsrConfig.builder()
 			.modelDirName(cfg.getModelDirName())

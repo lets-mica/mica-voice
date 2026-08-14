@@ -2,6 +2,7 @@ package com.mica.voice.example.web;
 
 import net.dreamlu.mica.voice.autoconfigure.MicaVoiceAutoConfiguration;
 import net.dreamlu.mica.voice.autoconfigure.MicaVoiceProperties;
+import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -34,7 +35,7 @@ class ApplicationContextLoadTest {
 			assertThat(ctx).hasSingleBean(MicaVoiceProperties.class);
 
 			Object coreProps = ctx.getBean("micaVoiceCoreProperties");
-			assertThat(coreProps).isInstanceOf(net.dreamlu.mica.voice.config.MicaVoiceConfig.class);
+			assertThat(coreProps).isInstanceOf(MicaVoiceConfig.class);
 		});
 	}
 

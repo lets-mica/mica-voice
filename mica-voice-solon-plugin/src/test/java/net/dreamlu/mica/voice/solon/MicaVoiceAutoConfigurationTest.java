@@ -65,6 +65,11 @@ class MicaVoiceAutoConfigurationTest {
 	void shouldBindNestedConfig() throws Throwable {
 		SimpleSolonApp app = new SimpleSolonApp(MicaVoiceAutoConfigurationTest.class);
 		app.cfg().put("mica.voice.enabled", "true");
+		// 本测试只验证配置树绑定，避免触发任何 native 装配（模型文件不存在会抛异常）
+		app.cfg().put("mica.voice.asr.offline.enabled", "false");
+		app.cfg().put("mica.voice.asr.online.enabled", "false");
+		app.cfg().put("mica.voice.tts.enabled", "false");
+		app.cfg().put("mica.voice.speaker.enabled", "false");
 		app.cfg().put("mica.voice.models-dir", "/tmp/test-models");
 		app.cfg().put("mica.voice.output-dir", "/tmp/test-output");
 		app.cfg().put("mica.voice.threads", "8");
@@ -78,7 +83,7 @@ class MicaVoiceAutoConfigurationTest {
 		app.start(null);
 
 		// starter 的 MicaVoiceProperties 绑定正确
-		net.dreamlu.mica.voice.solon.MicaVoiceProperties props = app.context().getBean(net.dreamlu.mica.voice.solon.MicaVoiceProperties.class);
+		MicaVoiceProperties props = app.context().getBean(MicaVoiceProperties.class);
 		assertNotNull(props);
 		Assertions.assertEquals("/tmp/test-models", props.getModelsDir());
 		Assertions.assertEquals("/tmp/test-output", props.getOutputDir());

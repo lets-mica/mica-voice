@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.dreamlu.mica.voice.asr.AsrService;
 import net.dreamlu.mica.voice.asr.OnlineAsrService;
 import net.dreamlu.mica.voice.config.AsrConfig;
+import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import net.dreamlu.mica.voice.config.OnlineAsrConfig;
 import net.dreamlu.mica.voice.core.MicaVoice;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -31,7 +32,7 @@ import java.util.Locale;
 @AutoConfigureAfter(MicaVoiceAutoConfiguration.class)
 public class AsrAutoConfiguration {
 
-	private final net.dreamlu.mica.voice.config.MicaVoiceConfig coreProps;
+	private final MicaVoiceConfig coreProps;
 	private final MicaVoiceProperties props;
 
 	private static <E extends Enum<E>> E parseModelType(String raw, Class<E> type, E fallback) {

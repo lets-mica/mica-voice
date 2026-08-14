@@ -18,6 +18,7 @@ package net.dreamlu.mica.voice.solon;
 
 import lombok.extern.slf4j.Slf4j;
 import net.dreamlu.mica.voice.config.DenoiseConfig;
+import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import net.dreamlu.mica.voice.core.MicaVoice;
 import net.dreamlu.mica.voice.denoise.DenoiseService;
 import org.noear.solon.annotation.Bean;
@@ -41,7 +42,7 @@ public class DenoiseAutoConfiguration {
 		onBeanName = "micaVoiceCoreProperties",
 		onExpression = "${mica.voice.denoise.enabled:false} == true")
 	public DenoiseService micaVoiceDenoiseService(@Inject MicaVoiceProperties props,
-	                                              @Inject net.dreamlu.mica.voice.config.MicaVoiceConfig coreProps) {
+	                                              @Inject MicaVoiceConfig coreProps) {
 		MicaVoiceProperties.Denoise cfg = props.getDenoise();
 		DenoiseConfig.ModelType type;
 		try {

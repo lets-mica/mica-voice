@@ -1,5 +1,6 @@
 package net.dreamlu.mica.voice.audio;
 
+import net.dreamlu.mica.voice.exception.AudioFormatException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,7 +34,7 @@ class AudioDataTest {
 
 	@Test
 	void fromPcm16_invalidLength() {
-		assertThrows(net.dreamlu.mica.voice.exception.AudioFormatException.class,
+		assertThrows(AudioFormatException.class,
 			() -> AudioReaders.fromPcm16(new byte[]{1, 2, 3}, 16000));
 	}
 }
