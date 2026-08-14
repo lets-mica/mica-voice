@@ -1,4 +1,4 @@
-package net.dreamlu.mica.voice.boot;
+package net.dreamlu.mica.voice.autoconfigure;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -28,6 +28,7 @@ public class AsrConfig {
 	 * SenseVoice 专用：是否做逆文本规范化（数字/标点还原）
 	 */
 	private boolean inverseTextNormalization = true;
+
 	public AsrConfig() {
 	}
 

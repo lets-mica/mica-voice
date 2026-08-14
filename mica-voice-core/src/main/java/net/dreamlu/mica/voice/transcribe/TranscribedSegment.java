@@ -14,19 +14,31 @@ import lombok.Value;
 @Builder
 public class TranscribedSegment {
 
-    /** 说话人 id（0 起） */
-    int speaker;
-    /** 起始时间（毫秒） */
-    long startMs;
-    /** 结束时间（毫秒） */
-    long endMs;
-    /** 该段转写文本 */
-    String text;
-    /** ASR 置信度（0~1，部分模型可能为 null） */
-    Float confidence;
+	/**
+	 * 说话人 id（0 起）
+	 */
+	int speaker;
+	/**
+	 * 起始时间（毫秒）
+	 */
+	long startMs;
+	/**
+	 * 结束时间（毫秒）
+	 */
+	long endMs;
+	/**
+	 * 该段转写文本
+	 */
+	String text;
+	/**
+	 * ASR 置信度（0~1，部分模型可能为 null）
+	 */
+	Float confidence;
 
-    /** 时长（毫秒） */
-    public long durationMs() {
-        return endMs - startMs;
-    }
+	/**
+	 * 时长（毫秒）
+	 */
+	public long durationMs() {
+		return endMs - startMs;
+	}
 }

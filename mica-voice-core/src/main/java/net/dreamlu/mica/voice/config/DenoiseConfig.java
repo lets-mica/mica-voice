@@ -26,6 +26,7 @@ public class DenoiseConfig {
 	 * 仅 DPDFNet：衰减限制（dB），控制降噪强度。
 	 */
 	private float attenuationLimitDb = 12.0f;
+
 	public DenoiseConfig() {
 	}
 

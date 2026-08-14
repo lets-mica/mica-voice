@@ -1,4 +1,4 @@
-package net.dreamlu.mica.voice.boot;
+package net.dreamlu.mica.voice.autoconfigure;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +12,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
  * <ul>
  *     <li>每个能力（ASR / TTS / Speaker / VAD）都有独立 {@code enabled} 开关，默认按需启用</li>
  *     <li>嵌套配置（{@link NestedConfigurationProperty}）会随外层 enabled 一起被 Spring 解析</li>
- *     <li>运行时真正装配时，{@link net.dreamlu.mica.voice.boot.MicaVoiceAutoConfiguration}
+ *     <li>运行时真正装配时，{@link net.dreamlu.mica.voice.autoconfigure.MicaVoiceAutoConfiguration}
  *         会把这里的内容转成 core 的 {@link net.dreamlu.mica.voice.config.MicaVoiceProperties}
  *         + 各能力 Config 后传给 {@link net.dreamlu.mica.voice.MicaVoice} 门面</li>
  * </ul>
@@ -120,12 +120,12 @@ public class MicaVoiceProperties {
 			private String modelDirName = "sherpa-onnx-streaming-paraformer-bilingual-zh-en";
 			/**
 			 * 模型家族：
-			 *<ul>
-			 *<li>PARAFORMER（默认，流式 Paraformer）</li>
-			 *<li>X_ASR（上海交大 Zipformer Transducer，960ms chunk）</li>
-			 *<li>ZIPFORMER / ZIPFORMER2_CTC / NEMO_CTC / TRANSDUCER</li>
-			 *<li>AUTO（自动根据目录文件推断）</li>
-			 *</ul>
+			 * <ul>
+			 * <li>PARAFORMER（默认，流式 Paraformer）</li>
+			 * <li>X_ASR（上海交大 Zipformer Transducer，960ms chunk）</li>
+			 * <li>ZIPFORMER / ZIPFORMER2_CTC / NEMO_CTC / TRANSDUCER</li>
+			 * <li>AUTO（自动根据目录文件推断）</li>
+			 * </ul>
 			 */
 			private String modelType = "PARAFORMER";
 			private Integer threads;

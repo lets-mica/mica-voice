@@ -16,10 +16,16 @@ import java.util.List;
 @Builder
 public class TranscribeResult {
 
-    /** 转写片段（按时间排序） */
-    List<TranscribedSegment> segments;
-    /** 说话人总数 */
-    int numSpeakers;
-    /** 总耗时（毫秒） */
-    long costMs;
+	/**
+	 * 转写片段（按时间排序）
+	 */
+	List<TranscribedSegment> segments;
+	/**
+	 * 说话人总数
+	 */
+	int numSpeakers;
+	/**
+	 * 总耗时（毫秒）
+	 */
+	long costMs;
 }

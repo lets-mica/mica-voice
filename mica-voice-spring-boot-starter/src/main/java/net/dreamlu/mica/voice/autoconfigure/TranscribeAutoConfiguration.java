@@ -1,4 +1,4 @@
-package net.dreamlu.mica.voice.boot;
+package net.dreamlu.mica.voice.autoconfigure;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,19 +29,19 @@ import org.springframework.context.annotation.Configuration;
 @AutoConfigureAfter({AsrAutoConfiguration.class, DiarizationAutoConfiguration.class})
 public class TranscribeAutoConfiguration {
 
-    private final ObjectProvider<AsrService> asrProvider;
-    private final ObjectProvider<DiarizationService> diarizationProvider;
+	private final ObjectProvider<AsrService> asrProvider;
+	private final ObjectProvider<DiarizationService> diarizationProvider;
 
-    @Bean(destroyMethod = "close")
-    @ConditionalOnBean(name = {"micaVoiceOfflineAsrService", "micaVoiceDiarizationService"})
-    public OfflineDiarizationTranscribeService micaVoiceDiarizationTranscribeService() {
-        AsrService asr = asrProvider.getIfAvailable();
-        DiarizationService diarization = diarizationProvider.getIfAvailable();
-        if (asr == null || diarization == null) {
-            // 不抛错：Bean 仅在两个能力都启用时才存在；启动顺序由 @ConditionalOnBean 保证
-            return null;
-        }
-        log.info("mica-voice 装配 OfflineDiarizationTranscribeService");
-        return MicaVoice.transcribe(diarization, asr);
-    }
+	@Bean(destroyMethod = "close")
+	@ConditionalOnBean(name = {"micaVoiceOfflineAsrService", "micaVoiceDiarizationService"})
+	public OfflineDiarizationTranscribeService micaVoiceDiarizationTranscribeService() {
+		AsrService asr = asrProvider.getIfAvailable();
+		DiarizationService diarization = diarizationProvider.getIfAvailable();
+		if (asr == null || diarization == null) {
+			// 不抛错：Bean 仅在两个能力都启用时才存在；启动顺序由 @ConditionalOnBean 保证
+			return null;
+		}
+		log.info("mica-voice 装配 OfflineDiarizationTranscribeService");
+		return MicaVoice.transcribe(diarization, asr);
+	}
 }

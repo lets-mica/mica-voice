@@ -31,10 +31,10 @@ mica:
       online:
         enabled: true                       # WebSocket 流式 ASR Demo 需要打开
         # 模型目录（按需切换）：
-        #   sherpa-onnx-streaming-paraformer-bilingual-zh-en  默认流式 Paraformer
-        #   x-asr-zh-en-chunk-960ms                         X-ASR（Zipformer Transducer，960ms chunk）
-        model-dir-name: sherpa-onnx-streaming-paraformer-bilingual-zh-en
-        model-type: PARAFORMER             # 也可改成 X_ASR / ZIPFORMER / ZIPFORMER2_CTC / TRANSDUCER / AUTO
+        #   x-asr-zh-en-chunk-960ms                          X-ASR（Zipformer Transducer，960ms chunk，推荐）
+        #   sherpa-onnx-streaming-paraformer-bilingual-zh-en 流式 Paraformer（需自行下载）
+        model-dir-name: x-asr-zh-en-chunk-960ms
+        model-type: X_ASR                  # 也可改成 PARAFORMER / ZIPFORMER / ZIPFORMER2_CTC / TRANSDUCER / AUTO
         enable-endpoint: true
         chunk-size: 1600                   # 100ms @ 16kHz
 

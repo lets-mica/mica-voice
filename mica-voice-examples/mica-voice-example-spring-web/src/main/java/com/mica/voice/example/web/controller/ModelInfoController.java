@@ -1,7 +1,7 @@
 package com.mica.voice.example.web.controller;
 
 import lombok.RequiredArgsConstructor;
-import net.dreamlu.mica.voice.boot.MicaVoiceProperties;
+import net.dreamlu.mica.voice.autoconfigure.MicaVoiceProperties;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

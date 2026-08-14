@@ -32,6 +32,7 @@ public class TtsConfig {
 	 * 回调式合成时，每多少采样回调一次（默认 1600 ≈ 100ms @ 16kHz）
 	 */
 	private int callbackSampleStep = 1600;
+
 	public TtsConfig() {
 	}
 

@@ -13,9 +13,9 @@ import net.dreamlu.mica.voice.kws.KeywordSpotterService;
 import net.dreamlu.mica.voice.kws.KwsService;
 import net.dreamlu.mica.voice.speaker.SpeakerEmbeddingService;
 import net.dreamlu.mica.voice.speaker.SpeakerService;
+import net.dreamlu.mica.voice.transcribe.OfflineDiarizationTranscribeService;
 import net.dreamlu.mica.voice.tts.OfflineTtsService;
 import net.dreamlu.mica.voice.tts.TtsService;
-import net.dreamlu.mica.voice.transcribe.OfflineDiarizationTranscribeService;
 import net.dreamlu.mica.voice.vad.SileroVadService;
 import net.dreamlu.mica.voice.vad.VadService;
 
@@ -137,7 +137,7 @@ public final class MicaVoice {
 	 * 返回组合后的转写结果：每个说话人在某段时间的文本。
 	 */
 	public static OfflineDiarizationTranscribeService transcribe(
-			DiarizationService diarizationService, AsrService asrService) {
+		DiarizationService diarizationService, AsrService asrService) {
 		Objects.requireNonNull(diarizationService, "diarizationService");
 		Objects.requireNonNull(asrService, "asrService");
 		log.info("创建 OfflineDiarizationTranscribeService");

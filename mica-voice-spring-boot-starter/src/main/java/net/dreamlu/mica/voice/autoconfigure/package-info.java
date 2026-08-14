@@ -8,4 +8,4 @@
  *
  * @author dreamlu
  */
-package net.dreamlu.mica.voice.boot;
+package net.dreamlu.mica.voice.autoconfigure;

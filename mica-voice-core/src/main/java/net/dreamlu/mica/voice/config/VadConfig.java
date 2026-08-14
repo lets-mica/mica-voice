@@ -52,6 +52,7 @@ public class VadConfig {
 	 * SILERO VAD 窗口大小（512 / 1024 / 1536 samples）
 	 */
 	private int windowSize = 512;
+
 	public VadConfig() {
 	}
 

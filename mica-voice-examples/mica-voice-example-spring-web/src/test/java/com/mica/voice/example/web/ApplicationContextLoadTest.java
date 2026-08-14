@@ -1,6 +1,6 @@
 package com.mica.voice.example.web;
 
-import net.dreamlu.mica.voice.boot.MicaVoiceProperties;
+import net.dreamlu.mica.voice.autoconfigure.MicaVoiceProperties;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

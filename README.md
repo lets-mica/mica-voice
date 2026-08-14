@@ -4,7 +4,7 @@
 
 > Java 生态的声音 AI 全家桶：ASR / TTS / 声纹 / VAD / 说话人分离 / 降噪 / KWS。
 >
-> 基于 [`mica-sherpa-onnx`](https://github.com/dreamlu/mica-sherpa-onnx)（已发布 Maven Central 的 sherpa-onnx 全平台 fat jar）。
+> 基于 [`mica-sherpa-onnx`](https://github.com/lets-mica/mica-sherpa-onnx)（已发布 Maven Central 的 sherpa-onnx 全平台 fat jar）。
 
 ## 模块一览
 
@@ -21,50 +21,143 @@
 | `mica-voice-example-console` | 纯 Java main 示例：直接用 `mica-voice-core` 门面 + `models/` 模型，命令行测 ASR / SenseVoice / X-ASR / TTS / 声纹 |
 | `mica-voice-example-spring-web` | Spring Boot Web 示例：REST 上传 wav 做 ASR、GET 合成 wav、声纹注册/验证、**浏览器麦克风 → WebSocket → 流式 ASR**（`/mica/voice/ws/online-asr`） |
 
-> 后续将按需追加：
-> - `mica-voice-example-mic-recorder`：独立 Recorder 模块（当前流式 ASR 已由 spring-web 的 WebSocket 实现覆盖）
-> - `mica-voice-example-benchmark`：模型基准（WER / RTF / 内存）
+## 快速开始（Maven 依赖集成）
 
-## 状态
+mica-voice 通过 Maven 依赖引入到你的项目，直接写代码即可，无需下载本仓库源码。
 
-🚧 **v1.0.0-SNAPSHOT**（核心能力已就绪，持续迭代中）
+### 1. 添加依赖
 
-- [x] 多模块仓库骨架（Phase 0）
-- [x] mica-voice-core：ASR / TTS / 声纹 / VAD / 说话人分离 / 降噪 / KWS / Transcribe + 模型管理（Phase 1）
-- [x] mica-voice-spring-boot-starter：自动装配，`mica.voice.*` 配置即开箱即用（Phase 2）
-- [x] mica-voice-examples：console 纯 Java 示例（命令行测 ASR / SenseVoice / X-ASR / TTS / 声纹）
-- [x] mica-voice-examples：spring-web 基础示例（REST 上传 wav 做 ASR、GET 合成 wav、声纹注册/验证、浏览器麦克风 → WebSocket → 流式 ASR）
-- [ ] mica-voice-example-mic-recorder：独立 Recorder 模块（规划中，当前功能已由 spring-web 的 WebSocket 实现覆盖）
-- [ ] mica-voice-example-benchmark：模型基准（WER / RTF / 内存）（规划中）
+**纯 Java**（非 Spring 项目）引入核心 SDK：
 
-详细路线图见 [`docs/`](docs/)（即将创建）。
+```xml
+<dependency>
+    <groupId>net.dreamlu</groupId>
+    <artifactId>mica-voice-core</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+</dependency>
+```
 
-## 快速开始
+**Spring Boot** 项目引入 starter（自动装配，开箱即用）：
+
+```xml
+<dependency>
+    <groupId>net.dreamlu</groupId>
+    <artifactId>mica-voice-spring-boot-starter</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+</dependency>
+```
+
+> **发布状态**：`mica-voice-core` / `mica-voice-spring-boot-starter` 当前为 `1.0.0-SNAPSHOT`，尚未发布 Maven Central。正式版发布前需先从源码本地安装（底层 native 依赖 [`mica-sherpa-onnx`](https://github.com/lets-mica/mica-sherpa-onnx) 1.13.5 已发布 Central，无需额外处理）：
+>
+> ```bash
+> git clone https://github.com/lets-mica/mica-voice.git
+> cd mica-voice
+> mvn -pl mica-voice-core,mica-voice-spring-boot-starter -am install -DskipTests
+> ```
+
+### 2. 准备模型
+
+模型不随 jar 分发（体积大），按需下载到 `models/` 目录（模型默认从当前目录 `models/` 加载，也可用 `-Dmica.voice.models-dir=E:/.../models` 指定绝对路径）：
 
 ```bash
-# 克隆并下载模型
+bash models/scripts/download-models.sh asr    # Linux / macOS，按需换 tts / speaker / all
+models\scripts\download-models.bat asr        # Windows
+```
+
+### 3. 纯 Java：门面一行调用
+
+```java
+import net.dreamlu.mica.voice.asr.AsrResult;
+import net.dreamlu.mica.voice.asr.AsrService;
+import net.dreamlu.mica.voice.config.AsrConfig;
+import net.dreamlu.mica.voice.config.MicaVoiceProperties;
+import net.dreamlu.mica.voice.core.MicaVoice;
+
+import java.io.File;
+
+public class AsrDemo {
+
+    public static void main(String[] args) {
+        MicaVoiceProperties props = MicaVoiceProperties.builder()
+            .modelsDir("models")   // 或 -Dmica.voice.models-dir 指定绝对路径
+            .threads(2)
+            .build();
+        AsrConfig config = AsrConfig.builder()
+            .modelDirName("sherpa-onnx-paraformer-zh-small-2024-03-09")
+            .modelType(AsrConfig.ModelType.PARAFORMER)
+            .build();
+
+        try (AsrService svc = MicaVoice.asr(props, config)) {
+            AsrResult result = svc.recognize(new File("test.wav"));
+            System.out.println("识别结果: " + result.getText());
+        }
+    }
+}
+```
+
+TTS、声纹、VAD 等同理：`MicaVoice.tts(...)` / `MicaVoice.speaker(...)` / `MicaVoice.vad(...)` 门面获取对应服务，服务均实现 `AutoCloseable`，配合 try-with-resources 使用。
+
+### 4. Spring Boot：注入即用
+
+`application.yml` 里配置模型，无需手动 new 服务：
+
+```yaml
+mica:
+  voice:
+    models-dir: models
+    asr:
+      offline:
+        model-dir-name: sherpa-onnx-paraformer-zh-small-2024-03-09
+        model-type: PARAFORMER
+```
+
+代码里直接注入 `AsrService`（另有 `OnlineAsrService` / `TtsService` / `SpeakerService` 等 Bean，容器关闭时自动释放 native 资源）：
+
+```java
+@RestController
+public class AsrController {
+
+    private final AsrService asrService;
+
+    public AsrController(AsrService asrService) {
+        this.asrService = asrService;
+    }
+
+    @PostMapping("/asr")
+    public String asr(@RequestParam("file") MultipartFile file) throws IOException {
+        File tmp = File.createTempFile("asr", ".wav");
+        file.transferTo(tmp);
+        try {
+            return asrService.recognize(tmp).getText();
+        } finally {
+            tmp.delete();
+        }
+    }
+}
+```
+
+## 源码示例
+
+想直接跑现成 demo，可克隆仓库运行：
+
+```bash
 git clone https://github.com/lets-mica/mica-voice.git
 cd mica-voice
-bash models/scripts/download-models.sh   # Windows: models\scripts\download-models.bat（按需选 all 或单个目标）
 
-# 方式一：控制台示例（纯 Java main，无需 Spring）
+# 控制台示例（纯 Java main，测 ASR / SenseVoice / X-ASR / TTS / 声纹）
 mvn -pl mica-voice-examples/mica-voice-example-console -am package -DskipTests
-java -jar mica-voice-examples/mica-voice-example-console/target/mica-voice-example-console-1.0.0-SNAPSHOT.jar asr
-java -jar mica-voice-examples/mica-voice-example-console/target/mica-voice-example-console-1.0.0-SNAPSHOT.jar sensevoice
-java -jar mica-voice-examples/mica-voice-example-console/target/mica-voice-example-console-1.0.0-SNAPSHOT.jar xasr
-java -jar mica-voice-examples/mica-voice-example-console/target/mica-voice-example-console-1.0.0-SNAPSHOT.jar tts
-java -jar mica-voice-examples/mica-voice-example-console/target/mica-voice-example-console-1.0.0-SNAPSHOT.jar speaker
+java -jar mica-voice-examples/mica-voice-example-console/target/mica-voice-example-console-1.0.0-SNAPSHOT.jar all
 
-# 方式二：Spring Web 示例
+# Spring Web 示例（REST + WebSocket 流式 ASR）
 cd mica-voice-examples/mica-voice-example-spring-web
 mvn spring-boot:run
 ```
 
-> 控制台示例默认从当前目录 `models/` 加载模型，也可用 `-Dmica.voice.models-dir=E:/.../models` 指定绝对路径。
+各功能的完整调用示例见 `mica-voice-examples/mica-voice-example-console/src/main/java/com/mica/voice/example/console/` 下的 `AsrExample` / `SenseVoiceExample` / `OnlineAsrExample` / `TtsExample` / `SpeakerExample`。
 
 ## 关联项目
 
-- [dreamlu/mica-sherpa-onnx](https://github.com/dreamlu/mica-sherpa-onnx) — sherpa-onnx 全平台 fat jar，本项目的 native 依赖来源
+- [lets-mica/mica-sherpa-onnx](https://github.com/lets-mica/mica-sherpa-onnx) — sherpa-onnx 全平台 fat jar，本项目的 native 依赖来源
 - [k2-fsa/sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx) — 上游 ONNX 推理引擎与模型
 
 ## License

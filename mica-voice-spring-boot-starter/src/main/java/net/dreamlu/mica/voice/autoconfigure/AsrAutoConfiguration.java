@@ -1,4 +1,4 @@
-package net.dreamlu.mica.voice.boot;
+package net.dreamlu.mica.voice.autoconfigure;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +14,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 import java.util.Locale;
 
@@ -46,9 +47,14 @@ public class AsrAutoConfiguration {
 	}
 
 	/**
-	 * 离线 ASR
+	 * 离线 ASR。
+	 *
+	 * <p>标注 {@link Primary}：{@link OnlineAsrService} 也实现了 {@link AsrService}，
+	 * 按 {@code AsrService} 类型注入时默认取离线（标准识别语义）；
+	 * 需要流式能力时注入 {@code OnlineAsrService} 类型（唯一匹配，无需 Qualifier）。
 	 */
 	@Bean(destroyMethod = "close")
+	@Primary
 	@ConditionalOnMissingBean(name = "micaVoiceOfflineAsrService")
 	@ConditionalOnProperty(prefix = "mica.voice.asr.offline", name = "enabled", havingValue = "true", matchIfMissing = true)
 	public AsrService micaVoiceOfflineAsrService() {
