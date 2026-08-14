@@ -29,6 +29,7 @@
     <modules>
         <module>mica-voice-example-console</module>
         <module>mica-voice-example-spring-web</module>
+        <module>mica-voice-example-solon-web</module>
         <!-- 后续追加：
              <module>mica-voice-example-mic-recorder</module>  浏览器麦克风 → WebSocket → 流式 ASR
              <module>mica-voice-example-benchmark</module>     模型基准测试（WER / RTF）

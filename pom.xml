@@ -84,6 +84,11 @@
                 <artifactId>mica-voice-spring-boot-starter</artifactId>
                 <version>${revision}</version>
             </dependency>
+            <dependency>
+                <groupId>net.dreamlu</groupId>
+                <artifactId>mica-voice-solon-plugin</artifactId>
+                <version>${revision}</version>
+            </dependency>
             <!-- mica-sherpa-onnx：内置 6 平台 native 的 fat jar -->
             <dependency>
                 <groupId>net.dreamlu</groupId>

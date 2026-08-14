@@ -1,0 +1,88 @@
+# mica-voice Solon Web 示例配置
+# Solon 默认会读取 app.yml / application.yml
+
+server:
+  port: 8081
+
+solon:
+  multipart:
+    max-file-size: 50MB
+    max-request-size: 50MB
+
+logging:
+  level:
+    net.dreamlu.mica.voice: debug
+
+mica:
+  voice:
+    # 全局配置
+    enabled: true
+    models-dir: ./models
+    output-dir: ./output
+    threads: 2
+    debug: false
+
+    # ASR 离线
+    asr:
+      offline:
+        enabled: true
+        model-dir-name: sherpa-onnx-paraformer-zh-small-2024-03-09
+        model-type: PARAFORMER
+      online:
+        enabled: false    # 本示例只演示离线能力；如需 WebSocket 流式 ASR，需配合 solon-server-websocket + solon-boot-websocket-*
+        model-dir-name: sherpa-onnx-streaming-paraformer-bilingual-zh-en
+        model-type: PARAFORMER
+        enable-endpoint: true
+        chunk-size: 1600   # 100ms @ 16kHz
+
+    # TTS
+    tts:
+      enabled: true
+      model-dir-name: vits-icefall-zh-aishell3
+      default-speaker-id: 0
+      default-speed: 1.0
+
+    # 声纹
+    speaker:
+      enabled: true
+      threshold: 0.5
+
+    # VAD（v1.1，需要 silero_vad.onnx；开启后才会装配 VadService）
+    vad:
+      enabled: false
+      model-file-name: silero_vad.onnx
+      sample-rate: 16000
+      threshold: 0.5
+
+    # 说话人分离（v1.1）
+    diarization:
+      enabled: false
+      segmentation-model-file-name: sherpa-onnx-pyannote-segmentation-3-0.onnx
+      embedding-model-file-name: 3dspeaker_speech_eres2net_base_sv_zh-cn_3dspeaker_16k.onnx
+
+    # 关键词唤醒（v1.1）
+    kws:
+      enabled: false
+      model-dir-name: sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-23
+
+    # 音频降噪（v1.1）
+    denoise:
+      enabled: false
+      model-file-name: sherpa-onnx-gtcrn.onnx
+
+# 启动后由 mica-voice-example-solon-web 自身的 @Controller 暴露端点：
+#   POST /mica/voice/asr/recognize        file=@input.wav
+#   GET  /mica/voice/tts/synthesize       ?text=...&speakerId=0&speed=1.0
+#   GET  /mica/voice/tts/info
+#   POST /mica/voice/speaker/enroll       ?name=alice        file=@a.wav
+#   POST /mica/voice/speaker/verify       ?name=alice        file=@b.wav
+#   POST /mica/voice/speaker/search       file=@test.wav
+#   GET  /mica/voice/speaker/names
+#   DELETE /mica/voice/speaker/{name}
+#   GET  /api/info
+#   GET  /api/models
+# 也提供简洁示例：
+#   POST /demo/asr ?file=@a.wav
+#   GET  /demo/tts ?text=...
+#   POST /demo/speaker/enroll?name=alice&file=@a.wav
+#   GET  /demo/speaker/names
