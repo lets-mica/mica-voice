@@ -220,6 +220,10 @@ $targets = @{
     "tts-fanchen" = @(
         @{ url = "$GITHUB/tts-models/vits-zh-hf-fanchen-C.tar.bz2"; out = "$ModelsDir/vits-zh-hf-fanchen-C.tar.bz2" }
     )
+    # TTS 中英混合模型（GitHub，melo-tts，jieba + espeak-ng-data）
+    "tts-zh-en" = @(
+        @{ url = "$GITHUB/tts-models/vits-melo-tts-zh_en.tar.bz2"; out = "$ModelsDir/vits-melo-tts-zh_en.tar.bz2" }
+    )
     # 声纹（GitHub）
     speaker = @(
         @{ url = "$GITHUB/speaker-recongition-models/3dspeaker_speech_eres2net_base_sv_zh-cn_3dspeaker_16k.onnx"; out = "$ModelsDir/3dspeaker_speech_eres2net_base_sv_zh-cn_3dspeaker_16k.onnx" },

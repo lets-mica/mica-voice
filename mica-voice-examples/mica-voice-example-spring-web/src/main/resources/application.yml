@@ -36,12 +36,21 @@ mica:
         model-dir-name: x-asr-zh-en-chunk-960ms
         model-type: X_ASR                  # 也可改成 PARAFORMER / ZIPFORMER / ZIPFORMER2_CTC / TRANSDUCER / AUTO
         enable-endpoint: true
+        # ===== 端点检测（sherpa-onnx 原生规则，转写 Transducer/X-ASR 时很有用）=====
+        # Rule1：最短尾部静音（秒），触发后立即结束一句。默认 2.4s，调小可让"说完了"更快出 final。
+        endpoint-rule1-min-trailing-silence: 1.0
+        # Rule2：最短尾部静音（秒），兜底规则。默认 1.2s。
+        endpoint-rule2-min-trailing-silence: 0.8
+        # Rule3：最短语音长度（秒），过短视为噪音不触发。默认 0.2s。
+        endpoint-rule3-min-utterance-length: 0.2
         chunk-size: 1600                   # 100ms @ 16kHz
 
     # TTS
     tts:
       enabled: true
-      model-dir-name: vits-icefall-zh-aishell3
+      # 纯中文 → vits-icefall-zh-aishell3（~30MB）
+      # 中英混合 → vits-melo-tts-zh_en（~310MB，jieba + espeak-ng-data，需自行 download-models.ps1 -Target tts-zh-en 下载）
+      model-dir-name: vits-melo-tts-zh_en
       default-speaker-id: 0
       default-speed: 1.0
 

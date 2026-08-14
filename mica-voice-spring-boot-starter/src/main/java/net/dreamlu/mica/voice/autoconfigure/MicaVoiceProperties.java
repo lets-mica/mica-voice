@@ -133,6 +133,19 @@ public class MicaVoiceProperties {
 			private boolean debug;
 			private boolean enableEndpoint = true;
 			/**
+			 * 端点规则 1：最短尾部静音（秒）。小于该静音段即判定为 endpoint。
+			 * 默认 2.4s（sherpa-onnx 默认），调小可更快识别出"说完了"。
+			 */
+			private Double endpointRule1MinTrailingSilence;
+			/**
+			 * 端点规则 2：最短尾部静音（秒）。默认 1.2s。
+			 */
+			private Double endpointRule2MinTrailingSilence;
+			/**
+			 * 端点规则 3：最短语音长度（秒），过短视为噪音不触发。默认 0.2s。
+			 */
+			private Double endpointRule3MinUtteranceLength;
+			/**
 			 * 流式分块大小（采样数）；默认 1600 ≈ 100ms @ 16kHz
 			 */
 			private int chunkSize = 1600;

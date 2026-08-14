@@ -305,7 +305,13 @@
         recFinalText = '';
         try {
             recStream = await navigator.mediaDevices.getUserMedia({
-                audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+                audio: {
+                    channelCount: 1,
+                    // 关闭浏览器自带的音频前处理，避免把短时能量压平导致端点永远不触发
+                    echoCancellation: false,
+                    noiseSuppression: false,
+                    autoGainControl: false
+                }
             });
         } catch (e) {
             document.getElementById('rec-status').textContent = '麦克风权限被拒绝: ' + e.message;

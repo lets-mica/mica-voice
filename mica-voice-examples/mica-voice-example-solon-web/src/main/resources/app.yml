@@ -38,7 +38,9 @@ mica:
     # TTS
     tts:
       enabled: true
-      model-dir-name: vits-icefall-zh-aishell3
+      # 纯中文 → vits-icefall-zh-aishell3（~30MB）
+      # 中英混合 → vits-melo-tts-zh_en（~310MB，jieba + espeak-ng-data，需自行 download-models.ps1 -Target tts-zh-en 下载）
+      model-dir-name: vits-melo-tts-zh_en
       default-speaker-id: 0
       default-speed: 1.0
 

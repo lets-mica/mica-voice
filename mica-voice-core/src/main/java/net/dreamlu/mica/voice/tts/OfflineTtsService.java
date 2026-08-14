@@ -8,6 +8,8 @@ import net.dreamlu.mica.voice.config.TtsConfig;
 import net.dreamlu.mica.voice.exception.EngineException;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -17,8 +19,16 @@ import java.util.concurrent.atomic.AtomicInteger;
  * <p>自动识别模型家族结构：
  * <ul>
  *     <li>HF 系（如 vits-zh-hf-fanchen-C）：model/lexicon/tokens 三个文件</li>
- *     <li>icefall 系（如 vits-icefall-zh-aishell3）：额外带 dict/ 子目录</li>
+ *     <li>icefall 系（如 vits-icefall-zh-aishell3）：额外带 dict/ 子目录 + rule FST / FAR</li>
+ *     <li>Melo 系（如 vits-melo-tts-zh_en）：dict/（jieba），自动走 MeloTtsLexicon 前端支持中英混合</li>
  * </ul>
+ *
+ * <p>还会自动发现并启用模型目录下的 rule FST（{@code phone.fst / date.fst / number.fst / new_heteronym.fst}）
+ * 与 FAR 归档（{@code rule.far}），解决 icefall 系合成时数字 / 日期 / 部分英文被当 OOV 丢弃的问题
+ * （典型日志：{@code ConvertTextToTokenIdsChinese ... OOV ... Ignore it!}）。
+ *
+ * <p><b>关于英文合成</b>：Melo 系模型（{@code vits-melo-tts-zh_en}）自带 jieba 词典且 lexicon.txt 收录了常用英文词，
+ * 是当前 mica-voice 默认推荐的中英混合 TTS 模型；纯中文场景下体积更小的 {@code vits-icefall-zh-aishell3} 即可。
  *
  * @author dreamlu
  */
@@ -27,6 +37,22 @@ public class OfflineTtsService implements TtsService {
 
 	private static final String[] MODEL_CANDIDATES = {
 		"vits-zh-hf-fanchen-C.onnx", "model.onnx", "model.int8.onnx"
+	};
+
+	/**
+	 * 中文 TTS 模型（vits-icefall-zh-* / vits-zh-hf-fanchen-C / vits-melo-tts-zh_en 等）随包自带的文本归一化 FST。
+	 * 缺失任意一个都可能导致英文/数字/日期读音失败（表现为日志中大量 OOV 警告）。
+	 */
+	private static final String[] RULE_FST_CANDIDATES = {
+		"phone.fst", "date.fst", "number.fst", "new_heteronym.fst"
+	};
+
+	/**
+	 * 中文 TTS 模型随包自带的 FAR 归档规则集（如 icefall-zh-aishell3 下的 rule.far），
+	 * 里面打包了更多 itn / 标点等规则。
+	 */
+	private static final String[] RULE_FAR_CANDIDATES = {
+		"rule.far"
 	};
 
 	private final MicaVoiceConfig props;
@@ -63,12 +89,22 @@ public class OfflineTtsService implements TtsService {
 			.setLexicon(lexicon)
 			.setTokens(tokens);
 
-		// icefall 系模型自带 dict/ 子目录，需额外设置 dictDir / dataDir
+		// icefall 系模型自带 dict/ 子目录，需额外设置 dictDir。
+		// 注意：sherpa-onnx 1.12+ 的 Validate() 在 data_dir 设置时会要求 data_dir/phontab 等
+		// piper 必备文件都存在，而 icefall/melo 模型不带这些文件，会直接 return false 抛
+		// "Invalid OfflineTtsConfig"。因此这里只设 dictDir（dict_dir 在 1.12+ 已废弃，
+		// 设了 sherpa-onnx 会打 "you don't need to provide dict_dir" 警告，但不会报错）；
+		// dataDir 只在确认包含 phontab 时才设置（piper / coqui / inflect 模型）。
 		File dictDir = new File(modelDir, "dict");
 		if (dictDir.isDirectory()) {
-			vitsBuilder.setDictDir(dictDir.getAbsolutePath())
-				.setDataDir(modelDir);
-			log.info("TTS 检测到 icefall 系 dict 目录: {}", dictDir.getAbsolutePath());
+			vitsBuilder.setDictDir(dictDir.getAbsolutePath());
+			File phontab = new File(dictDir, "phontab");
+			if (phontab.isFile()) {
+				vitsBuilder.setDataDir(dictDir.getAbsolutePath());
+				log.info("TTS 检测到 piper 系 dict（含 phontab），启用 dataDir: {}", dictDir.getAbsolutePath());
+			} else {
+				log.info("TTS 检测到 dict 目录（jieba / icefall）：{}", dictDir.getAbsolutePath());
+			}
 		}
 
 		OfflineTtsModelConfig modelConfig = OfflineTtsModelConfig.builder()
@@ -77,9 +113,30 @@ public class OfflineTtsService implements TtsService {
 			.setDebug(debug)
 			.build();
 
-		OfflineTtsConfig cfg = OfflineTtsConfig.builder()
-			.setModel(modelConfig)
-			.build();
+		OfflineTtsConfig.Builder cfgBuilder = OfflineTtsConfig.builder()
+			.setModel(modelConfig);
+
+		// 自动发现中文文本归一化 FST（phone/date/number/new_heteronym）。
+		// 缺少这些规则时，sherpa-onnx 走纯 lexicon 查表，英文/数字会全部 OOV，
+		// 现象就是日志里 "ConvertTextToTokenIdsChinese ... OOV ... Ignore it!" 连环刷屏、合成出来的英文段缺失。
+		List<String> ruleFsts = resolveRuleFiles(modelDir, RULE_FST_CANDIDATES);
+		if (!ruleFsts.isEmpty()) {
+			String joined = String.join(",", ruleFsts);
+			cfgBuilder.setRuleFsts(joined);
+			log.info("TTS 启用 ruleFsts (modelDir={}): {}", modelDir, joined);
+		} else {
+			log.warn("TTS 模型目录缺少 rule FST（phone/date/number 等），英文/数字可能无法合成。目录: {}", modelDir);
+		}
+
+		// 自动发现 FAR 归档规则集（如 rule.far），里面通常包含更多 itn / 标点等规则。
+		List<String> ruleFars = resolveRuleFiles(modelDir, RULE_FAR_CANDIDATES);
+		if (!ruleFars.isEmpty()) {
+			String joined = String.join(",", ruleFars);
+			cfgBuilder.setRuleFars(joined);
+			log.info("TTS 启用 ruleFars (modelDir={}): {}", modelDir, joined);
+		}
+
+		OfflineTtsConfig cfg = cfgBuilder.build();
 
 		try {
 			this.tts = new OfflineTts(cfg);
@@ -88,6 +145,21 @@ public class OfflineTtsService implements TtsService {
 		}
 		log.info("OfflineTtsService 初始化完成: model={}, sampleRate={}Hz, numSpeakers={}",
 			modelPath, tts.getSampleRate(), tts.getNumSpeakers());
+	}
+
+	/**
+	 * 在模型目录里按优先级查找存在的 rule FST 文件，返回按 {@link #RULE_FST_CANDIDATES} 顺序拼接好的列表。
+	 */
+	private static List<String> resolveRuleFiles(String modelDir, String[] candidates) {
+		List<String> found = new ArrayList<>(candidates.length);
+		File dir = new File(modelDir);
+		for (String name : candidates) {
+			File f = new File(dir, name);
+			if (f.isFile()) {
+				found.add(f.getAbsolutePath());
+			}
+		}
+		return found;
 	}
 
 	@Override

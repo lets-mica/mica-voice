@@ -91,6 +91,11 @@ case "${1:-all}" in
       models/vits-zh-hf-fanchen-C.tar.bz2
     unpack_bz2 models/vits-zh-hf-fanchen-C.tar.bz2
     ;;
+  tts-zh-en)
+    download "$GITHUB/tts-models/vits-melo-tts-zh_en.tar.bz2" \
+      models/vits-melo-tts-zh_en.tar.bz2
+    unpack_bz2 models/vits-melo-tts-zh_en.tar.bz2
+    ;;
   speaker)
     download "$GITHUB/speaker-recongition-models/3dspeaker_speech_eres2net_base_sv_zh-cn_3dspeaker_16k.onnx" \
       models/3dspeaker_speech_eres2net_base_sv_zh-cn_3dspeaker_16k.onnx

@@ -9,9 +9,10 @@ import net.dreamlu.mica.voice.tts.TtsService;
 import java.io.File;
 
 /**
- * TTS 语音合成（VITS 中文）。
+ * TTS 语音合成（VITS Melo 中英混合）。
  *
- * <p>模型：{@code vits-icefall-zh-aishell3}（models/ 目录下载脚本 tts 目标）。
+ * <p>模型：{@code vits-melo-tts-zh_en}（models/ 目录下载脚本 tts-zh-en 目标），
+ * 支持中文与英文混合输入。纯中文也可改回 {@code vits-icefall-zh-aishell3}。
  * <br>合成结果保存为 {@code output/tts-output.wav}（16-bit PCM WAV）。
  *
  * <p>运行（仓库根目录）：
@@ -23,8 +24,8 @@ import java.io.File;
  */
 public class TtsExample {
 
-	public static final String MODEL_DIR = "vits-icefall-zh-aishell3";
-	public static final String DEFAULT_TEXT = "今天天气真好，我们一起出去散步吧。";
+	public static final String MODEL_DIR = "vits-melo-tts-zh_en";
+	public static final String DEFAULT_TEXT = "大家好，我是 mica-voice，一个开源的 Java 声音 AI 全家桶。";
 
 	public static void main(String[] args) {
 		String text = args.length > 0 ? args[0] : DEFAULT_TEXT;

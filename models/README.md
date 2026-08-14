@@ -10,6 +10,7 @@
 | `sherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17/` | ~230MB | 多语言离线 ASR（中/英/日/韩/粤 + 情感 + 音频事件，int8） | [HuggingFace csukuangfj](https://huggingface.co/csukuangfj/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17) |
 | `x-asr-zh-en-chunk-960ms/` | ~587MB | 在线流式 ASR（X-ASR，Zipformer2 transducer，960ms 分块） | [HuggingFace GilgameshWind](https://huggingface.co/GilgameshWind/X-ASR-zh-en) |
 | `vits-icefall-zh-aishell3/` | ~204MB | TTS（VITS，单说话人） | [tts-models release](https://github.com/k2-fsa/sherpa-onnx/releases/tag/tts-models) |
+| `vits-melo-tts-zh_en/` | ~310MB | TTS（VITS Melo，中英混合，jieba + espeak-ng） | [tts-models release](https://github.com/k2-fsa/sherpa-onnx/releases/tag/tts-models) |
 | `3dspeaker_speech_eres2net_base_sv_zh-cn_3dspeaker_16k.onnx` | ~38MB | 声纹嵌入提取 | [speaker-recongition-models](https://github.com/k2-fsa/sherpa-onnx/releases/tag/speaker-recongition-models) |
 | `0-four-speakers-zh.wav` | ~1.8MB | 测试音频（4 人对话，56.8 秒） | [speaker-segmentation-models](https://github.com/k2-fsa/sherpa-onnx/releases/tag/speaker-segmentation-models) |
 
@@ -42,6 +43,7 @@
 | `x-asr` | online ASR (X-ASR 960ms chunk) | Zipformer2 Transducer，~586MB |
 | `tts` | TTS (VITS icefall-aishell3) | 单说话人，~30MB |
 | `tts-fanchen` | TTS (VITS fanchen-C) | 187 说话人大模型，~290MB |
+| `tts-zh-en` | TTS (VITS Melo 中英) | melo-tts 中英混合（jieba + espeak），~310MB |
 | `speaker` | 声纹识别 | embedding 模型 + 4 人测试音频，~95MB |
 | `all` | 全部 v1.0 能力 | 上述之和，~1.4GB |
 
@@ -85,6 +87,7 @@ PARALLEL=8 bash models/scripts/download-models.sh tts   # 手动加大分段数�
 | `asr-online` | `asr-online` | 流式 Paraformer（中英双语） | ~230MB |
 | `tts` | `tts` | VITS icefall-aishell3 单说话人 | ~30MB |
 | `tts-fanchen` | `tts-fanchen` | VITS fanchen-C 187 说话人 | ~290MB |
+| `tts-zh-en` | `tts-zh-en` | VITS Melo 中英混合 | ~310MB |
 | `speaker` | `speaker` | 声纹模型 + 4 人测试音频 | ~95MB |
 | `all` | `all` | 以上全部 | ~1.4GB |
 

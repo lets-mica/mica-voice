@@ -54,12 +54,36 @@ public class OnlineAsrService implements AsrService {
 			.setSampleRate(config.getSampleRate())
 			.setFeatureDim(config.getFeatureDim())
 			.build();
-		OnlineRecognizerConfig cfg = OnlineRecognizerConfig.builder()
+		OnlineRecognizerConfig.Builder cfgBuilder = OnlineRecognizerConfig.builder()
 			.setFeatureConfig(featureConfig)
 			.setOnlineModelConfig(modelConfig)
 			.setEnableEndpoint(config.isEnableEndpoint())
-			.setDecodingMethod(config.getDecodingMethod() == null ? "greedy_search" : config.getDecodingMethod())
-			.build();
+			.setDecodingMethod(config.getDecodingMethod() == null ? "greedy_search" : config.getDecodingMethod());
+		// 端点规则（仅在用户显式配置时覆盖，避免影响其他模型族）
+		// sherpa-onnx 1.12+ 改用 EndpointRule / EndpointConfig 封装，替代旧的 setRule1/2/3MinXxx。
+		EndpointConfig.Builder endpointBuilder = null;
+		if (config.getEndpointRule1MinTrailingSilence() != null) {
+			endpointBuilder = ensureEndpointBuilder(endpointBuilder)
+				.setRule1(EndpointRule.builder()
+					.setMinTrailingSilence(config.getEndpointRule1MinTrailingSilence().floatValue())
+					.build());
+		}
+		if (config.getEndpointRule2MinTrailingSilence() != null) {
+			endpointBuilder = ensureEndpointBuilder(endpointBuilder)
+				.setRule2(EndpointRule.builder()
+					.setMinTrailingSilence(config.getEndpointRule2MinTrailingSilence().floatValue())
+					.build());
+		}
+		if (config.getEndpointRule3MinUtteranceLength() != null) {
+			endpointBuilder = ensureEndpointBuilder(endpointBuilder)
+				.setRule3(EndpointRule.builder()
+					.setMinUtteranceLength(config.getEndpointRule3MinUtteranceLength().floatValue())
+					.build());
+		}
+		if (endpointBuilder != null) {
+			cfgBuilder.setEndpointConfig(endpointBuilder.build());
+		}
+		OnlineRecognizerConfig cfg = cfgBuilder.build();
 
 		try {
 			this.recognizer = new OnlineRecognizer(cfg);
@@ -280,6 +304,13 @@ public class OnlineAsrService implements AsrService {
 		if (closed.get()) {
 			throw new IllegalStateException("OnlineAsrService 已关闭");
 		}
+	}
+
+	/**
+	 * 首次使用 endpoint 规则时新建 Builder，否则原样返回。
+	 */
+	private static EndpointConfig.Builder ensureEndpointBuilder(EndpointConfig.Builder existing) {
+		return existing != null ? existing : EndpointConfig.builder();
 	}
 
 	@Override

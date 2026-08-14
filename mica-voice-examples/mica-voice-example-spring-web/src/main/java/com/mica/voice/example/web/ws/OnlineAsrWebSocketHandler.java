@@ -47,6 +47,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class OnlineAsrWebSocketHandler extends TextWebSocketHandler {
 
 	private static final int DEFAULT_SAMPLE_RATE = 16000;
+	private static final int[] ALLOWED_SAMPLE_RATES = {8000, 16000, 48000};
+	/**
+	 * 每收到多少个 binary 帧，主动回一个 partial 心跳（即使文本为空），
+	 * 让前端能感知到"识别在跑、没有卡住"。
+	 */
+	private static final int HEARTBEAT_EVERY_N_FRAMES = 8;
 
 	private final ObjectProvider<OnlineAsrService> onlineAsrProvider;
 	private final ObjectMapper objectMapper = new ObjectMapper();
@@ -127,18 +133,31 @@ public class OnlineAsrWebSocketHandler extends TextWebSocketHandler {
 			return;
 		}
 		byte[] payload = message.getPayload().array();
+		if (payload.length < 2) {
+			// 空帧直接跳过，避免送 0 样本触发 sherpa-onnx 底层断言
+			return;
+		}
 		// PCM16LE → float[]
 		float[] samples = pcm16ToFloat(payload);
+		ctx.frameCount++;
 		try {
-			ctx.stream.acceptWaveform(samples, ctx.sampleRate);
-			onlineAsrProvider.getObject().getRecognizer().decode(ctx.stream);
-			String partial = readStreamText(ctx);
-			if (partial != null && !partial.isEmpty()) {
+			// 关键：必须 while(isReady) 才能 decode，否则 sherpa-onnx 在 Transducer/X-ASR
+			// 模型上会因为底层特征帧不足触发 GetFrames CHECK 断言导致 JNI 进程 abort。
+			String text = onlineAsrProvider.getObject().feedAndDecode(ctx.stream, samples, ctx.sampleRate).getText();
+			String trimmed = text == null ? "" : text.trim();
+			// 两条任一满足就发 partial：
+			//   a) 文本相对上次有变化（增量或回退）
+			//   b) 每收到 HEARTBEAT_EVERY_N_FRAMES 帧强制发一次（即使为空），用于告诉前端"在跑"
+			boolean changed = !trimmed.equals(ctx.lastPartial);
+			boolean heartbeat = ctx.frameCount % HEARTBEAT_EVERY_N_FRAMES == 0;
+			if (changed || heartbeat) {
 				Map<String, Object> resp = new LinkedHashMap<>();
 				resp.put("type", "partial");
-				resp.put("text", partial);
+				resp.put("text", trimmed);
 				resp.put("ts", System.currentTimeMillis());
+				resp.put("frame", ctx.frameCount);
 				sendJson(session, resp);
+				ctx.lastPartial = trimmed;
 			}
 		} catch (Throwable t) {
 			sendError(session, "解码失败: " + t.getMessage());
@@ -167,11 +186,19 @@ public class OnlineAsrWebSocketHandler extends TextWebSocketHandler {
 	private void handleConfig(WebSocketSession session, Map<String, Object> payload) {
 		SessionContext ctx = (SessionContext) session.getAttributes().get("ctx");
 		Object sr = payload.get("sampleRate");
+		int requested = DEFAULT_SAMPLE_RATE;
 		if (sr instanceof Number) {
-			ctx.sampleRate = ((Number) sr).intValue();
-		} else {
-			ctx.sampleRate = DEFAULT_SAMPLE_RATE;
+			requested = ((Number) sr).intValue();
 		}
+		boolean allowed = false;
+		for (int v : ALLOWED_SAMPLE_RATES) {
+			if (v == requested) { allowed = true; break; }
+		}
+		if (!allowed) {
+			sendError(session, "不支持的 sampleRate: " + requested + "（仅支持 8000/16000/48000）");
+			return;
+		}
+		ctx.sampleRate = requested;
 		Map<String, Object> ack = new LinkedHashMap<>();
 		ack.put("type", "config-ack");
 		ack.put("sampleRate", ctx.sampleRate);
@@ -265,6 +292,10 @@ public class OnlineAsrWebSocketHandler extends TextWebSocketHandler {
 		OnlineStream stream;
 		int sampleRate = DEFAULT_SAMPLE_RATE;
 		long startMs;
+		/** 已收到的 binary 帧计数，用于发心跳 */
+		int frameCount;
+		/** 上一次已发出的 partial 文本（用于去重/变化检测） */
+		String lastPartial = "";
 
 		SessionContext() {
 			this.startMs = System.currentTimeMillis();

@@ -86,6 +86,9 @@ public class AsrAutoConfiguration {
 			.threads(cfg.getThreads())
 			.debug(cfg.isDebug())
 			.enableEndpoint(cfg.isEnableEndpoint())
+			.endpointRule1MinTrailingSilence(cfg.getEndpointRule1MinTrailingSilence())
+			.endpointRule2MinTrailingSilence(cfg.getEndpointRule2MinTrailingSilence())
+			.endpointRule3MinUtteranceLength(cfg.getEndpointRule3MinUtteranceLength())
 			.chunkSize(cfg.getChunkSize())
 			.build();
 		log.info("mica-voice 装配 OnlineAsrService: modelDir={}, type={}", cfg.getModelDirName(), cfg.getModelType());

@@ -26,6 +26,18 @@ public class OnlineAsrConfig {
 	 */
 	private boolean enableEndpoint = true;
 	/**
+	 * 端点规则 1 最短尾部静音（秒）。null 表示使用 sherpa-onnx 默认。
+	 */
+	private Double endpointRule1MinTrailingSilence;
+	/**
+	 * 端点规则 2 最短尾部静音（秒）。null 表示使用 sherpa-onnx 默认。
+	 */
+	private Double endpointRule2MinTrailingSilence;
+	/**
+	 * 端点规则 3 最短语音长度（秒），过短视为噪音不触发。null 表示使用默认。
+	 */
+	private Double endpointRule3MinUtteranceLength;
+	/**
 	 * 流式输入分块大小（采样点数）；默认 1600（= 16kHz * 100ms）
 	 */
 	private int chunkSize = 1600;
@@ -179,6 +191,21 @@ public class OnlineAsrConfig {
 
 		public Builder enableEndpoint(boolean b) {
 			c.enableEndpoint = b;
+			return this;
+		}
+
+		public Builder endpointRule1MinTrailingSilence(Double v) {
+			c.endpointRule1MinTrailingSilence = v;
+			return this;
+		}
+
+		public Builder endpointRule2MinTrailingSilence(Double v) {
+			c.endpointRule2MinTrailingSilence = v;
+			return this;
+		}
+
+		public Builder endpointRule3MinUtteranceLength(Double v) {
+			c.endpointRule3MinUtteranceLength = v;
 			return this;
 		}
 
