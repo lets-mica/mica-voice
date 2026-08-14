@@ -4,7 +4,7 @@ import com.k2fsa.sherpa.onnx.*;
 import lombok.extern.slf4j.Slf4j;
 import net.dreamlu.mica.voice.audio.AudioData;
 import net.dreamlu.mica.voice.config.KwsConfig;
-import net.dreamlu.mica.voice.config.MicaVoiceProperties;
+import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import net.dreamlu.mica.voice.exception.EngineException;
 
 import java.io.File;
@@ -23,12 +23,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Slf4j
 public class KeywordSpotterService implements KwsService {
 
-	private final MicaVoiceProperties props;
+	private final MicaVoiceConfig props;
 	private final KwsConfig config;
 	private final KeywordSpotter spotter;
 	private final AtomicBoolean closed = new AtomicBoolean(false);
 
-	public KeywordSpotterService(MicaVoiceProperties props, KwsConfig config) {
+	public KeywordSpotterService(MicaVoiceConfig props, KwsConfig config) {
 		this.props = props;
 		this.config = config;
 

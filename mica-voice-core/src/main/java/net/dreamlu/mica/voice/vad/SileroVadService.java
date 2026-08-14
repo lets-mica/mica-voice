@@ -6,7 +6,7 @@ import com.k2fsa.sherpa.onnx.Vad;
 import com.k2fsa.sherpa.onnx.VadModelConfig;
 import lombok.extern.slf4j.Slf4j;
 import net.dreamlu.mica.voice.audio.AudioData;
-import net.dreamlu.mica.voice.config.MicaVoiceProperties;
+import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import net.dreamlu.mica.voice.config.ModelSelector;
 import net.dreamlu.mica.voice.config.VadConfig;
 import net.dreamlu.mica.voice.exception.EngineException;
@@ -28,13 +28,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Slf4j
 public class SileroVadService implements VadService {
 
-	private final MicaVoiceProperties props;
+	private final MicaVoiceConfig props;
 	private final VadConfig config;
 	private final Vad vad;
 	private final int sampleRate;
 	private final AtomicBoolean closed = new AtomicBoolean(false);
 
-	public SileroVadService(MicaVoiceProperties props, VadConfig config) {
+	public SileroVadService(MicaVoiceConfig props, VadConfig config) {
 		this.props = props;
 		this.config = config;
 		this.sampleRate = config.getSampleRate();

@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.dreamlu.mica.voice.audio.AudioData;
 import net.dreamlu.mica.voice.audio.AudioReaders;
 import net.dreamlu.mica.voice.config.AsrConfig;
-import net.dreamlu.mica.voice.config.MicaVoiceProperties;
+import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import net.dreamlu.mica.voice.config.ModelSelector;
 import net.dreamlu.mica.voice.exception.EngineException;
 
@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * <p>负责：
  * <ul>
- *     <li>根据 {@link AsrConfig} + {@link MicaVoiceProperties} 构造 native 识别器</li>
+ *     <li>根据 {@link AsrConfig} + {@link MicaVoiceConfig} 构造 native 识别器</li>
  *     <li>支持 7 种模型家族（PARAFORMER / SENSE_VOICE / WHISPER / MOONSHINE /
  *         ZIPFORMER / NEMO_CTC / AUTO），根据 {@link AsrConfig#getModelType()} 选择对应配置</li>
  *     <li>int8 模型优先，回退到 fp32</li>
@@ -36,12 +36,12 @@ public class OfflineAsrService implements AsrService {
 		"model.int8.onnx", "model.onnx"
 	};
 
-	private final MicaVoiceProperties props;
+	private final MicaVoiceConfig props;
 	private final AsrConfig config;
 	private final OfflineRecognizer recognizer;
 	private final AtomicBoolean closed = new AtomicBoolean(false);
 
-	public OfflineAsrService(MicaVoiceProperties props, AsrConfig config) {
+	public OfflineAsrService(MicaVoiceConfig props, AsrConfig config) {
 		this.props = props;
 		this.config = config;
 

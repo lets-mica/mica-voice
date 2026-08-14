@@ -5,7 +5,7 @@ import net.dreamlu.mica.voice.config.AsrConfig;
 import net.dreamlu.mica.voice.config.DenoiseConfig;
 import net.dreamlu.mica.voice.config.DiarizationConfig;
 import net.dreamlu.mica.voice.config.KwsConfig;
-import net.dreamlu.mica.voice.config.MicaVoiceProperties;
+import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import net.dreamlu.mica.voice.config.OnlineAsrConfig;
 import net.dreamlu.mica.voice.config.SpeakerConfig;
 import net.dreamlu.mica.voice.config.TtsConfig;
@@ -26,8 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class MicaVoiceTest {
 
-	private static MicaVoiceProperties props() {
-		return MicaVoiceProperties.builder()
+	private static MicaVoiceConfig props() {
+		return MicaVoiceConfig.builder()
 			.modelsDir(new File("models"))
 			.threads(1)
 			.build();

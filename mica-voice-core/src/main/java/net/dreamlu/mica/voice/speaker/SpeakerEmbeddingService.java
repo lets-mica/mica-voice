@@ -7,7 +7,7 @@ import com.k2fsa.sherpa.onnx.SpeakerEmbeddingManager;
 import lombok.extern.slf4j.Slf4j;
 import net.dreamlu.mica.voice.audio.AudioData;
 import net.dreamlu.mica.voice.audio.AudioReaders;
-import net.dreamlu.mica.voice.config.MicaVoiceProperties;
+import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import net.dreamlu.mica.voice.config.ModelSelector;
 import net.dreamlu.mica.voice.config.SpeakerConfig;
 import net.dreamlu.mica.voice.exception.EngineException;
@@ -29,14 +29,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Slf4j
 public class SpeakerEmbeddingService implements SpeakerService {
 
-	private final MicaVoiceProperties props;
+	private final MicaVoiceConfig props;
 	private final SpeakerConfig config;
 	private final SpeakerEmbeddingExtractor extractor;
 	private final SpeakerEmbeddingManager manager;
 	private final int dim;
 	private final AtomicBoolean closed = new AtomicBoolean(false);
 
-	public SpeakerEmbeddingService(MicaVoiceProperties props, SpeakerConfig config) {
+	public SpeakerEmbeddingService(MicaVoiceConfig props, SpeakerConfig config) {
 		this.props = props;
 		this.config = config;
 

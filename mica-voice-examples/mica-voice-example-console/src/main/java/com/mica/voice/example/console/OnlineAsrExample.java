@@ -4,7 +4,7 @@ import net.dreamlu.mica.voice.asr.AsrResult;
 import net.dreamlu.mica.voice.asr.OnlineAsrService;
 import net.dreamlu.mica.voice.audio.AudioData;
 import net.dreamlu.mica.voice.audio.AudioReaders;
-import net.dreamlu.mica.voice.config.MicaVoiceProperties;
+import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import net.dreamlu.mica.voice.config.OnlineAsrConfig;
 import net.dreamlu.mica.voice.core.MicaVoice;
 
@@ -31,7 +31,7 @@ public class OnlineAsrExample {
 	public static void main(String[] args) {
 		File wav = ConsoleUtil.resolve(args.length > 0 ? args[0] : DEFAULT_WAV);
 
-		MicaVoiceProperties props = MicaVoiceProperties.builder()
+		MicaVoiceConfig props = MicaVoiceConfig.builder()
 			.modelsDir(ConsoleUtil.modelsDir())
 			.threads(2)
 			.build();

@@ -4,7 +4,7 @@ import com.k2fsa.sherpa.onnx.WaveWriter;
 import net.dreamlu.mica.voice.audio.AudioData;
 import net.dreamlu.mica.voice.audio.AudioReaders;
 import net.dreamlu.mica.voice.config.DenoiseConfig;
-import net.dreamlu.mica.voice.config.MicaVoiceProperties;
+import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import net.dreamlu.mica.voice.core.MicaVoice;
 import net.dreamlu.mica.voice.denoise.DenoiseService;
 import net.dreamlu.mica.voice.denoise.DenoisedAudio;
@@ -37,7 +37,7 @@ public class DenoiseExample {
 	public static void main(String[] args) {
 		File wav = ConsoleUtil.resolve(args.length > 0 ? args[0] : DEFAULT_WAV);
 
-		MicaVoiceProperties props = MicaVoiceProperties.builder()
+		MicaVoiceConfig props = MicaVoiceConfig.builder()
 			.modelsDir(ConsoleUtil.modelsDir())
 			.outputDir("output")
 			.threads(2)

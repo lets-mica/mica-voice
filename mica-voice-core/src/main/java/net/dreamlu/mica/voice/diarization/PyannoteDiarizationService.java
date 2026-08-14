@@ -4,7 +4,7 @@ import com.k2fsa.sherpa.onnx.*;
 import lombok.extern.slf4j.Slf4j;
 import net.dreamlu.mica.voice.audio.AudioData;
 import net.dreamlu.mica.voice.config.DiarizationConfig;
-import net.dreamlu.mica.voice.config.MicaVoiceProperties;
+import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import net.dreamlu.mica.voice.exception.EngineException;
 
 import java.io.File;
@@ -27,12 +27,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Slf4j
 public class PyannoteDiarizationService implements DiarizationService {
 
-	private final MicaVoiceProperties props;
+	private final MicaVoiceConfig props;
 	private final DiarizationConfig config;
 	private final OfflineSpeakerDiarization diarization;
 	private final AtomicBoolean closed = new AtomicBoolean(false);
 
-	public PyannoteDiarizationService(MicaVoiceProperties props, DiarizationConfig config) {
+	public PyannoteDiarizationService(MicaVoiceConfig props, DiarizationConfig config) {
 		this.props = props;
 		this.config = config;
 

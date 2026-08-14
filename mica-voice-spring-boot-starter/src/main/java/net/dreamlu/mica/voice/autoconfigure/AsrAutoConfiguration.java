@@ -31,7 +31,7 @@ import java.util.Locale;
 @AutoConfigureAfter(MicaVoiceAutoConfiguration.class)
 public class AsrAutoConfiguration {
 
-	private final net.dreamlu.mica.voice.config.MicaVoiceProperties coreProps;
+	private final net.dreamlu.mica.voice.config.MicaVoiceConfig coreProps;
 	private final MicaVoiceProperties props;
 
 	private static <E extends Enum<E>> E parseModelType(String raw, Class<E> type, E fallback) {

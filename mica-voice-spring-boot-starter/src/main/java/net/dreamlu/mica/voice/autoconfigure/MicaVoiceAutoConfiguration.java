@@ -15,7 +15,7 @@ import java.io.File;
  * <p>负责：
  * <ul>
  *     <li>把 starter 的 {@link MicaVoiceProperties} 转为 core 的
- *         {@link net.dreamlu.mica.voice.config.MicaVoiceProperties}
+ *         {@link net.dreamlu.mica.voice.config.MicaVoiceConfig}
  *         作为可注入 Bean（其它 Bean 注入运行时属性都从这里取）</li>
  *     <li>各能力（ASR / TTS / Speaker / Web）通过
  *         {@code META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports}
@@ -35,13 +35,13 @@ public class MicaVoiceAutoConfiguration {
 
 	/**
 	 * 把 starter 的扁平配置转换成 core 用的运行时
-	 * {@link net.dreamlu.mica.voice.config.MicaVoiceProperties}。
+	 * {@link net.dreamlu.mica.voice.config.MicaVoiceConfig}。
 	 * 该 Bean 是 core 层各 Service 构造时的统一入口（命名 micaVoiceCoreProperties）。
 	 */
 	@Bean(name = "micaVoiceCoreProperties")
-	public net.dreamlu.mica.voice.config.MicaVoiceProperties coreProperties() {
-		net.dreamlu.mica.voice.config.MicaVoiceProperties p =
-			new net.dreamlu.mica.voice.config.MicaVoiceProperties();
+	public net.dreamlu.mica.voice.config.MicaVoiceConfig coreProperties() {
+		net.dreamlu.mica.voice.config.MicaVoiceConfig p =
+			new net.dreamlu.mica.voice.config.MicaVoiceConfig();
 		p.setModelsDir(new File(props.getModelsDir()));
 		p.setOutputDir(new File(props.getOutputDir()));
 		if (props.getThreads() != null) {

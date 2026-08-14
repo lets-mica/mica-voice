@@ -1,0 +1,46 @@
+{
+  "hints": [
+    {
+      "name": "mica.voice.asr.offline.model-type",
+      "values": [
+        { "value": "PARAFORMER", "description": "Paraformer（默认）" },
+        { "value": "SENSE_VOICE", "description": "SenseVoice 多语种" },
+        { "value": "WHISPER", "description": "Whisper" },
+        { "value": "MOONSHINE", "description": "Moonshine" },
+        { "value": "ZIPFORMER", "description": "Zipformer" },
+        { "value": "NEMO_CTC", "description": "NeMo CTC" },
+        { "value": "AUTO", "description": "根据目录文件自动推断" }
+      ]
+    },
+    {
+      "name": "mica.voice.asr.online.model-type",
+      "values": [
+        { "value": "PARAFORMER", "description": "流式 Paraformer（默认）" },
+        { "value": "X_ASR", "description": "上海交大 Zipformer Transducer，960ms chunk" },
+        { "value": "ZIPFORMER", "description": "Zipformer" },
+        { "value": "ZIPFORMER2_CTC", "description": "Zipformer2 CTC" },
+        { "value": "NEMO_CTC", "description": "NeMo CTC" },
+        { "value": "TRANSDUCER", "description": "通用 Transducer" },
+        { "value": "AUTO", "description": "自动根据目录文件推断" }
+      ]
+    },
+    {
+      "name": "mica.voice.tts.model-type",
+      "values": [
+        { "value": "VITS", "description": "VITS（默认）" }
+      ]
+    },
+    {
+      "name": "mica.voice.vad.model-type",
+      "values": [
+        { "value": "SILERO", "description": "Silero VAD（默认）" }
+      ]
+    },
+    {
+      "name": "mica.voice.denoise.model-type",
+      "values": [
+        { "value": "GTCRN", "description": "GTCRN（默认）" }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 package com.mica.voice.example.console;
 
-import net.dreamlu.mica.voice.config.MicaVoiceProperties;
+import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import net.dreamlu.mica.voice.config.SpeakerConfig;
 import net.dreamlu.mica.voice.core.MicaVoice;
 import net.dreamlu.mica.voice.speaker.SearchResult;
@@ -33,7 +33,7 @@ public class SpeakerExample {
 	public static void main(String[] args) {
 		File searchWav = ConsoleUtil.resolve(args.length > 0 ? args[0] : DEFAULT_SEARCH_WAV);
 
-		MicaVoiceProperties props = MicaVoiceProperties.builder()
+		MicaVoiceConfig props = MicaVoiceConfig.builder()
 			.modelsDir(ConsoleUtil.modelsDir())
 			.threads(2)
 			.build();

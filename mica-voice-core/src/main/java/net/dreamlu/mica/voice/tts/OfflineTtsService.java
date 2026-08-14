@@ -2,7 +2,7 @@ package net.dreamlu.mica.voice.tts;
 
 import com.k2fsa.sherpa.onnx.*;
 import lombok.extern.slf4j.Slf4j;
-import net.dreamlu.mica.voice.config.MicaVoiceProperties;
+import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import net.dreamlu.mica.voice.config.ModelSelector;
 import net.dreamlu.mica.voice.config.TtsConfig;
 import net.dreamlu.mica.voice.exception.EngineException;
@@ -29,12 +29,12 @@ public class OfflineTtsService implements TtsService {
 		"vits-zh-hf-fanchen-C.onnx", "model.onnx", "model.int8.onnx"
 	};
 
-	private final MicaVoiceProperties props;
+	private final MicaVoiceConfig props;
 	private final TtsConfig config;
 	private final OfflineTts tts;
 	private final AtomicBoolean closed = new AtomicBoolean(false);
 
-	public OfflineTtsService(MicaVoiceProperties props, TtsConfig config) {
+	public OfflineTtsService(MicaVoiceConfig props, TtsConfig config) {
 		this.props = props;
 		this.config = config;
 

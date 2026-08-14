@@ -29,7 +29,7 @@ import java.util.Locale;
 @AutoConfigureAfter(MicaVoiceAutoConfiguration.class)
 public class DenoiseAutoConfiguration {
 
-	private final net.dreamlu.mica.voice.config.MicaVoiceProperties coreProps;
+	private final net.dreamlu.mica.voice.config.MicaVoiceConfig coreProps;
 	private final MicaVoiceProperties props;
 
 	@Bean(destroyMethod = "close")

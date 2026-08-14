@@ -78,7 +78,7 @@ powershell -ExecutionPolicy Bypass -File models\scripts\download-models.ps1 asr 
 import net.dreamlu.mica.voice.asr.AsrResult;
 import net.dreamlu.mica.voice.asr.AsrService;
 import net.dreamlu.mica.voice.config.AsrConfig;
-import net.dreamlu.mica.voice.config.MicaVoiceProperties;
+import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import net.dreamlu.mica.voice.core.MicaVoice;
 
 import java.io.File;
@@ -86,7 +86,7 @@ import java.io.File;
 public class AsrDemo {
 
     public static void main(String[] args) {
-        MicaVoiceProperties props = MicaVoiceProperties.builder()
+        MicaVoiceConfig props = MicaVoiceConfig.builder()
             .modelsDir("models")   // 或 -Dmica.voice.models-dir 指定绝对路径
             .threads(2)
             .build();

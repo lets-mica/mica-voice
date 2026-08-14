@@ -1,5 +1,6 @@
 package net.dreamlu.mica.voice.autoconfigure;
 
+import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -28,7 +29,7 @@ class MicaVoiceAutoConfigurationTest {
 			assertThat(ctx).hasNotFailed();
 			assertThat(ctx).doesNotHaveBean("micaVoiceCoreProperties");
 			// starter 的 MicaVoiceProperties 仍由 @EnableConfigurationProperties 注册
-			assertThat(ctx).hasSingleBean(MicaVoiceProperties.class);
+			assertThat(ctx).hasSingleBean(net.dreamlu.mica.voice.autoconfigure.MicaVoiceProperties.class);
 		});
 	}
 
@@ -37,18 +38,18 @@ class MicaVoiceAutoConfigurationTest {
 		runner.run(ctx -> {
 			assertThat(ctx).hasNotFailed();
 			assertThat(ctx).hasBean("micaVoiceCoreProperties");
-			assertThat(ctx).hasSingleBean(MicaVoiceProperties.class);
+			assertThat(ctx).hasSingleBean(net.dreamlu.mica.voice.autoconfigure.MicaVoiceProperties.class);
 
 			// starter 的 MicaVoiceProperties（yml 输入）
-			MicaVoiceProperties p = ctx.getBean(MicaVoiceProperties.class);
+			net.dreamlu.mica.voice.autoconfigure.MicaVoiceProperties p = ctx.getBean(net.dreamlu.mica.voice.autoconfigure.MicaVoiceProperties.class);
 			assertThat(p.getModelsDir()).isEqualTo("models");
 			assertThat(p.getOutputDir()).isEqualTo("output");
 			assertThat(p.getThreads()).isEqualTo(2);
 			assertThat(p.isDebug()).isFalse();
 
-			// 转换后注入给 core 的 MicaVoiceProperties
-			net.dreamlu.mica.voice.config.MicaVoiceProperties core =
-				ctx.getBean("micaVoiceCoreProperties", net.dreamlu.mica.voice.config.MicaVoiceProperties.class);
+			// 转换后注入给 core 的 MicaVoiceConfig
+			MicaVoiceConfig core =
+				ctx.getBean("micaVoiceCoreProperties", MicaVoiceConfig.class);
 			assertThat(core.getModelsDir()).isEqualTo(new java.io.File("models"));
 			assertThat(core.getOutputDir()).isEqualTo(new java.io.File("output"));
 			assertThat(core.getThreads()).isEqualTo(2);
@@ -78,7 +79,7 @@ class MicaVoiceAutoConfigurationTest {
 		).run(ctx -> {
 			assertThat(ctx).hasNotFailed();
 
-			MicaVoiceProperties p = ctx.getBean(MicaVoiceProperties.class);
+			net.dreamlu.mica.voice.autoconfigure.MicaVoiceProperties p = ctx.getBean(net.dreamlu.mica.voice.autoconfigure.MicaVoiceProperties.class);
 			assertThat(p.getModelsDir()).isEqualTo("/tmp/test-models");
 			assertThat(p.getOutputDir()).isEqualTo("/tmp/test-output");
 			assertThat(p.getThreads()).isEqualTo(8);
@@ -96,8 +97,8 @@ class MicaVoiceAutoConfigurationTest {
 			assertThat(p.getKws().getKeywordsThreshold()).isEqualTo(0.3f);
 			assertThat(p.getDenoise().getAttenuationLimitDb()).isEqualTo(18.0f);
 
-			net.dreamlu.mica.voice.config.MicaVoiceProperties core =
-				ctx.getBean("micaVoiceCoreProperties", net.dreamlu.mica.voice.config.MicaVoiceProperties.class);
+			MicaVoiceConfig core =
+				ctx.getBean("micaVoiceCoreProperties", MicaVoiceConfig.class);
 			assertThat(core.getModelsDir()).isEqualTo(new java.io.File("/tmp/test-models"));
 			assertThat(core.getOutputDir()).isEqualTo(new java.io.File("/tmp/test-output"));
 			assertThat(core.getThreads()).isEqualTo(8);
@@ -111,8 +112,8 @@ class MicaVoiceAutoConfigurationTest {
 			"mica.voice.enabled=true",
 			"mica.voice.threads=16"
 		).run(ctx -> {
-			net.dreamlu.mica.voice.config.MicaVoiceProperties core =
-				ctx.getBean("micaVoiceCoreProperties", net.dreamlu.mica.voice.config.MicaVoiceProperties.class);
+			MicaVoiceConfig core =
+				ctx.getBean("micaVoiceCoreProperties", MicaVoiceConfig.class);
 			assertThat(core.getThreads()).isEqualTo(16);
 		});
 	}
@@ -123,8 +124,8 @@ class MicaVoiceAutoConfigurationTest {
 			"mica.voice.enabled=true"
 			// 不设置 threads
 		).run(ctx -> {
-			net.dreamlu.mica.voice.config.MicaVoiceProperties core =
-				ctx.getBean("micaVoiceCoreProperties", net.dreamlu.mica.voice.config.MicaVoiceProperties.class);
+			MicaVoiceConfig core =
+				ctx.getBean("micaVoiceCoreProperties", MicaVoiceConfig.class);
 			// core 默认 2
 			assertThat(core.getThreads()).isEqualTo(2);
 		});
@@ -135,7 +136,7 @@ class MicaVoiceAutoConfigurationTest {
 	 * {@link MicaVoiceProperties} 注册成可绑定的 Bean。
 	 */
 	@Configuration(proxyBeanMethods = false)
-	@EnableConfigurationProperties(MicaVoiceProperties.class)
+	@EnableConfigurationProperties(net.dreamlu.mica.voice.autoconfigure.MicaVoiceProperties.class)
 	static class TestConfig {
 	}
 }

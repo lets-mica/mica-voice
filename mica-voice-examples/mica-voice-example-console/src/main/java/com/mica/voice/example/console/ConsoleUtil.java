@@ -2,7 +2,7 @@ package com.mica.voice.example.console;
 
 import com.k2fsa.sherpa.onnx.WaveWriter;
 import net.dreamlu.mica.voice.asr.AsrResult;
-import net.dreamlu.mica.voice.config.MicaVoiceProperties;
+import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import net.dreamlu.mica.voice.tts.TtsAudio;
 import net.dreamlu.mica.voice.util.Models;
 
@@ -65,7 +65,7 @@ public final class ConsoleUtil {
 	/**
 	 * 把 TTS 结果写为 wav 文件到输出目录。
 	 */
-	public static File writeTtsWav(MicaVoiceProperties props, TtsAudio audio, String name) {
+	public static File writeTtsWav(MicaVoiceConfig props, TtsAudio audio, String name) {
 		File out = new File(props.ensureOutputDir(), name);
 		if (!WaveWriter.write(out.getAbsolutePath(), audio.getSamples(), audio.getSampleRate())) {
 			throw new IllegalStateException("写入 wav 失败: " + out.getAbsolutePath());

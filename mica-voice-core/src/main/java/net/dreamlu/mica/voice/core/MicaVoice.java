@@ -44,7 +44,7 @@ public final class MicaVoice {
 	/**
 	 * 离线 ASR。
 	 */
-	public static AsrService asr(MicaVoiceProperties props, AsrConfig config) {
+	public static AsrService asr(MicaVoiceConfig props, AsrConfig config) {
 		Objects.requireNonNull(props, "props");
 		Objects.requireNonNull(config, "config");
 		log.info("创建 OfflineAsrService: modelDir={}", config.getModelDirName());
@@ -54,14 +54,14 @@ public final class MicaVoice {
 	/**
 	 * 在线流式 ASR（{@link AsrService} 形态）。
 	 */
-	public static AsrService onlineAsr(MicaVoiceProperties props, OnlineAsrConfig config) {
+	public static AsrService onlineAsr(MicaVoiceConfig props, OnlineAsrConfig config) {
 		return onlineAsrTyped(props, config);
 	}
 
 	/**
 	 * 在线流式 ASR（强类型，便于用 createStream 等扩展方法）。
 	 */
-	public static OnlineAsrService onlineAsrTyped(MicaVoiceProperties props, OnlineAsrConfig config) {
+	public static OnlineAsrService onlineAsrTyped(MicaVoiceConfig props, OnlineAsrConfig config) {
 		Objects.requireNonNull(props, "props");
 		Objects.requireNonNull(config, "config");
 		log.info("创建 OnlineAsrService: modelDir={}", config.getModelDirName());
@@ -71,7 +71,7 @@ public final class MicaVoice {
 	/**
 	 * TTS。
 	 */
-	public static TtsService tts(MicaVoiceProperties props, TtsConfig config) {
+	public static TtsService tts(MicaVoiceConfig props, TtsConfig config) {
 		Objects.requireNonNull(props, "props");
 		Objects.requireNonNull(config, "config");
 		log.info("创建 OfflineTtsService: modelDir={}", config.getModelDirName());
@@ -81,7 +81,7 @@ public final class MicaVoice {
 	/**
 	 * 声纹识别。
 	 */
-	public static SpeakerService speaker(MicaVoiceProperties props, SpeakerConfig config) {
+	public static SpeakerService speaker(MicaVoiceConfig props, SpeakerConfig config) {
 		Objects.requireNonNull(props, "props");
 		Objects.requireNonNull(config, "config");
 		log.info("创建 SpeakerEmbeddingService");
@@ -93,7 +93,7 @@ public final class MicaVoice {
 	/**
 	 * VAD（语音活动检测）。
 	 */
-	public static VadService vad(MicaVoiceProperties props, VadConfig config) {
+	public static VadService vad(MicaVoiceConfig props, VadConfig config) {
 		Objects.requireNonNull(props, "props");
 		Objects.requireNonNull(config, "config");
 		log.info("创建 SileroVadService: model={}", config.getModelFileName());
@@ -103,7 +103,7 @@ public final class MicaVoice {
 	/**
 	 * 说话人分离。
 	 */
-	public static DiarizationService diarization(MicaVoiceProperties props, DiarizationConfig config) {
+	public static DiarizationService diarization(MicaVoiceConfig props, DiarizationConfig config) {
 		Objects.requireNonNull(props, "props");
 		Objects.requireNonNull(config, "config");
 		log.info("创建 PyannoteDiarizationService");
@@ -113,7 +113,7 @@ public final class MicaVoice {
 	/**
 	 * 关键词唤醒。
 	 */
-	public static KwsService kws(MicaVoiceProperties props, KwsConfig config) {
+	public static KwsService kws(MicaVoiceConfig props, KwsConfig config) {
 		Objects.requireNonNull(props, "props");
 		Objects.requireNonNull(config, "config");
 		log.info("创建 KeywordSpotterService: modelDir={}", config.getModelDirName());
@@ -123,7 +123,7 @@ public final class MicaVoice {
 	/**
 	 * 音频降噪。
 	 */
-	public static DenoiseService denoise(MicaVoiceProperties props, DenoiseConfig config) {
+	public static DenoiseService denoise(MicaVoiceConfig props, DenoiseConfig config) {
 		Objects.requireNonNull(props, "props");
 		Objects.requireNonNull(config, "config");
 		log.info("创建 OfflineSpeechDenoiserService: model={}", config.getModelFileName());

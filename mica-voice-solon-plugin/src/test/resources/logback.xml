@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 默认 INFO 级别；可通过 -vmica.debug=true 系统属性切到 DEBUG -->
+    <property name="ROOT_LEVEL" value="${mica.root.level:-INFO}"/>
+
+    <!-- Mica voice 业务日志 -->
+    <logger name="net.dreamlu.mica.voice" level="${mica.voice.level:-${ROOT_LEVEL}}"/>
+
+    <root level="${ROOT_LEVEL}">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>

@@ -1,6 +1,6 @@
 package com.mica.voice.example.console;
 
-import net.dreamlu.mica.voice.config.MicaVoiceProperties;
+import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import net.dreamlu.mica.voice.config.TtsConfig;
 import net.dreamlu.mica.voice.core.MicaVoice;
 import net.dreamlu.mica.voice.tts.TtsAudio;
@@ -30,7 +30,7 @@ public class TtsExample {
 		String text = args.length > 0 ? args[0] : DEFAULT_TEXT;
 		int sid = args.length > 1 ? Integer.parseInt(args[1]) : 0;
 
-		MicaVoiceProperties props = MicaVoiceProperties.builder()
+		MicaVoiceConfig props = MicaVoiceConfig.builder()
 			.modelsDir(ConsoleUtil.modelsDir())
 			.outputDir("output")
 			.threads(2)

@@ -36,6 +36,7 @@
     <modules>
         <module>mica-voice-core</module>
         <module>mica-voice-spring-boot-starter</module>
+        <module>mica-voice-solon-plugin</module>
         <module>mica-voice-examples</module>
     </modules>
 

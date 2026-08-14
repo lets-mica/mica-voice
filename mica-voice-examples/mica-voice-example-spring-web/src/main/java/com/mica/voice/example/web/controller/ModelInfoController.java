@@ -27,7 +27,7 @@ public class ModelInfoController {
 	private final MicaVoiceProperties starterProps;
 
 	@Qualifier("micaVoiceCoreProperties")
-	private final net.dreamlu.mica.voice.config.MicaVoiceProperties coreProps;
+	private final net.dreamlu.mica.voice.config.MicaVoiceConfig coreProps;
 
 	@GetMapping("/info")
 	public Map<String, Object> info() {

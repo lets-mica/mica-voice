@@ -1,14 +1,14 @@
 package net.dreamlu.mica.voice.util;
 
 import lombok.experimental.UtilityClass;
-import net.dreamlu.mica.voice.config.MicaVoiceProperties;
+import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 
 import java.io.File;
 
 /**
  * mica-voice 模型/输出路径解析工具。
  *
- * <p>与 {@link MicaVoiceProperties} 配合使用：
+ * <p>与 {@link MicaVoiceConfig} 配合使用：
  * <pre>
  *   File modelsDir = Models.modelsDir();      // 默认 ./models，可用 -Dsherpa.onnx.models.dir 覆盖
  *   File outputDir = Models.outputDir();      // 默认 ./output，自动创建
@@ -28,7 +28,7 @@ public class Models {
 	/**
 	 * mica-voice 自身的系统属性名
 	 */
-	public final String SYS_MODELS_DIR = MicaVoiceProperties.SYS_MODELS_DIR;
+	public final String SYS_MODELS_DIR = MicaVoiceConfig.SYS_MODELS_DIR;
 
 	/**
 	 * 解析模型根目录。优先 {@code mica.voice.models-dir}，其次 {@code sherpa.onnx.models.dir}，最后默认 {@code models}。

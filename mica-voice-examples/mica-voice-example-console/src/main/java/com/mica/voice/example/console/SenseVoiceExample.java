@@ -3,7 +3,7 @@ package com.mica.voice.example.console;
 import net.dreamlu.mica.voice.asr.AsrResult;
 import net.dreamlu.mica.voice.asr.AsrService;
 import net.dreamlu.mica.voice.config.AsrConfig;
-import net.dreamlu.mica.voice.config.MicaVoiceProperties;
+import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import net.dreamlu.mica.voice.core.MicaVoice;
 
 import java.io.File;
@@ -39,7 +39,7 @@ public class SenseVoiceExample {
 			return;
 		}
 
-		MicaVoiceProperties props = MicaVoiceProperties.builder()
+		MicaVoiceConfig props = MicaVoiceConfig.builder()
 			.modelsDir(ConsoleUtil.modelsDir())
 			.threads(2)
 			.build();

@@ -12,18 +12,18 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * {@link MicaVoiceProperties} Builder / 校验测试。
+ * {@link MicaVoiceConfig} Builder / 校验测试。
  */
-class MicaVoicePropertiesTest {
+class MicaVoiceConfigTest {
 
 	@AfterEach
 	void clearSysProps() {
-		System.clearProperty(MicaVoiceProperties.SYS_MODELS_DIR);
+		System.clearProperty(MicaVoiceConfig.SYS_MODELS_DIR);
 	}
 
 	@Test
 	void defaultsFromConstructor() {
-		MicaVoiceProperties p = new MicaVoiceProperties();
+		MicaVoiceConfig p = new MicaVoiceConfig();
 		assertEquals(new File("models"), p.getModelsDir());
 		assertEquals(new File("output"), p.getOutputDir());
 		assertEquals(2, p.getThreads());
@@ -32,14 +32,14 @@ class MicaVoicePropertiesTest {
 
 	@Test
 	void sysPropOverridesModelsDir(@TempDir File tmp) {
-		System.setProperty(MicaVoiceProperties.SYS_MODELS_DIR, tmp.getAbsolutePath());
-		MicaVoiceProperties p = new MicaVoiceProperties();
+		System.setProperty(MicaVoiceConfig.SYS_MODELS_DIR, tmp.getAbsolutePath());
+		MicaVoiceConfig p = new MicaVoiceConfig();
 		assertEquals(tmp, p.getModelsDir());
 	}
 
 	@Test
 	void builderChains() {
-		MicaVoiceProperties p = MicaVoiceProperties.builder()
+		MicaVoiceConfig p = MicaVoiceConfig.builder()
 			.modelsDir("/tmp/m1")
 			.outputDir("/tmp/o1")
 			.threads(4)
@@ -53,14 +53,14 @@ class MicaVoicePropertiesTest {
 
 	@Test
 	void threadsMustBePositive() {
-		MicaVoiceProperties p = new MicaVoiceProperties();
+		MicaVoiceConfig p = new MicaVoiceConfig();
 		assertThrows(IllegalArgumentException.class, () -> p.setThreads(0));
 		assertThrows(IllegalArgumentException.class, () -> p.setThreads(-1));
 	}
 
 	@Test
 	void ensureOutputDir_createsDir(@TempDir File tmp) {
-		MicaVoiceProperties p = MicaVoiceProperties.builder()
+		MicaVoiceConfig p = MicaVoiceConfig.builder()
 			.outputDir(new File(tmp, "nested/out"))
 			.build();
 		File got = p.ensureOutputDir();

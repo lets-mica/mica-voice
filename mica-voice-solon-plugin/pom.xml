@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>mica-voice-solon-plugin</artifactId>
+    <name>${project.artifactId}</name>
+    <description>mica-voice solon-plugin，一行配置即可接入 ASR / TTS / Speaker / VAD / Diarization / KWS / Denoise</description>
+
+    <parent>
+        <groupId>net.dreamlu</groupId>
+        <artifactId>mica-voice</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <properties>
+        <!-- Solon 4.x：JDK 8 编译（兼容 JDK 8 ~ 26），与 mica-ppocr-solon-plugin 对齐 -->
+        <solon.version>4.0.5</solon.version>
+        <!-- 测试日志 -->
+        <logback.version>1.5.6</logback.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.noear</groupId>
+                <artifactId>solon</artifactId>
+                <version>${solon.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.noear</groupId>
+                <artifactId>solon-configuration-processor</artifactId>
+                <version>${solon.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.noear</groupId>
+                <artifactId>solon-test</artifactId>
+                <version>${solon.version}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>net.dreamlu</groupId>
+            <artifactId>mica-voice-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.noear</groupId>
+            <artifactId>solon</artifactId>
+        </dependency>
+        <!--
+            编译期生成 META-INF/solon/solon-configuration-metadata.json，
+            配合 solon-idea-plugin 提供 app.yml / app.properties 的配置提示。
+            scope=provided：仅编译期需要，不随插件 jar 发布。
+        -->
+        <dependency>
+            <groupId>org.noear</groupId>
+            <artifactId>solon-configuration-processor</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.noear</groupId>
+            <artifactId>solon-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!--
+                父 pom 已声明 lombok 子模块 override 时必须重新列出全部 processor，
+                否则父级的 annotationProcessorPaths 会被完全替换。
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths combine.children="append">
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.noear</groupId>
+                            <artifactId>solon-configuration-processor</artifactId>
+                            <version>${solon.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

@@ -5,7 +5,7 @@ import com.k2fsa.sherpa.onnx.DenoisedAudio;
 import lombok.extern.slf4j.Slf4j;
 import net.dreamlu.mica.voice.audio.AudioData;
 import net.dreamlu.mica.voice.config.DenoiseConfig;
-import net.dreamlu.mica.voice.config.MicaVoiceProperties;
+import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import net.dreamlu.mica.voice.exception.EngineException;
 
 import java.io.File;
@@ -19,12 +19,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Slf4j
 public class OfflineSpeechDenoiserService implements DenoiseService {
 
-	private final MicaVoiceProperties props;
+	private final MicaVoiceConfig props;
 	private final DenoiseConfig config;
 	private final OfflineSpeechDenoiser denoiser;
 	private final AtomicBoolean closed = new AtomicBoolean(false);
 
-	public OfflineSpeechDenoiserService(MicaVoiceProperties props, DenoiseConfig config) {
+	public OfflineSpeechDenoiserService(MicaVoiceConfig props, DenoiseConfig config) {
 		this.props = props;
 		this.config = config;
 

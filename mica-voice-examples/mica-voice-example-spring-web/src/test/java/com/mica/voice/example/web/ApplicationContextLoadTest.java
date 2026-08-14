@@ -34,7 +34,7 @@ class ApplicationContextLoadTest {
 			assertThat(ctx).hasSingleBean(MicaVoiceProperties.class);
 
 			Object coreProps = ctx.getBean("micaVoiceCoreProperties");
-			assertThat(coreProps).isInstanceOf(net.dreamlu.mica.voice.config.MicaVoiceProperties.class);
+			assertThat(coreProps).isInstanceOf(net.dreamlu.mica.voice.config.MicaVoiceConfig.class);
 		});
 	}
 

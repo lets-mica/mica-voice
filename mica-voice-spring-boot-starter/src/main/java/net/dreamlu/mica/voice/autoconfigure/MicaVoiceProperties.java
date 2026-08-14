@@ -13,7 +13,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
  *     <li>每个能力（ASR / TTS / Speaker / VAD）都有独立 {@code enabled} 开关，默认按需启用</li>
  *     <li>嵌套配置（{@link NestedConfigurationProperty}）会随外层 enabled 一起被 Spring 解析</li>
  *     <li>运行时真正装配时，{@link net.dreamlu.mica.voice.autoconfigure.MicaVoiceAutoConfiguration}
- *         会把这里的内容转成 core 的 {@link net.dreamlu.mica.voice.config.MicaVoiceProperties}
+ *         会把这里的内容转成 core 的 {@link net.dreamlu.mica.voice.config.MicaVoiceConfig}
  *         + 各能力 Config 后传给 {@link net.dreamlu.mica.voice.MicaVoice} 门面</li>
  * </ul>
  *

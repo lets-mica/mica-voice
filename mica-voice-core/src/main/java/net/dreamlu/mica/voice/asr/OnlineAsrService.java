@@ -4,7 +4,7 @@ import com.k2fsa.sherpa.onnx.*;
 import lombok.extern.slf4j.Slf4j;
 import net.dreamlu.mica.voice.audio.AudioData;
 import net.dreamlu.mica.voice.audio.AudioReaders;
-import net.dreamlu.mica.voice.config.MicaVoiceProperties;
+import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import net.dreamlu.mica.voice.config.ModelSelector;
 import net.dreamlu.mica.voice.config.OnlineAsrConfig;
 import net.dreamlu.mica.voice.exception.EngineException;
@@ -35,13 +35,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Slf4j
 public class OnlineAsrService implements AsrService {
 
-	private final MicaVoiceProperties props;
+	private final MicaVoiceConfig props;
 	private final OnlineAsrConfig config;
 	private final OnlineRecognizer recognizer;
 	private final int chunkSize;
 	private final AtomicBoolean closed = new AtomicBoolean(false);
 
-	public OnlineAsrService(MicaVoiceProperties props, OnlineAsrConfig config) {
+	public OnlineAsrService(MicaVoiceConfig props, OnlineAsrConfig config) {
 		this.props = props;
 		this.config = config;
 

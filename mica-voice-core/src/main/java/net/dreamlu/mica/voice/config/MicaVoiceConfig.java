@@ -22,7 +22,7 @@ import java.io.File;
  */
 @Getter
 @Setter
-public class MicaVoiceProperties {
+public class MicaVoiceConfig {
 
 	/**
 	 * 系统属性：模型根目录
@@ -34,7 +34,7 @@ public class MicaVoiceProperties {
 	private int threads;
 	private boolean debug;
 
-	public MicaVoiceProperties() {
+	public MicaVoiceConfig() {
 		String dir = System.getProperty(SYS_MODELS_DIR, "models");
 		this.modelsDir = new File(dir);
 		this.outputDir = new File("output");
@@ -70,7 +70,7 @@ public class MicaVoiceProperties {
 	 * Builder 形式（fluent API）。
 	 */
 	public static final class Builder {
-		private final MicaVoiceProperties p = new MicaVoiceProperties();
+		private final MicaVoiceConfig p = new MicaVoiceConfig();
 
 		public Builder modelsDir(File dir) {
 			p.modelsDir = dir;
@@ -100,7 +100,7 @@ public class MicaVoiceProperties {
 			return this;
 		}
 
-		public MicaVoiceProperties build() {
+		public MicaVoiceConfig build() {
 			return p;
 		}
 	}
