@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * <ul>
  *     <li>根据 {@link AsrConfig} + {@link MicaVoiceConfig} 构造 native 识别器</li>
  *     <li>支持 7 种模型家族（PARAFORMER / SENSE_VOICE / WHISPER / MOONSHINE /
- *         ZIPFORMER / NEMO_CTC / AUTO），根据 {@link AsrConfig#getModelType()} 选择对应配置</li>
+ *         ZIPFORMER / NEMO_CTC / AUTO），根据 {@link AsrConfig#modelType} 选择对应配置</li>
  *     <li>int8 模型优先，回退到 fp32</li>
  *     <li>返回统一的 {@link AsrResult}</li>
  *     <li>线程安全：识别器本身复用，仅每次识别创建独立 {@code OfflineStream}</li>

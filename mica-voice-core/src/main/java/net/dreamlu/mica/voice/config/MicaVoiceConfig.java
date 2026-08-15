@@ -60,6 +60,8 @@ public class MicaVoiceConfig {
 
 	/**
 	 * 创建一个带有自定义模型/输出目录的 Builder。
+	 *
+	 * @return Builder 实例
 	 */
 	public static Builder builder() {
 		return new Builder();

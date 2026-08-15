@@ -43,6 +43,8 @@ public class AudioData {
 
 	/**
 	 * 时长（秒）
+	 *
+	 * @return 时长（秒）
 	 */
 	public float durationSeconds() {
 		return samples.length / (float) sampleRate;

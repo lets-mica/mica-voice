@@ -24,6 +24,10 @@ public class ModelSelector {
 
 	/**
 	 * 解析子目录绝对路径。找不到返回 null。
+	 *
+	 * @param modelsDir 模型根目录
+	 * @param dirName   子目录名
+	 * @return 子目录绝对路径；找不到返回 null
 	 */
 	public String resolveModelDir(File modelsDir, String dirName) {
 		if (modelsDir == null || !modelsDir.isDirectory() || dirName == null) {
@@ -39,6 +43,7 @@ public class ModelSelector {
 	 * @param modelsDir  模型根目录
 	 * @param dirName    子目录名
 	 * @param candidates 按优先级排列的文件候选名
+	 * @return 第一个存在的文件绝对路径
 	 */
 	public String resolveModelFile(File modelsDir, String dirName, String... candidates) {
 		String dir = resolveModelDir(modelsDir, dirName);

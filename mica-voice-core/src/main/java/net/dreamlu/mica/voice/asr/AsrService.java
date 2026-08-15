@@ -17,6 +17,9 @@ public interface AsrService extends AutoCloseable {
 
 	/**
 	 * 从文件识别（同步）。
+	 *
+	 * @param wav wav 文件
+	 * @return 识别结果
 	 */
 	default AsrResult recognize(File wav) {
 		return recognize(wav.getAbsolutePath());
@@ -24,11 +27,17 @@ public interface AsrService extends AutoCloseable {
 
 	/**
 	 * 从 wav 文件路径识别（同步）。
+	 *
+	 * @param wavPath wav 文件路径
+	 * @return 识别结果
 	 */
 	AsrResult recognize(String wavPath);
 
 	/**
 	 * 从完整的 wav 字节流识别（适合 Web 上传后直接识别）。
+	 *
+	 * @param wavBytes 完整的 wav 字节流
+	 * @return 识别结果
 	 */
 	default AsrResult recognize(byte[] wavBytes) {
 		try {
@@ -42,6 +51,9 @@ public interface AsrService extends AutoCloseable {
 
 	/**
 	 * 从内存 AudioData 识别（同步）。适合 Web 上传后预处理过的音频流。
+	 *
+	 * @param audio 音频数据
+	 * @return 识别结果
 	 */
 	AsrResult recognize(AudioData audio);
 

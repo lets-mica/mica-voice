@@ -125,6 +125,8 @@ public class OnlineAsrConfig {
 	/**
 	 * 把 ModelType 映射成 sherpa-onnx 的 modelType 字符串。
 	 * 例如 X_ASR / ZIPFORMER2_CTC → "zipformer2"，ZIPFORMER → "zipformer"，PARAFORMER → null（走默认）。
+	 *
+	 * @return sherpa-onnx 的 modelType 字符串；没有对应值返回 null
 	 */
 	public String toSherpaModelType() {
 		if (modelType == null) return null;

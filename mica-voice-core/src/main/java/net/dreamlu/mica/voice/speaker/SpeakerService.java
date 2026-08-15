@@ -22,37 +22,75 @@ public interface SpeakerService extends AutoCloseable {
 
 	/**
 	 * 注册：说话人名字 + 音频，返回该说话人的嵌入快照。
+	 *
+	 * @param name 说话人名字
+	 * @param wav  wav 音频文件
+	 * @return 说话人嵌入快照
 	 */
 	SpeakerProfile enroll(String name, File wav);
 
+	/**
+	 * 注册：说话人名字 + 音频，返回该说话人的嵌入快照。
+	 *
+	 * @param name  说话人名字
+	 * @param audio 音频数据
+	 * @return 说话人嵌入快照
+	 */
 	SpeakerProfile enroll(String name, AudioData audio);
 
 	/**
 	 * 1:1 验证：测试音频是否属于指定说话人。
+	 *
+	 * @param name 说话人名字
+	 * @param wav  wav 音频文件
+	 * @return 验证结果
 	 */
 	VerificationResult verify(String name, File wav);
 
+	/**
+	 * 1:1 验证：测试音频是否属于指定说话人。
+	 *
+	 * @param name  说话人名字
+	 * @param audio 音频数据
+	 * @return 验证结果
+	 */
 	VerificationResult verify(String name, AudioData audio);
 
 	/**
 	 * 1:N 搜索：测试音频最像已注册中的谁（可能无匹配）。
+	 *
+	 * @param wav wav 音频文件
+	 * @return 搜索结果
 	 */
 	SearchResult search(File wav);
 
+	/**
+	 * 1:N 搜索：测试音频最像已注册中的谁（可能无匹配）。
+	 *
+	 * @param audio 音频数据
+	 * @return 搜索结果
+	 */
 	SearchResult search(AudioData audio);
 
 	/**
 	 * 已注册的说话人列表。
+	 *
+	 * @return 已注册的说话人名字列表
 	 */
 	List<String> names();
 
 	/**
 	 * 当前已注册人数。
+	 *
+	 * @return 已注册人数
 	 */
 	int size();
 
 	/**
 	 * 移除说话人。
+	 *
+	 * @param name 说话人名字
+	 * @return 是否成功移除
 	 */
 	boolean remove(String name);
 

@@ -96,6 +96,8 @@ public class AsrConfig {
 
 	/**
 	 * null → AUTO 的兜底（setter 路径）。
+	 *
+	 * @param modelType 模型家族
 	 */
 	public void setModelType(ModelType modelType) {
 		this.modelType = modelType == null ? ModelType.AUTO : modelType;

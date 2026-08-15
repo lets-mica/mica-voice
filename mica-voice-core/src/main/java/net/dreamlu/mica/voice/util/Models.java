@@ -32,6 +32,8 @@ public class Models {
 
 	/**
 	 * 解析模型根目录。优先 {@code mica.voice.models-dir}，其次 {@code sherpa.onnx.models.dir}，最后默认 {@code models}。
+	 *
+	 * @return 模型根目录
 	 */
 	public File modelsDir() {
 		String dir = System.getProperty(SYS_MODELS_DIR);
@@ -43,6 +45,8 @@ public class Models {
 
 	/**
 	 * 解析输出目录。优先 {@code mica.voice.output-dir}，最后默认 {@code output}（自动创建）。
+	 *
+	 * @return 输出目录
 	 */
 	public File outputDir() {
 		String dir = System.getProperty("mica.voice.output-dir", "output");

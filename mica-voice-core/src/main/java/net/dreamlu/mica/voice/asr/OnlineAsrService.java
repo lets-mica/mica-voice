@@ -22,14 +22,14 @@ import java.util.function.Consumer;
  * Zipformer / Zipformer2 CTC / NeMo CTC / 通用 Transducer。
  *
  * <p>典型用法：
- * <pre>
+ * <pre>{@code
  *   try (OnlineAsrService svc = new OnlineAsrService(props, cfg)) {
  *       AudioData audio = AudioReaders.read("input.wav");
  *       AsrResult finalResult = svc.recognizeStreaming(audio, partial -> {
  *           System.out.println("[partial] " + partial.getText());
  *       });
  *   }
- * </pre>
+ * }</pre>
  *
  * @author dreamlu
  */
@@ -220,6 +220,10 @@ public class OnlineAsrService implements AsrService {
 
 	/**
 	 * 把整段音频按 chunkSize 切块送入，逐块回调 partial，结束后返回最终结果。
+	 *
+	 * @param audio   音频数据
+	 * @param partial 部分结果回调，可为 null
+	 * @return 最终识别结果
 	 */
 	public AsrResult recognizeStreaming(AudioData audio, Consumer<AsrResult> partial) {
 		ensureOpen();
@@ -265,6 +269,8 @@ public class OnlineAsrService implements AsrService {
 
 	/**
 	 * 创建一个新的流式 stream（适合持续喂入麦克风数据）。
+	 *
+	 * @return 新的流式 stream
 	 */
 	public OnlineStream createStream() {
 		ensureOpen();
@@ -274,6 +280,11 @@ public class OnlineAsrService implements AsrService {
 	/**
 	 * 把单个 chunk 喂给 stream 并解码。返回最新的文本结果。
 	 * 调用方负责 stream 的 release。
+	 *
+	 * @param stream    流式 stream
+	 * @param samples   音频样本
+	 * @param sampleRate 采样率（Hz）
+	 * @return 最新的识别结果
 	 */
 	public OnlineRecognizerResult feedAndDecode(OnlineStream stream, float[] samples, int sampleRate) {
 		ensureOpen();
@@ -286,6 +297,8 @@ public class OnlineAsrService implements AsrService {
 
 	/**
 	 * 获取底层 recognizer（高级用法，如自定义 endpoint 逻辑）。
+	 *
+	 * @return 底层 recognizer
 	 */
 	public OnlineRecognizer getRecognizer() {
 		ensureOpen();

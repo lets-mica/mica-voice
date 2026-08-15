@@ -26,6 +26,9 @@ public final class AudioReaders {
 
 	/**
 	 * 从文件读取 wav。
+	 *
+	 * @param file wav 文件
+	 * @return 音频数据
 	 */
 	public static AudioData read(File file) {
 		if (!file.isFile()) {
@@ -36,6 +39,9 @@ public final class AudioReaders {
 
 	/**
 	 * 从文件路径读取 wav。
+	 *
+	 * @param path wav 文件路径
+	 * @return 音频数据
 	 */
 	public static AudioData read(String path) {
 		try {
@@ -51,6 +57,9 @@ public final class AudioReaders {
 	/**
 	 * 从内存中的完整 wav 字节流读取（适合 Web 上传后直接识别）。
 	 * <p>Phase 1 简单实现：先写到临时文件再调 WaveReader。
+	 *
+	 * @param wavBytes 完整的 wav 字节流
+	 * @return 音频数据
 	 */
 	public static AudioData read(byte[] wavBytes) {
 		Path tmp;
@@ -68,6 +77,10 @@ public final class AudioReaders {
 	/**
 	 * 直接从原始 PCM（16-bit signed LE, 单声道）构造 AudioData。
 	 * 适合已经预处理过的音频流。
+	 *
+	 * @param pcm16     16-bit 小端 PCM 字节数组
+	 * @param sampleRate 采样率（Hz）
+	 * @return 音频数据
 	 */
 	public static AudioData fromPcm16(byte[] pcm16, int sampleRate) {
 		if (pcm16.length % 2 != 0) {
