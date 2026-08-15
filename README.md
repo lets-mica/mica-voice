@@ -235,17 +235,17 @@ mica:
 
 代码里直接注入 `OfflineAsrService` 即可（starter 自动装配 9 个 Service Bean，容器关闭时统一释放 native 资源）：
 
-| Bean | 能力 | 对应 starter 类 |
-| ---- | ---- | --------------- |
-| `OfflineAsrService` | 离线 ASR | `AsrAutoConfiguration` |
-| `OnlineAsrService` | 在线流式 ASR | `AsrAutoConfiguration` |
-| `TtsService` | 语音合成 | `TtsAutoConfiguration` |
-| `SpeakerService` | 声纹识别 | `SpeakerAutoConfiguration` |
-| `VadService` | 语音活动检测 | `VadAutoConfiguration` |
-| `DiarizationService` | 说话人分离 | `DiarizationAutoConfiguration` |
-| `KwsService` | 关键词唤醒 | `KwsAutoConfiguration` |
-| `DenoiseService` | 音频降噪 | `DenoiseAutoConfiguration` |
-| `OfflineDiarizationTranscribeService` | 分离+转写 | `TranscribeAutoConfiguration` |
+| Bean | 能力 |
+| ---- | ---- |
+| `OfflineAsrService` | 离线 ASR |
+| `OnlineAsrService` | 在线流式 ASR |
+| `TtsService` | 语音合成 |
+| `SpeakerService` | 声纹识别 |
+| `VadService` | 语音活动检测 |
+| `DiarizationService` | 说话人分离 |
+| `KwsService` | 关键词唤醒 |
+| `DenoiseService` | 音频降噪 |
+| `OfflineDiarizationTranscribeService` | 分离+转写 |
 
 ```java
 @RestController
