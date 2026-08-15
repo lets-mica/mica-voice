@@ -57,6 +57,10 @@ public class AsrAutoConfiguration {
 
 	/**
 	 * 离线 ASR。
+	 *
+	 * @param props    mica-voice 业务配置属性
+	 * @param coreProps mica-voice 核心配置
+	 * @return {@link OfflineAsrService}
 	 */
 	@Bean(name = "micaVoiceOfflineAsrService", typed = true)
 	@Condition(onMissingBeanName = "micaVoiceOfflineAsrService",
@@ -79,6 +83,10 @@ public class AsrAutoConfiguration {
 
 	/**
 	 * 在线流式 ASR。
+	 *
+	 * @param props    mica-voice 业务配置属性
+	 * @param coreProps mica-voice 核心配置
+	 * @return {@link OnlineAsrService}
 	 */
 	@Bean(name = "micaVoiceOnlineAsrService", typed = true)
 	@Condition(onMissingBeanName = "micaVoiceOnlineAsrService",
