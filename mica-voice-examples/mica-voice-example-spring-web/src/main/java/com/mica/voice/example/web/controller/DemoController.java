@@ -2,7 +2,7 @@ package com.mica.voice.example.web.controller;
 
 import lombok.RequiredArgsConstructor;
 import net.dreamlu.mica.voice.asr.AsrResult;
-import net.dreamlu.mica.voice.asr.AsrService;
+import net.dreamlu.mica.voice.asr.OfflineAsrService;
 import net.dreamlu.mica.voice.speaker.SpeakerService;
 import net.dreamlu.mica.voice.tts.TtsAudio;
 import net.dreamlu.mica.voice.tts.TtsService;
@@ -25,7 +25,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class DemoController {
 
-	private final AsrService asrService;
+	private final OfflineAsrService offlineAsrService;
 	private final TtsService ttsService;
 	private final SpeakerService speakerService;
 
@@ -38,7 +38,7 @@ public class DemoController {
 
 	@PostMapping("/asr")
 	public Map<String, Object> asr(@RequestParam("file") MultipartFile file) throws Exception {
-		AsrResult r = asrService.recognize(toTmp(file));
+		AsrResult r = offlineAsrService.recognize(toTmp(file));
 		Map<String, Object> resp = new LinkedHashMap<>();
 		resp.put("text", r.getText());
 		resp.put("costMs", r.getCostMs());

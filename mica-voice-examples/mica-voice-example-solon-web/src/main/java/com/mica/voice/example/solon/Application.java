@@ -23,7 +23,7 @@ import org.noear.solon.Solon;
  *
  * <p>启动后按 {@code app.yml} 装配 mica-voice-solon-plugin：
  * <ul>
- *     <li>{@code mica.voice.asr.offline.enabled=true} → {@code AsrService} Bean</li>
+ *     <li>{@code mica.voice.asr.offline.enabled=true} → {@code OfflineAsrService} Bean</li>
  *     <li>{@code mica.voice.tts.enabled=true} → {@code TtsService} Bean</li>
  *     <li>{@code mica.voice.speaker.enabled=true} → {@code SpeakerService} Bean</li>
  * </ul>
@@ -36,5 +36,6 @@ public class Application {
 
 	public static void main(String[] args) {
 		Solon.start(Application.class, args);
+		System.out.println("http://localhost:8081/index.html");
 	}
 }

@@ -2,12 +2,11 @@ package net.dreamlu.mica.voice.autoconfigure;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.dreamlu.mica.voice.asr.AsrService;
+import net.dreamlu.mica.voice.asr.OfflineAsrService;
 import net.dreamlu.mica.voice.asr.OnlineAsrService;
 import net.dreamlu.mica.voice.config.AsrConfig;
 import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import net.dreamlu.mica.voice.config.OnlineAsrConfig;
-import net.dreamlu.mica.voice.core.MicaVoice;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -15,19 +14,22 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 
 import java.util.Locale;
 
 /**
  * ASR 自动装配：离线 + 在线两个独立 Bean。
  *
+ * <p>v1.2+：两个 Bean 的返回类型改为各自的具体实现类（{@link OfflineAsrService} /
+ * {@link OnlineAsrService}），不再注册为统一的 {@code AsrService} 接口类型，
+ * 避免容器出现同接口多 Bean 时的注入歧义问题。调用方按具体类型注入即可。
+ *
  * @author dreamlu
  */
 @Slf4j
 @Configuration(proxyBeanMethods = false)
 @RequiredArgsConstructor
-@ConditionalOnClass(MicaVoice.class)
+@ConditionalOnClass(net.dreamlu.mica.voice.core.MicaVoice.class)
 @ConditionalOnBean(name = "micaVoiceCoreProperties")
 @AutoConfigureAfter(MicaVoiceAutoConfiguration.class)
 public class AsrAutoConfiguration {
@@ -49,16 +51,11 @@ public class AsrAutoConfiguration {
 
 	/**
 	 * 离线 ASR。
-	 *
-	 * <p>标注 {@link Primary}：{@link OnlineAsrService} 也实现了 {@link AsrService}，
-	 * 按 {@code AsrService} 类型注入时默认取离线（标准识别语义）；
-	 * 需要流式能力时注入 {@code OnlineAsrService} 类型（唯一匹配，无需 Qualifier）。
 	 */
 	@Bean(destroyMethod = "close")
-	@Primary
 	@ConditionalOnMissingBean(name = "micaVoiceOfflineAsrService")
 	@ConditionalOnProperty(prefix = "mica.voice.asr.offline", name = "enabled", havingValue = "true", matchIfMissing = true)
-	public AsrService micaVoiceOfflineAsrService() {
+	public OfflineAsrService micaVoiceOfflineAsrService() {
 		MicaVoiceProperties.Asr.Offline cfg = props.getAsr().getOffline();
 		AsrConfig asrConfig = AsrConfig.builder()
 			.modelDirName(cfg.getModelDirName())
@@ -69,11 +66,11 @@ public class AsrAutoConfiguration {
 			.inverseTextNormalization(cfg.isInverseTextNormalization())
 			.build();
 		log.info("mica-voice 装配 OfflineAsrService: modelDir={}, type={}", cfg.getModelDirName(), cfg.getModelType());
-		return MicaVoice.asr(coreProps, asrConfig);
+		return new OfflineAsrService(coreProps, asrConfig);
 	}
 
 	/**
-	 * 在线流式 ASR
+	 * 在线流式 ASR。
 	 */
 	@Bean(destroyMethod = "close")
 	@ConditionalOnMissingBean(name = "micaVoiceOnlineAsrService")
@@ -92,6 +89,6 @@ public class AsrAutoConfiguration {
 			.chunkSize(cfg.getChunkSize())
 			.build();
 		log.info("mica-voice 装配 OnlineAsrService: modelDir={}, type={}", cfg.getModelDirName(), cfg.getModelType());
-		return MicaVoice.onlineAsrTyped(coreProps, onlineConfig);
+		return new OnlineAsrService(coreProps, onlineConfig);
 	}
 }

@@ -38,7 +38,7 @@ import java.util.Arrays;
 @Condition(onClass = MicaVoice.class)
 public class SpeakerAutoConfiguration {
 
-	@Bean(name = "micaVoiceSpeakerService")
+	@Bean(name = "micaVoiceSpeakerService", typed = true)
 	@Condition(onMissingBeanName = "micaVoiceSpeakerService",
 		onBeanName = "micaVoiceCoreProperties",
 		onExpression = "${mica.voice.speaker.enabled:true} == true")

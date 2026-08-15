@@ -36,13 +36,11 @@ public class OfflineAsrService implements AsrService {
 		"model.int8.onnx", "model.onnx"
 	};
 
-	private final MicaVoiceConfig props;
 	private final AsrConfig config;
 	private final OfflineRecognizer recognizer;
 	private final AtomicBoolean closed = new AtomicBoolean(false);
 
 	public OfflineAsrService(MicaVoiceConfig props, AsrConfig config) {
-		this.props = props;
 		this.config = config;
 
 		if (config.getModelDirName() == null) {

@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  * <p>启动后默认会按 {@code application.yml} 装配 mica-voice-spring-boot-starter：
  * <ul>
- *     <li>{@code mica.voice.asr.offline.enabled=true} → {@code AsrService} Bean</li>
+ *     <li>{@code mica.voice.asr.offline.enabled=true} → {@code OfflineAsrService} Bean</li>
  *     <li>{@code mica.voice.tts.enabled=true} → {@code TtsService} Bean</li>
  *     <li>{@code mica.voice.speaker.enabled=true} → {@code SpeakerService} Bean</li>
  *     <li>{@code mica.voice.web.enabled=true} → 暴露 {@code /mica/voice/*} REST 端点</li>

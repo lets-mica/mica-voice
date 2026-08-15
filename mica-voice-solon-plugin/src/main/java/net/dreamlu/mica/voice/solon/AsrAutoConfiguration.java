@@ -17,12 +17,11 @@
 package net.dreamlu.mica.voice.solon;
 
 import lombok.extern.slf4j.Slf4j;
-import net.dreamlu.mica.voice.asr.AsrService;
+import net.dreamlu.mica.voice.asr.OfflineAsrService;
 import net.dreamlu.mica.voice.asr.OnlineAsrService;
 import net.dreamlu.mica.voice.config.AsrConfig;
 import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import net.dreamlu.mica.voice.config.OnlineAsrConfig;
-import net.dreamlu.mica.voice.core.MicaVoice;
 import org.noear.solon.annotation.Bean;
 import org.noear.solon.annotation.Condition;
 import org.noear.solon.annotation.Configuration;
@@ -33,11 +32,15 @@ import java.util.Locale;
 /**
  * ASR 自动装配：离线 + 在线两个独立 Bean。
  *
+ * <p>v1.2+：两个 Bean 的返回类型改为各自的具体实现类（{@link OfflineAsrService} /
+ * {@link OnlineAsrService}），不再注册为统一的 {@code AsrService} 接口类型，
+ * 避免容器出现同接口多 Bean 时的注入歧义问题。调用方按具体类型注入即可。
+ *
  * @author dreamlu
  */
 @Slf4j
 @Configuration
-@Condition(onClass = MicaVoice.class)
+@Condition(onClass = net.dreamlu.mica.voice.core.MicaVoice.class)
 public class AsrAutoConfiguration {
 
 	private static <E extends Enum<E>> E parseModelType(String raw, Class<E> type, E fallback) {
@@ -54,18 +57,13 @@ public class AsrAutoConfiguration {
 
 	/**
 	 * 离线 ASR。
-	 *
-	 * <p>{@link OnlineAsrService} 也实现了 {@link AsrService}，
-	 * 但本 Bean 名称为 {@code micaVoiceOfflineAsrService}（唯一），
-	 * 与 {@code micaVoiceOnlineAsrService}（{@link OnlineAsrService} 类型唯一）互不冲突：
-	 * 需要 {@link AsrService} 接口注入时按名称注入离线版本即可。
 	 */
-	@Bean(name = "micaVoiceOfflineAsrService")
+	@Bean(name = "micaVoiceOfflineAsrService", typed = true)
 	@Condition(onMissingBeanName = "micaVoiceOfflineAsrService",
 		onBeanName = "micaVoiceCoreProperties",
 		onExpression = "${mica.voice.asr.offline.enabled:true} == true")
-	public AsrService micaVoiceOfflineAsrService(MicaVoiceProperties props,
-	                                            MicaVoiceConfig coreProps) {
+	public OfflineAsrService micaVoiceOfflineAsrService(MicaVoiceProperties props,
+	                                                  MicaVoiceConfig coreProps) {
 		MicaVoiceProperties.Asr.Offline cfg = props.getAsr().getOffline();
 		AsrConfig asrConfig = AsrConfig.builder()
 			.modelDirName(cfg.getModelDirName())
@@ -76,18 +74,18 @@ public class AsrAutoConfiguration {
 			.inverseTextNormalization(cfg.isInverseTextNormalization())
 			.build();
 		log.info("mica-voice 装配 OfflineAsrService: modelDir={}, type={}", cfg.getModelDirName(), cfg.getModelType());
-		return MicaVoice.asr(coreProps, asrConfig);
+		return new OfflineAsrService(coreProps, asrConfig);
 	}
 
 	/**
 	 * 在线流式 ASR。
 	 */
-	@Bean(name = "micaVoiceOnlineAsrService")
+	@Bean(name = "micaVoiceOnlineAsrService", typed = true)
 	@Condition(onMissingBeanName = "micaVoiceOnlineAsrService",
 		onBeanName = "micaVoiceCoreProperties",
 		onExpression = "${mica.voice.asr.online.enabled:false} == true")
 	public OnlineAsrService micaVoiceOnlineAsrService(@Inject MicaVoiceProperties props,
-	                                                 @Inject MicaVoiceConfig coreProps) {
+	                                                  @Inject MicaVoiceConfig coreProps) {
 		MicaVoiceProperties.Asr.Online cfg = props.getAsr().getOnline();
 		OnlineAsrConfig onlineConfig = OnlineAsrConfig.builder()
 			.modelDirName(cfg.getModelDirName())
@@ -101,6 +99,6 @@ public class AsrAutoConfiguration {
 			.chunkSize(cfg.getChunkSize())
 			.build();
 		log.info("mica-voice 装配 OnlineAsrService: modelDir={}, type={}", cfg.getModelDirName(), cfg.getModelType());
-		return MicaVoice.onlineAsrTyped(coreProps, onlineConfig);
+		return new OnlineAsrService(coreProps, onlineConfig);
 	}
 }

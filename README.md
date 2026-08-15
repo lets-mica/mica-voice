@@ -14,7 +14,7 @@
 | 模块 | 作用 |
 | ---- | ---- |
 | `mica-voice-core` | **核心 SDK**（纯 Java）。统一 ASR / TTS / 声纹 / VAD 等 API，强依赖 `mica-sherpa-onnx` |
-| `mica-voice-spring-boot-starter` | **Spring Boot 自动装配**。`mica.voice.*` 配置即开箱即用，注入 `AsrService / TtsService / SpeakerService` Bean |
+| `mica-voice-spring-boot-starter` | **Spring Boot 自动装配**。`mica.voice.*` 配置即开箱即用，注入 `OfflineAsrService / OnlineAsrService / TtsService / SpeakerService` Bean |
 | `mica-voice-examples` | **集成示例聚合**，展示 mica-voice 在真实业务场景下怎么用 |
 
 ### `mica-voice-examples` 子模块（按需展开）
@@ -131,11 +131,11 @@ mica:
         model-type: PARAFORMER
 ```
 
-代码里直接注入 `AsrService` 即可（starter 自动装配 8 个 Service Bean，容器关闭时统一释放 native 资源）：
+代码里直接注入 `OfflineAsrService` 即可（starter 自动装配 9 个 Service Bean，容器关闭时统一释放 native 资源）：
 
 | Bean | 能力 | 对应 starter 类 |
 | ---- | ---- | --------------- |
-| `AsrService` | 离线 ASR | `AsrAutoConfiguration` |
+| `OfflineAsrService` | 离线 ASR | `AsrAutoConfiguration` |
 | `OnlineAsrService` | 在线流式 ASR | `AsrAutoConfiguration` |
 | `TtsService` | 语音合成 | `TtsAutoConfiguration` |
 | `SpeakerService` | 声纹识别 | `SpeakerAutoConfiguration` |
@@ -143,15 +143,16 @@ mica:
 | `DiarizationService` | 说话人分离 | `DiarizationAutoConfiguration` |
 | `KwsService` | 关键词唤醒 | `KwsAutoConfiguration` |
 | `DenoiseService` | 音频降噪 | `DenoiseAutoConfiguration` |
+| `OfflineDiarizationTranscribeService` | 分离+转写（v1.1+） | `TranscribeAutoConfiguration` |
 
 ```java
 @RestController
 public class AsrController {
 
-    private final AsrService asrService;
+    private final OfflineAsrService offlineAsrService;
 
-    public AsrController(AsrService asrService) {
-        this.asrService = asrService;
+    public AsrController(OfflineAsrService offlineAsrService) {
+        this.offlineAsrService = offlineAsrService;
     }
 
     @PostMapping("/asr")
@@ -159,13 +160,17 @@ public class AsrController {
         File tmp = File.createTempFile("asr", ".wav");
         file.transferTo(tmp);
         try {
-            return asrService.recognize(tmp).getText();
+            return offlineAsrService.recognize(tmp).getText();
         } finally {
             tmp.delete();
         }
     }
 }
 ```
+
+> v1.2+ 起，ASR 两个 Bean 不再注册为统一的 `AsrService` 接口类型，
+> 而是按各自的具体类型 `OfflineAsrService` / `OnlineAsrService` 暴露，
+> 避免 Spring 容器出现同接口多 Bean 时的注入歧义。
 
 ## 源码示例
 

@@ -35,7 +35,7 @@ import org.noear.solon.annotation.Inject;
 @Condition(onClass = MicaVoice.class)
 public class DiarizationAutoConfiguration {
 
-	@Bean(name = "micaVoiceDiarizationService")
+	@Bean(name = "micaVoiceDiarizationService", typed = true)
 	@Condition(onMissingBeanName = "micaVoiceDiarizationService",
 		onBeanName = "micaVoiceCoreProperties",
 		onExpression = "${mica.voice.diarization.enabled:false} == true")

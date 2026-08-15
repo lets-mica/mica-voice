@@ -17,7 +17,7 @@
 package com.mica.voice.example.solon.controller;
 
 import net.dreamlu.mica.voice.asr.AsrResult;
-import net.dreamlu.mica.voice.asr.AsrService;
+import net.dreamlu.mica.voice.asr.OfflineAsrService;
 import net.dreamlu.mica.voice.speaker.SpeakerService;
 import net.dreamlu.mica.voice.tts.TtsAudio;
 import net.dreamlu.mica.voice.tts.TtsService;
@@ -42,7 +42,7 @@ import java.util.Map;
 public class DemoController {
 
 	@Inject
-	private AsrService asrService;
+	private OfflineAsrService offlineAsrService;
 
 	@Inject
 	private TtsService ttsService;
@@ -62,7 +62,7 @@ public class DemoController {
 	@Post
 	@Mapping("/asr")
 	public Map<String, Object> asr(UploadedFile file) throws IOException {
-		AsrResult r = asrService.recognize(toTmp(file));
+		AsrResult r = offlineAsrService.recognize(toTmp(file));
 		Map<String, Object> resp = new LinkedHashMap<>();
 		resp.put("text", r.getText());
 		resp.put("costMs", r.getCostMs());

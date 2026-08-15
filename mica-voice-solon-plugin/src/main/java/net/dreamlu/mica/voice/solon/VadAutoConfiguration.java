@@ -37,7 +37,7 @@ import java.util.Locale;
 @Condition(onClass = MicaVoice.class)
 public class VadAutoConfiguration {
 
-	@Bean(name = "micaVoiceVadService")
+	@Bean(name = "micaVoiceVadService", typed = true)
 	@Condition(onMissingBeanName = "micaVoiceVadService",
 		onBeanName = "micaVoiceCoreProperties",
 		onExpression = "${mica.voice.vad.enabled:false} == true")

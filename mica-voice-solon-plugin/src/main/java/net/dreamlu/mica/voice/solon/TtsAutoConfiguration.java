@@ -37,7 +37,7 @@ import java.util.Locale;
 @Condition(onClass = MicaVoice.class)
 public class TtsAutoConfiguration {
 
-	@Bean(name = "micaVoiceTtsService")
+	@Bean(name = "micaVoiceTtsService", typed = true)
 	@Condition(onMissingBeanName = "micaVoiceTtsService",
 		onBeanName = "micaVoiceCoreProperties",
 		onExpression = "${mica.voice.tts.enabled:true} == true")

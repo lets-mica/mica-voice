@@ -18,7 +18,7 @@ package com.mica.voice.example.solon.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import net.dreamlu.mica.voice.asr.AsrResult;
-import net.dreamlu.mica.voice.asr.AsrService;
+import net.dreamlu.mica.voice.asr.OfflineAsrService;
 import org.noear.solon.annotation.Controller;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.annotation.Mapping;
@@ -49,7 +49,7 @@ import java.util.Map;
 public class AsrController {
 
 	@Inject
-	private AsrService asrService;
+	private OfflineAsrService offlineAsrService;
 
 	private static File toTempFile(UploadedFile file) {
 		try {
@@ -67,7 +67,7 @@ public class AsrController {
 	@Post
 	@Mapping("/recognize")
 	public Map<String, Object> recognize(Context ctx, UploadedFile file) {
-		AsrResult r = asrService.recognize(toTempFile(file));
+		AsrResult r = offlineAsrService.recognize(toTempFile(file));
 		Map<String, Object> resp = new LinkedHashMap<>();
 		resp.put("text", r.getText());
 		resp.put("language", r.getLanguage());

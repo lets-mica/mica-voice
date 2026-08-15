@@ -133,8 +133,8 @@ public final class MicaVoice {
 	/**
 	 * "说话人分离 + 转写"联合服务（v1.1+）。
 	 *
-	 * <p>传入 DiarizationService + AsrService（通常都使用 mica-voice 装配的离线版本），
-	 * 返回组合后的转写结果：每个说话人在某段时间的文本。
+	 * <p>传入 DiarizationService + AsrService（通常都使用 mica-voice 装配的离线版本，
+	 * 即 {@link OfflineAsrService}），返回组合后的转写结果：每个说话人在某段时间的文本。
 	 */
 	public static OfflineDiarizationTranscribeService transcribe(
 		DiarizationService diarizationService, AsrService asrService) {

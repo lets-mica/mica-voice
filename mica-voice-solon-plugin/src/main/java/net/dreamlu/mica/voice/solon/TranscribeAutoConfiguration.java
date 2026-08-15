@@ -17,7 +17,7 @@
 package net.dreamlu.mica.voice.solon;
 
 import lombok.extern.slf4j.Slf4j;
-import net.dreamlu.mica.voice.asr.AsrService;
+import net.dreamlu.mica.voice.asr.OfflineAsrService;
 import net.dreamlu.mica.voice.core.MicaVoice;
 import net.dreamlu.mica.voice.diarization.DiarizationService;
 import net.dreamlu.mica.voice.transcribe.OfflineDiarizationTranscribeService;
@@ -32,9 +32,8 @@ import org.noear.solon.annotation.Inject;
  * <p>v1.1+。当 {@code mica.voice.asr.offline.enabled=true} 且
  * {@code mica.voice.diarization.enabled=true} 时生效。
  *
- * <p>Solon 中通过 {@code @Condition(onBeanName=...)} 控制装配顺序：
- * 本 Bean 仅在 {@code micaVoiceOfflineAsrService}（前提是 diarization 也装配）之后才会被创建。
- * 真正依赖 {@link DiarizationService} 时再做空检查，避免启动顺序问题。
+ * <p>v1.2+：依赖的 ASR 收紧为 {@link OfflineAsrService} 具体类型，避免
+ * 离线/在线两个 ASR 都实现同一接口时 {@code @Inject AsrService} 的歧义。
  *
  * @author dreamlu
  */
@@ -44,12 +43,12 @@ import org.noear.solon.annotation.Inject;
 public class TranscribeAutoConfiguration {
 
 	@Inject(required = false)
-	private AsrService micaVoiceOfflineAsrService;
+	private OfflineAsrService micaVoiceOfflineAsrService;
 
 	@Inject(required = false)
 	private DiarizationService micaVoiceDiarizationService;
 
-	@Bean(name = "micaVoiceDiarizationTranscribeService")
+	@Bean(name = "micaVoiceDiarizationTranscribeService", typed = true)
 	@Condition(onMissingBeanName = "micaVoiceDiarizationTranscribeService",
 		onBeanName = "micaVoiceOfflineAsrService")
 	public OfflineDiarizationTranscribeService micaVoiceDiarizationTranscribeService() {

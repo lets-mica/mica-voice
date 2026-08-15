@@ -37,29 +37,28 @@
             <groupId>net.dreamlu</groupId>
             <artifactId>mica-voice-solon-plugin</artifactId>
         </dependency>
-
-        <!-- Solon Web（solon-api + freemarker + sessionstate + jlhttp boot） -->
+        <!-- Solon Web -->
         <dependency>
             <groupId>org.noear</groupId>
             <artifactId>solon-web</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.noear</groupId>
+            <artifactId>solon-web-staticfiles</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
         <!-- Lombok（编译期） -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
-
         <!-- 单元测试 -->
         <dependency>
             <groupId>org.noear</groupId>
             <artifactId>solon-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.5.6</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

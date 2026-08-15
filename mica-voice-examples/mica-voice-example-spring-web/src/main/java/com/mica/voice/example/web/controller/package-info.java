@@ -5,7 +5,7 @@
  * 一站式启用 ASR / TTS / 声纹等能力：
  * <ul>
  *     <li>{@code application.yml} 中配 {@code mica.voice.*}</li>
- *     <li>直接注入 {@code AsrService / TtsService / SpeakerService} Bean</li>
+ *     <li>直接注入 {@code OfflineAsrService / TtsService / SpeakerService} Bean</li>
  *     <li>提供 REST 上传 wav、GET 合成 wav、声纹注册/验证 等典型接口</li>
  * </ul>
  *

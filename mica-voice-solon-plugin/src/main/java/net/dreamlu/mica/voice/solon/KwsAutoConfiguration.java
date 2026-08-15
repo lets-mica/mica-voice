@@ -34,7 +34,7 @@ import org.noear.solon.annotation.Configuration;
 @Condition(onClass = MicaVoice.class)
 public class KwsAutoConfiguration {
 
-	@Bean(name = "micaVoiceKwsService")
+	@Bean(name = "micaVoiceKwsService", typed = true)
 	@Condition(onMissingBeanName = "micaVoiceKwsService",
 		onBeanName = "micaVoiceCoreProperties",
 		onExpression = "${mica.voice.kws.enabled:false} == true")

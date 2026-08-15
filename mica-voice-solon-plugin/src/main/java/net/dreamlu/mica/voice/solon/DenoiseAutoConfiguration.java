@@ -37,7 +37,7 @@ import java.util.Locale;
 @Condition(onClass = MicaVoice.class)
 public class DenoiseAutoConfiguration {
 
-	@Bean(name = "micaVoiceDenoiseService")
+	@Bean(name = "micaVoiceDenoiseService", typed = true)
 	@Condition(onMissingBeanName = "micaVoiceDenoiseService",
 		onBeanName = "micaVoiceCoreProperties",
 		onExpression = "${mica.voice.denoise.enabled:false} == true")

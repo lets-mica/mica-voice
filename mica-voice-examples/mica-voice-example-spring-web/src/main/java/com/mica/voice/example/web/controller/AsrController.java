@@ -3,7 +3,7 @@ package com.mica.voice.example.web.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dreamlu.mica.voice.asr.AsrResult;
-import net.dreamlu.mica.voice.asr.AsrService;
+import net.dreamlu.mica.voice.asr.OfflineAsrService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,7 +32,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AsrController {
 
-	private final AsrService asrService;
+	private final OfflineAsrService offlineAsrService;
 
 	private static File toTempFile(MultipartFile file) {
 		try {
@@ -47,7 +47,7 @@ public class AsrController {
 
 	@PostMapping(value = "/recognize", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public Map<String, Object> recognize(@RequestParam("file") MultipartFile file) {
-		AsrResult r = asrService.recognize(toTempFile(file));
+		AsrResult r = offlineAsrService.recognize(toTempFile(file));
 		Map<String, Object> resp = new LinkedHashMap<>();
 		resp.put("text", r.getText());
 		resp.put("language", r.getLanguage());
