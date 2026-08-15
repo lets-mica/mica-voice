@@ -8,7 +8,7 @@ import java.util.Locale;
 /**
  * 在线流式 ASR 配置。
  *
- * <p>v1.0 起默认支持 Streaming Paraformer；v1.1 起新增 X-ASR（Zipformer Transducer，
+ * <p>默认支持 Streaming Paraformer；扩展支持 X-ASR（Zipformer Transducer，
  * 上海交大开源的 160M 参数中英流式模型）等多种模型族。
  *
  * @author dreamlu

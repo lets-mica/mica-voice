@@ -12,13 +12,12 @@
 #   tts-fanchen       TTS 大模型（VITS fanchen-C 187 说话人, ~290MB）
 #   tts-zh-en         TTS 中英混合（VITS Melo + jieba + espeak, ~310MB）
 #   speaker           声纹模型 + 测试音频（~95MB）
-#   vad               SILERO VAD（v1.1, ~1MB，单文件）
-#   denoise           GTCRN 降噪（v1.1, ~523KB，单文件）
-#   denoise-dpdfnet   DPDFNet 降噪（v1.1, 高质量离线, ~数 MB）
-#   kws               关键词唤醒（v1.1, ~30MB，解压后再补一份默认命名的副本）
-#   diarization       说话人分离（v1.1, segmentation ~5.7MB, 解压后再补一份默认命名）
-#   v11               vad + denoise + kws + diarization（v1.1 全部能力）
-#   all               全部（含 v1.0 + v1.1）
+#   vad               SILERO VAD（~1MB，单文件）
+#   denoise           GTCRN 降噪（~523KB，单文件）
+#   denoise-dpdfnet   DPDFNet 降噪（高质量离线, ~数 MB）
+#   kws               关键词唤醒（~30MB，解压后再补一份默认命名的副本）
+#   diarization       说话人分离（segmentation ~5.7MB, 解压后再补一份默认命名）
+#   all               全部
 #
 # 默认 all
 #
@@ -177,13 +176,6 @@ case "${1:-all}" in
       ensure_like_file models/sherpa-onnx-pyannote-segmentation-3-0/model.int8.onnx models/sherpa-onnx-pyannote-segmentation-3-0.int8.onnx
     fi
     ;;
-  v11)
-    # 一次性下完 v1.1 新增的 4 个能力（不重复 v1.0 已有模型）
-    bash "$0" vad
-    bash "$0" denoise
-    bash "$0" kws
-    bash "$0" diarization
-    ;;
   all)
     bash "$0" asr
     bash "$0" asr-online
@@ -199,7 +191,7 @@ case "${1:-all}" in
   *)
     echo "未知参数: $1" >&2
     echo "可选: asr / asr-online / asr-sensevoice / x-asr / tts / tts-fanchen / tts-zh-en /" >&2
-    echo "      speaker / vad / denoise / denoise-dpdfnet / kws / diarization / v11 / all" >&2
+    echo "      speaker / vad / denoise / denoise-dpdfnet / kws / diarization / all" >&2
     exit 1
     ;;
 esac

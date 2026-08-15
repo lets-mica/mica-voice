@@ -24,7 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Denoise REST 端点（v1.1）。
+ * Denoise REST 端点。
  *
  * <pre>
  *   POST /mica/voice/denoise/run  file=@input.wav  -> audio/wav（降噪后的 wav）

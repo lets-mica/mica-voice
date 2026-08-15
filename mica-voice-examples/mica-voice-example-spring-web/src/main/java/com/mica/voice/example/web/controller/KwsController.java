@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * KWS REST 端点（v1.1）。
+ * KWS REST 端点。
  *
  * <pre>
  *   POST /mica/voice/kws/spot  file=@input.wav

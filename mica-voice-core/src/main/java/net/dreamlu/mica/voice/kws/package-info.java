@@ -1,7 +1,7 @@
 /**
  * mica-voice 关键词唤醒（KWS）能力。
  *
- * <p>v1.1 提供。
+ * <p>扩展能力。
  *
  * @author dreamlu
  */

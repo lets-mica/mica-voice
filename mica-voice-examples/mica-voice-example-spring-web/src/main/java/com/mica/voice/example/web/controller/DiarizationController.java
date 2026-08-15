@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Diarization REST 端点（v1.1）。
+ * Diarization REST 端点。
  *
  * <pre>
  *   POST /mica/voice/diarization/run  file=@input.wav

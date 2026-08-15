@@ -9,7 +9,7 @@
 - **在线流式 ASR**：支持 Streaming Paraformer 与 X-ASR（Zipformer Transducer，960ms 分块），可配置端点检测规则（句尾静音自动结束）
 - **语音合成 TTS**：基于 VITS，支持多说话人模型与中英混合模型（`vits-melo-tts-zh_en`）
 - **声纹识别**：注册 / 验证 / 搜索，支持 3D-Speaker / eres2net 等嵌入模型，相似度阈值可调
-- **VAD 语音活动检测、说话人分离、关键词唤醒 KWS、音频降噪**（v1.1+）
+- **VAD 语音活动检测、说话人分离、关键词唤醒 KWS、音频降噪**（扩展能力）
 - **分离 + 转写组合服务**：自动输出「谁在什么时间说了什么」
 - **Spring Boot starter**：`mica.voice.*` 配置开箱即用，自动装配 9 个 Service Bean（`OfflineAsrService` / `OnlineAsrService` / `TtsService` / `SpeakerService` / `VadService` / `DiarizationService` / `KwsService` / `DenoiseService` / `OfflineDiarizationTranscribeService`），应用关闭时统一释放 native 资源
 - **Solon 插件（`mica-voice-solon-plugin`）**：与 Spring Boot 完全相同的配置树，一行接入 Solon 应用（JDK 8 ~ 26）

@@ -12,13 +12,12 @@ rem     tts             TTS（VITS icefall-aishell3 单说话人, ~30MB）
 rem     tts-fanchen     TTS 大模型（VITS fanchen-C 187 说话人, ~290MB）
 rem     tts-zh-en       TTS 中英混合（VITS Melo + jieba + espeak, ~310MB）
 rem     speaker         声纹模型 + 测试音频（~95MB）
-rem     vad             SILERO VAD（v1.1, ~1MB，单文件）
-rem     denoise         GTCRN 降噪（v1.1, ~523KB，单文件）
-rem     denoise-dpdfnet DPDFNet 降噪（v1.1，高质量离线）
-rem     kws             关键词唤醒（v1.1, ~30MB）
-rem     diarization     说话人分离（v1.1, segmentation ~5.7MB）
-rem     v11             vad + denoise + kws + diarization（v1.1 全部）
-rem     all             全部（v1.0 + v1.1）
+rem     vad             SILERO VAD（~1MB，单文件）
+rem     denoise         GTCRN 降噪（~523KB，单文件）
+rem     denoise-dpdfnet DPDFNet 降噪（高质量离线）
+rem     kws             关键词唤醒（~30MB）
+rem     diarization     说话人分离（segmentation ~5.7MB）
+rem     all             全部
 rem   默认 all
 rem 支持断点续传与多段并行，已完整下载的文件自动跳过。
 rem =============================================================

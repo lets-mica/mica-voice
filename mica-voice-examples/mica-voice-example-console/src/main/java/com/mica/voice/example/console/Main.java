@@ -11,10 +11,10 @@ package com.mica.voice.example.console;
  *   java -jar mica-voice-example-console.jar xasr          # X-ASR 流式 ASR
  *   java -jar mica-voice-example-console.jar tts           # TTS 合成
  *   java -jar mica-voice-example-console.jar speaker       # 声纹注册/验证/搜索
- *   java -jar mica-voice-example-console.jar vad           # VAD 语音活动检测（v1.1+）
- *   java -jar mica-voice-example-console.jar diarization   # 说话人分离（v1.1+）
- *   java -jar mica-voice-example-console.jar kws           # 关键词唤醒（v1.1+）
- *   java -jar mica-voice-example-console.jar denoise       # 音频降噪（v1.1+）
+ *   java -jar mica-voice-example-console.jar vad           # VAD 语音活动检测
+ *   java -jar mica-voice-example-console.jar diarization   # 说话人分离
+ *   java -jar mica-voice-example-console.jar kws           # 关键词唤醒
+ *   java -jar mica-voice-example-console.jar denoise       # 音频降噪
  *   java -jar mica-voice-example-console.jar all           # 依次跑全部示例
  * </pre>
  *
@@ -65,7 +65,8 @@ public final class Main {
 
 	/**
 	 * 依次运行全部示例（每个示例独立创建/释放 native 资源）。
-	 * v1.1+ 的 vad/diarization/kws/denoise 模型未默认下载，会快速失败提示，可单独跑其它命令。
+	 * vad / diarization / kws / denoise 对应的模型需要单独运行相应 target 下载，
+	 * 未下载时会快速失败提示，可单独跑其它命令。
 	 */
 	private static void all() {
 		AsrExample.main(new String[0]);
@@ -92,10 +93,10 @@ public final class Main {
 		System.out.println("  xasr [wav]             X-ASR 中英流式 ASR（默认 0-four-speakers-zh.wav）");
 		System.out.println("  tts [文本] [sid]       TTS 合成（默认输出 output/tts-output.wav）");
 		System.out.println("  speaker [wav]          声纹注册/验证/搜索（默认搜索 0-four-speakers-zh.wav）");
-		System.out.println("  vad [wav]              VAD 语音活动检测（v1.1+，需要 silero_vad.onnx）");
-		System.out.println("  diarization [wav]      说话人分离（v1.1+，需要 segmentation 模型）");
-		System.out.println("  kws [wav]              关键词唤醒（v1.1+，需要 kws 模型 + keywords.txt）");
-		System.out.println("  denoise [wav]          音频降噪（v1.1+，需要 gtcrn 模型，默认输出 output/denoise-output.wav）");
+		System.out.println("  vad [wav]              VAD 语音活动检测（需要 silero_vad.onnx）");
+		System.out.println("  diarization [wav]      说话人分离（需要 segmentation 模型）");
+		System.out.println("  kws [wav]              关键词唤醒（需要 kws 模型 + keywords.txt）");
+		System.out.println("  denoise [wav]          音频降噪（需要 gtcrn 模型，默认输出 output/denoise-output.wav）");
 		System.out.println("  all                    依次运行全部示例");
 		System.out.println("  help                   显示本帮助");
 		System.out.println();

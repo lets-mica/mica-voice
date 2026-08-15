@@ -16,10 +16,10 @@ import org.springframework.context.annotation.Configuration;
 /**
  * "说话人分离 + 转写"联合服务自动装配。
  *
- * <p>v1.1+。当 {@code mica.voice.asr.offline.enabled=true} 且
+ * <p>扩展能力。当 {@code mica.voice.asr.offline.enabled=true} 且
  * {@code mica.voice.diarization.enabled=true} 时生效。
  *
- * <p>v1.2+：依赖的 ASR Bean 类型从 {@code AsrService} 接口收紧为
+ * <p>依赖的 ASR Bean 类型从 {@code AsrService} 接口收紧为
  * {@link OfflineAsrService} 具体类型，避免离线/在线两个 ASR 都实现同一接口时
  * 容器内 {@code ObjectProvider<AsrService>} 的注入歧义。
  *

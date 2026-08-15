@@ -14,8 +14,8 @@ import java.util.List;
 /**
  * VAD 语音活动检测（Silero VAD）。
  *
- * <p>模型：{@code silero_vad.onnx}（v1.1+；models/ 目录下载脚本暂未提供该 target，
- * 可从 <a href="https://github.com/snakers4/silero-vad">silero-vad</a> 官方仓库下载
+ * <p>模型：{@code silero_vad.onnx}（运行 {@code download-models.ps1 -Target vad} 下载，
+ * 或从 <a href="https://github.com/snakers4/silero-vad">silero-vad</a> 官方仓库下载
  * 到 {@code models/silero_vad.onnx}，或自定义任意子目录 + 配置项 modelFileName 指向）。
  *
  * <p>测试音频：复用 Paraformer 模型自带 4 人对话音频（{@code 0-four-speakers-zh.wav}，

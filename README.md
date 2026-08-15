@@ -184,7 +184,7 @@ mica:
       #   - 3dspeaker_speech_campplus_sv_zh_en.onnx
       # embedding-timeout-ms: 30000      # 提取嵌入时等待特征就绪的最大超时（毫秒）
 
-    # ===================== VAD（v1.1+，需 silero_vad.onnx） =====================
+    # ===================== VAD（需 silero_vad.onnx） =====================
     vad:
       enabled: false                     # VAD 开关（默认 false，开启后才装配 VadService）
       model-file-name: silero_vad.onnx   # VAD 模型文件名（silero_vad.onnx / ten_vad.onnx）
@@ -198,7 +198,7 @@ mica:
       # debug: false                     # 覆盖全局 debug
       # window-size: 512                 # SILERO 窗口大小（512 / 1024 / 1536 samples）
 
-    # ===================== 说话人分离（v1.1+，需 segmentation + embedding 模型） =====================
+    # ===================== 说话人分离（需 segmentation + embedding 模型） =====================
     diarization:
       enabled: false                     # 分离开关（默认 false）
       segmentation-model-file-name: sherpa-onnx-pyannote-segmentation-3-0.onnx   # segmentation 模型
@@ -210,7 +210,7 @@ mica:
       # min-duration-off: 0.5            # 最小关闭时长（秒）：相邻两段合并的最大间隔
       # min-duration-on: 0.3             # 最小开启时长（秒）：短于此视为噪声丢弃
 
-    # ===================== 关键词唤醒 KWS（v1.1+，需 kws 模型 + keywords.txt） =====================
+    # ===================== 关键词唤醒 KWS（需 kws 模型 + keywords.txt） =====================
     kws:
       enabled: false                     # KWS 开关（默认 false）
       model-dir-name: sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-23  # KWS 模型目录名
@@ -223,7 +223,7 @@ mica:
       # max-active-paths: 4              # 最大激活路径数
       # keywords-file: keywords.txt      # 关键词文件名（位于 model-dir-name 内）
 
-    # ===================== 音频降噪（v1.1+，需 gtcrn / dpdfnet 模型） =====================
+    # ===================== 音频降噪（需 gtcrn / dpdfnet 模型） =====================
     denoise:
       enabled: false                     # 降噪开关（默认 false）
       model-file-name: sherpa-onnx-gtcrn.onnx   # 降噪模型文件名（gtcrn / dfpdfnet）
@@ -245,7 +245,7 @@ mica:
 | `DiarizationService` | 说话人分离 | `DiarizationAutoConfiguration` |
 | `KwsService` | 关键词唤醒 | `KwsAutoConfiguration` |
 | `DenoiseService` | 音频降噪 | `DenoiseAutoConfiguration` |
-| `OfflineDiarizationTranscribeService` | 分离+转写（v1.1+） | `TranscribeAutoConfiguration` |
+| `OfflineDiarizationTranscribeService` | 分离+转写 | `TranscribeAutoConfiguration` |
 
 ```java
 @RestController
@@ -270,7 +270,7 @@ public class AsrController {
 }
 ```
 
-> v1.2+ 起，ASR 两个 Bean 不再注册为统一的 `AsrService` 接口类型，
+> 当前 ASR 两个 Bean 不再注册为统一的 `AsrService` 接口类型，
 > 而是按各自的具体类型 `OfflineAsrService` / `OnlineAsrService` 暴露，
 > 避免 Spring 容器出现同接口多 Bean 时的注入歧义。
 

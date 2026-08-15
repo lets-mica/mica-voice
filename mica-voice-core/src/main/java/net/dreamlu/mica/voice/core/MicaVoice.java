@@ -26,8 +26,8 @@ import java.util.Objects;
  *
  * <p>位于 {@code net.dreamlu.mica.voice.core} 包，作为 mica-voice 核心能力的"一级"入口。
  *
- * <p>v1.0：asr / onlineAsr / tts / speaker
- * <br>v1.1：vad / diarization / kws / denoise
+ * <p>基础能力：asr / onlineAsr / tts / speaker
+ * <br>扩展能力：vad / diarization / kws / denoise
  *
  * <p>门面返回的服务对象都实现了 {@link AutoCloseable}，强烈建议用 try-with-resources。
  *
@@ -39,7 +39,7 @@ public final class MicaVoice {
 	private MicaVoice() {
 	}
 
-	// =========================== v1.0 ===========================
+	// =========================== 基础能力 ===========================
 
 	/**
 	 * 离线 ASR。
@@ -108,7 +108,7 @@ public final class MicaVoice {
 		return new SpeakerEmbeddingService(props, config);
 	}
 
-	// =========================== v1.1 ===========================
+	// =========================== 扩展能力 ===========================
 
 	/**
 	 * VAD（语音活动检测）。
@@ -167,7 +167,7 @@ public final class MicaVoice {
 	}
 
 	/**
-	 * "说话人分离 + 转写"联合服务（v1.1+）。
+	 * "说话人分离 + 转写"联合服务。
 	 *
 	 * <p>传入 DiarizationService + AsrService（通常都使用 mica-voice 装配的离线版本，
 	 * 即 {@link OfflineAsrService}），返回组合后的转写结果：每个说话人在某段时间的文本。

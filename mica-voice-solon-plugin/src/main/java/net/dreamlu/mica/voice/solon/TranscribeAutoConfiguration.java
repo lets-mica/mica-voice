@@ -29,10 +29,10 @@ import org.noear.solon.annotation.Inject;
 /**
  * "说话人分离 + 转写"联合服务自动装配。
  *
- * <p>v1.1+。当 {@code mica.voice.asr.offline.enabled=true} 且
+ * <p>扩展能力。当 {@code mica.voice.asr.offline.enabled=true} 且
  * {@code mica.voice.diarization.enabled=true} 时生效。
  *
- * <p>v1.2+：依赖的 ASR 收紧为 {@link OfflineAsrService} 具体类型，避免
+ * <p>依赖的 ASR 收紧为 {@link OfflineAsrService} 具体类型，避免
  * 离线/在线两个 ASR 都实现同一接口时 {@code @Inject AsrService} 的歧义。
  *
  * @author dreamlu

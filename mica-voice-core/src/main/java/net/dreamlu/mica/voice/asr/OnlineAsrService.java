@@ -17,9 +17,9 @@ import java.util.function.Consumer;
 /**
  * 流式 ASR 服务（基于 sherpa-onnx {@code OnlineRecognizer}）。
  *
- * <p>v1.0：默认支持 Streaming Paraformer（encoder + decoder 拆分）。
- * <br>v1.1：新增 X-ASR（上海交大 Zipformer Transducer，encoder + decoder + joiner 三段式）、
- * + Zipformer / Zipformer2 CTC / NeMo CTC / 通用 Transducer。
+ * <p>默认支持 Streaming Paraformer（encoder + decoder 拆分）；
+ * 扩展支持 X-ASR（上海交大 Zipformer Transducer，encoder + decoder + joiner 三段式）、
+ * Zipformer / Zipformer2 CTC / NeMo CTC / 通用 Transducer。
  *
  * <p>典型用法：
  * <pre>

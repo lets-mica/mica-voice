@@ -51,25 +51,25 @@ mica:
       enabled: true
       threshold: 0.5
 
-    # VAD（v1.1，需要 silero_vad.onnx；开启后才会装配 VadService）
+    # VAD（需要 silero_vad.onnx；开启后才会装配 VadService）
     vad:
       enabled: false
       model-file-name: silero_vad.onnx
       sample-rate: 16000
       threshold: 0.5
 
-    # 说话人分离（v1.1）
+    # 说话人分离
     diarization:
       enabled: false
       segmentation-model-file-name: sherpa-onnx-pyannote-segmentation-3-0.onnx
       embedding-model-file-name: 3dspeaker_speech_eres2net_base_sv_zh-cn_3dspeaker_16k.onnx
 
-    # 关键词唤醒（v1.1）
+    # 关键词唤醒
     kws:
       enabled: false
       model-dir-name: sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-23
 
-    # 音频降噪（v1.1）
+    # 音频降噪
     denoise:
       enabled: false
       model-file-name: sherpa-onnx-gtcrn.onnx

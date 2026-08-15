@@ -52,7 +52,7 @@ body:
   - type: dropdown
     id: capability
     attributes:
-      label: 涉及的能力（v1.0/v1.1）
+      label: 涉及的能力
       description: mica-voice 一次会装多个能力，选最贴近的那个
       multiple: true
       options:

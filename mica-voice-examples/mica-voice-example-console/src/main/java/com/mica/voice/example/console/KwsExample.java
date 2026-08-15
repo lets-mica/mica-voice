@@ -14,8 +14,8 @@ import java.util.List;
 /**
  * 关键词唤醒（KWS / Keyword Spotting）。
  *
- * <p>模型目录：{@code sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-23/}（v1.1+；
- * 脚本里暂未提供 kws target，请从
+ * <p>模型目录：{@code sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-23/}
+ * （运行 {@code download-models.ps1 -Target kws} 下载，或从
  * <a href="https://github.com/k2-fsa/sherpa-onnx/releases/tag/kws-models">kws-models release</a>
  * 下载到 {@code models/} 根目录，并确保目录里有 {@code keywords.txt}）。
  *

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * VAD REST 端点（v1.1）。
+ * VAD REST 端点。
  *
  * <pre>
  *   POST /mica/voice/vad/detect  file=@input.wav

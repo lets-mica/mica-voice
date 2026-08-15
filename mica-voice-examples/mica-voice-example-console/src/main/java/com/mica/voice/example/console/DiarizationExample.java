@@ -14,15 +14,15 @@ import java.util.List;
 /**
  * 说话人分离（Speaker Diarization）。
  *
- * <p>需要两个模型文件（v1.1+）：
+ * <p>需要两个模型文件：
  * <ul>
  *     <li>{@code sherpa-onnx-pyannote-segmentation-3-0.onnx}（segmentation）</li>
  *     <li>{@code 3dspeaker_speech_eres2net_base_sv_zh-cn_3dspeaker_16k.onnx}（embedding，
  *         复用 speaker 脚本下载的声纹模型）</li>
  * </ul>
  *
- * <p>脚本里暂时未提供 diarization target，请手工下载或从 HuggingFace 镜像获取
- * pyannote segmentation 模型后放到 {@code models/} 根目录。
+ * <p>运行 {@code download-models.ps1 -Target diarization} 下载；embedding 模型与
+ * speaker target 共用，若已运行过 speaker 则无需重复下载。
  *
  * <p>测试音频：{@code 0-four-speakers-zh.wav}（来自 speaker 脚本，4 人对话，最适合看分离效果）。
  *

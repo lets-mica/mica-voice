@@ -14,8 +14,8 @@ import java.io.File;
 /**
  * 音频降噪（Denoise，GTCRN / DPDFNet）。
  *
- * <p>模型：{@code sherpa-onnx-gtcrn.onnx}（v1.1+；脚本里暂未提供 denoise target，
- * 可从 <a href="https://github.com/k2fsa/sherpa-onnx/releases/tag/denoise-models">denoise-models release</a>
+ * <p>模型：{@code sherpa-onnx-gtcrn.onnx}（运行 {@code download-models.ps1 -Target denoise} 下载，
+ * 或从 <a href="https://github.com/k2fsa/sherpa-onnx/releases/tag/speech-enhancement-models">speech-enhancement-models release</a>
  * 下载到 {@code models/} 根目录）。
  *
  * <p>测试音频：{@code 0-four-speakers-zh.wav}（任意 wav 都可；这里用它便于 demo）。

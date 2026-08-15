@@ -185,7 +185,7 @@ public class MicaVoiceProperties {
 	@Setter
 	public static class Vad {
 		/**
-		 * v1.1 才实现
+		 * 扩展能力
 		 */
 		private boolean enabled = false;
 		private String modelFileName = "silero_vad.onnx";
@@ -204,7 +204,7 @@ public class MicaVoiceProperties {
 	@Setter
 	public static class Diarization {
 		/**
-		 * v1.1 才实现
+		 * 扩展能力
 		 */
 		private boolean enabled = false;
 		private String segmentationModelFileName = "sherpa-onnx-pyannote-segmentation-3-0.onnx";
@@ -221,7 +221,7 @@ public class MicaVoiceProperties {
 	@Setter
 	public static class Kws {
 		/**
-		 * v1.1 才实现
+		 * 扩展能力
 		 */
 		private boolean enabled = false;
 		private String modelDirName = "sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-23";
@@ -239,7 +239,7 @@ public class MicaVoiceProperties {
 	@Setter
 	public static class Denoise {
 		/**
-		 * v1.1 才实现
+		 * 扩展能力
 		 */
 		private boolean enabled = false;
 		private String modelFileName = "sherpa-onnx-gtcrn.onnx";

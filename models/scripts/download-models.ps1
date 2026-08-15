@@ -14,8 +14,7 @@
 .PARAMETER Target
     下载目标：sensevoice / x-asr / asr / asr-online / tts / tts-fanchen / tts-zh-en /
               speaker / vad / denoise / denoise-dpdfnet / kws / diarization /
-              v11 / all（默认 all）
-              v11 = vad + denoise + kws + diarization（v1.1 新增能力）
+              all（默认 all）
 
 .PARAMETER Parts
     并行分段数（默认 4）
@@ -27,7 +26,6 @@
     .\models\scripts\download-models.ps1 -Target sensevoice
     .\models\scripts\download-models.ps1 -Target x-asr -Parts 6
     .\models\scripts\download-models.ps1 -Target vad
-    .\models\scripts\download-models.ps1 -Target v11
 #>
 param(
     [string]$Target = "all",
@@ -257,25 +255,25 @@ $targets = @{
         @{ url = "$GITHUB/speaker-recongition-models/3dspeaker_speech_eres2net_base_sv_zh-cn_3dspeaker_16k.onnx"; out = "$ModelsDir/3dspeaker_speech_eres2net_base_sv_zh-cn_3dspeaker_16k.onnx" },
         @{ url = "$GITHUB/speaker-segmentation-models/0-four-speakers-zh.wav"; out = "$ModelsDir/0-four-speakers-zh.wav" }
     )
-    # VAD（v1.1）：SILERO VAD 单文件，放 models/ 根
+    # VAD：SILERO VAD 单文件，放 models/ 根
     vad = @(
         @{ url = "$GITHUB/asr-models/silero_vad.onnx"; out = "$ModelsDir/silero_vad.onnx" }
     )
-    # Denoise GTCRN（v1.1）：speech-enhancement-models 单文件，保存为 mica-voice 默认名
+    # Denoise GTCRN：speech-enhancement-models 单文件，保存为 mica-voice 默认名
     denoise = @(
         @{ url = "$GITHUB/speech-enhancement-models/gtcrn_simple.onnx"; out = "$ModelsDir/sherpa-onnx-gtcrn.onnx" }
     )
-    # Denoise DPDFNet（v1.1）：高质量离线降噪，16kHz baseline
+    # Denoise DPDFNet：高质量离线降噪，16kHz baseline
     "denoise-dpdfnet" = @(
         @{ url = "$GITHUB/speech-enhancement-models/dpdfnet_baseline.onnx"; out = "$ModelsDir/sherpa-onnx-dpdfnet.onnx" }
     )
-    # KWS（v1.1）：下载 tarball 解压；解压后会把 epoch/chunk 后缀的文件复制成 mica-voice 默认期望的 encoder/decoder/joiner/tokens.txt
+    # KWS：下载 tarball 解压；解压后会把 epoch/chunk 后缀的文件复制成 mica-voice 默认期望的 encoder/decoder/joiner/tokens.txt
     #   mica-voice KwsConfig 默认 modelDirName = sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-01
     #   KwsConfig 默认 keywordsFile   = keywords.txt（位于 modelDirName 内）
     kws = @(
         @{ url = "$GITHUB/kws-models/sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-01.tar.bz2"; out = "$ModelsDir/sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-01.tar.bz2" }
     )
-    # 说话人分离（v1.1）：下载 tarball，解压后把 model.onnx 复制成 mica-voice 默认期望的单文件命名
+    # 说话人分离：下载 tarball，解压后把 model.onnx 复制成 mica-voice 默认期望的单文件命名
     #   mica-voice DiarizationConfig 默认 segmentationModelFileName = sherpa-onnx-pyannote-segmentation-3-0.onnx（位于 models/ 根）
     #   embedding 模型由 `speaker` target 负责
     diarization = @(
@@ -286,12 +284,8 @@ $targets = @{
 # 选择目标（兼容 asr-sensevoice 别名）
 $selected = @()
 if ($Target -eq "asr-sensevoice") { $Target = "sensevoice" }
-if ($Target -eq "v11") {
-    foreach ($k in @("vad", "denoise", "kws", "diarization")) {
-        $selected += $targets[$k]
-    }
-} elseif ($Target -eq "all") {
-    foreach ($k in @("sensevoice", "x-asr", "asr", "asr-online", "tts", "tts-fanchen", "speaker", "vad", "denoise", "kws", "diarization")) {
+if ($Target -eq "all") {
+    foreach ($k in @("sensevoice", "x-asr", "asr", "asr-online", "tts", "tts-fanchen", "tts-zh-en", "speaker", "vad", "denoise", "kws", "diarization")) {
         $selected += $targets[$k]
     }
 } elseif ($targets.ContainsKey($Target)) {
@@ -299,7 +293,7 @@ if ($Target -eq "v11") {
 } else {
     Write-Host "未知目标: $Target"
     Write-Host "可选: asr-sensevoice / sensevoice / x-asr / asr / asr-online / tts / tts-fanchen / tts-zh-en /"
-    Write-Host "      speaker / vad / denoise / denoise-dpdfnet / kws / diarization / v11 / all"
+    Write-Host "      speaker / vad / denoise / denoise-dpdfnet / kws / diarization / all"
     exit 1
 }
 
