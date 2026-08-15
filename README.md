@@ -18,7 +18,7 @@
 | `mica-voice-solon-plugin` | **Solon 自动装配插件**。同样的 `mica.voice.*` 配置树，一行接入 Solon 应用（JDK 8 ~ 26） |
 | `mica-voice-examples` | **集成示例聚合**，展示 mica-voice 在真实业务场景下怎么用 |
 
-### `mica-voice-examples` 子模块（按需展开）
+### `mica-voice-examples` 子模块（使用示例）
 
 | 子模块 | 作用 |
 | ------ | ---- |
