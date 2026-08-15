@@ -9,6 +9,8 @@
 >
 > 基于 [`mica-sherpa-onnx`](https://github.com/lets-mica/mica-sherpa-onnx)（已发布 Maven Central 的 sherpa-onnx 全平台 fat jar）。
 
+[✨✨✨推广：**BladeX 物联网平台**✨✨✨iot.bladex.cn](https://iot.bladex.cn?from=mica-mqtt)
+
 ## 模块一览
 
 | 模块 | 作用 |
@@ -318,3 +320,9 @@ public class AsrController {
 ## License
 
 Apache License 2.0 — 详见 [LICENSE](LICENSE)。
+
+## 微信
+
+![如梦技术](docs/images/dreamlu-weixin.jpg)
+
+**JAVA架构日记**，精彩内容每日推荐！
