@@ -20,6 +20,7 @@ import net.dreamlu.mica.voice.asr.OfflineAsrService;
 import net.dreamlu.mica.voice.asr.OnlineAsrService;
 import net.dreamlu.mica.voice.speaker.SpeakerService;
 import net.dreamlu.mica.voice.tts.TtsService;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.SimpleSolonApp;
 import org.noear.solon.annotation.Inject;
@@ -82,11 +83,23 @@ class TypedBeanInjectionTest {
 		return "models";
 	}
 
+	private static boolean modelDirExists(String modelsDir, String subDirName) {
+		File sub = new File(modelsDir, subDirName);
+		return sub.isDirectory();
+	}
+
 	@Test
 	void beansAreResolvableByType() throws Throwable {
+		String modelsDir = resolveModelsDir();
+		// CI 环境可能未下载模型，跳过此测试（避免触发真实 Bean 创建时的 ModelNotFoundException）
+		boolean asrModelOk = modelDirExists(modelsDir, "sherpa-onnx-paraformer-zh-small-2024-03-09");
+		boolean ttsModelOk = modelDirExists(modelsDir, "vits-icefall-zh-aishell3");
+		Assumptions.assumeTrue(asrModelOk && ttsModelOk,
+			"跳过 TypedBeanInjectionTest：模型目录不存在（未运行 download-models.sh），无法创建真实 Service Bean");
+
 		SimpleSolonApp app = new SimpleSolonApp(TypedBeanInjectionTest.class);
 		app.cfg().put("mica.voice.enabled", "true");
-		app.cfg().put("mica.voice.models-dir", resolveModelsDir());
+		app.cfg().put("mica.voice.models-dir", modelsDir);
 		app.cfg().put("mica.voice.asr.offline.enabled", "true");
 		app.cfg().put("mica.voice.asr.online.enabled", "false");
 		app.cfg().put("mica.voice.tts.enabled", "true");

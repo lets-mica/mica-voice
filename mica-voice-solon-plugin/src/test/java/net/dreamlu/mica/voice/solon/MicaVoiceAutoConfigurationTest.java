@@ -18,6 +18,7 @@ package net.dreamlu.mica.voice.solon;
 
 import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.SimpleSolonApp;
 import org.noear.solon.Utils;
@@ -60,6 +61,14 @@ class MicaVoiceAutoConfigurationTest {
 			return parentModels.getAbsolutePath();
 		}
 		return "models";
+	}
+
+	/**
+	 * 检查指定子目录（相对于 modelsDir）是否存在，用于判断模型是否已下载。
+	 */
+	private static boolean modelDirExists(String modelsDir, String subDirName) {
+		File sub = new File(modelsDir, subDirName);
+		return sub.isDirectory();
 	}
 
 	@Test
@@ -140,34 +149,26 @@ class MicaVoiceAutoConfigurationTest {
 	}
 
 	@Test
-	void shouldNotCreateAsrServiceBeanWhenOfflineDisabled() throws Exception {
+	void shouldNotCreateAsrServiceBeanWhenOfflineDisabled() throws Throwable {
 		SimpleSolonApp app = new SimpleSolonApp(MicaVoiceAutoConfigurationTest.class);
 		app.cfg().put("mica.voice.enabled", "true");
-		// 动态定位 models 目录，确保 TTS/Speaker 能加载真实模型
-		app.cfg().put("mica.voice.models-dir", resolveModelsDir());
+		// 本测试聚焦 ASR 禁用条件；同时禁用 TTS/Speaker，避免 CI 环境无模型时 Bean 创建异常
 		app.cfg().put("mica.voice.asr.offline.enabled", "false");
 		app.cfg().put("mica.voice.asr.online.enabled", "false");
-		AtomicReference<Throwable> reference = new AtomicReference<>();
-		try {
-			app.start(null);
-		} catch (Throwable e) {
-			e = Utils.throwableUnwrap(e.getCause());
-			while (e.getCause() != null) {
-				e = e.getCause();
-			}
-			reference.set(e);
-		}
+		app.cfg().put("mica.voice.tts.enabled", "false");
+		app.cfg().put("mica.voice.speaker.enabled", "false");
+		app.start(null);
 
-		// micaVoiceOfflineAsrService 没创建；其他能力同理
+		// ASR 相关 Bean 在 disabled 时不创建
 		assertNull(app.context().getBean("micaVoiceOfflineAsrService"));
 		assertNull(app.context().getBean("micaVoiceOnlineAsrService"));
 		assertNull(app.context().getBean("micaVoiceVadService"));
 		assertNull(app.context().getBean("micaVoiceDiarizationService"));
 		assertNull(app.context().getBean("micaVoiceKwsService"));
 		assertNull(app.context().getBean("micaVoiceDenoiseService"));
-		// micaVoiceTtsService / micaVoiceSpeakerService 默认启用
-		assertNotNull(app.context().getBean("micaVoiceTtsService"));
-		assertNotNull(app.context().getBean("micaVoiceSpeakerService"));
+		// TTS / Speaker 在 disabled 时也不创建（同样验证各自的条件装配生效）
+		assertNull(app.context().getBean("micaVoiceTtsService"));
+		assertNull(app.context().getBean("micaVoiceSpeakerService"));
 
 		// 联合服务不应装配（缺 offline-asr + diarization）
 		assertNull(app.context().getBean("micaVoiceDiarizationTranscribeService"));
