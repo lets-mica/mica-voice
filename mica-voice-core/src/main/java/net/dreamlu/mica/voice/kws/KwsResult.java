@@ -3,6 +3,8 @@ package net.dreamlu.mica.voice.kws;
 import lombok.Builder;
 import lombok.Value;
 
+import java.util.List;
+
 /**
  * 一次关键词识别结果（不可变）。
  *
@@ -19,7 +21,7 @@ public class KwsResult {
 	/**
 	 * 命中的 token 序列（用于调试）。
 	 */
-	java.util.List<String> tokens;
+	List<String> tokens;
 	/**
 	 * 时间戳（秒），与 {@link #tokens} 一一对应。
 	 */

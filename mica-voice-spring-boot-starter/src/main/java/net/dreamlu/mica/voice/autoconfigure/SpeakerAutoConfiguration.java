@@ -14,6 +14,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Arrays;
+
 /**
  * 声纹识别自动装配。
  *
@@ -45,7 +47,7 @@ public class SpeakerAutoConfiguration {
 			.embeddingTimeoutMs(cfg.getEmbeddingTimeoutMs())
 			.build();
 		log.info("mica-voice 装配 SpeakerService: threshold={}, candidates={}",
-			cfg.getThreshold(), java.util.Arrays.toString(cfg.getModelCandidates()));
+			cfg.getThreshold(), Arrays.toString(cfg.getModelCandidates()));
 		return MicaVoice.speaker(coreProps, speakerConfig);
 	}
 }

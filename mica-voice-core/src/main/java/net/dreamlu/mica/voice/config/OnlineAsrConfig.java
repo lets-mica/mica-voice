@@ -17,9 +17,21 @@ import java.util.Locale;
 @Setter
 public class OnlineAsrConfig {
 
+	/**
+	 * 模型目录名（位于全局 modelsDir 下的子目录）。
+	 */
 	private String modelDirName;
+	/**
+	 * 流式模型家族。
+	 */
 	private ModelType modelType = ModelType.PARAFORMER;
+	/**
+	 * 推理线程数；为 null 时回退到 {@link MicaVoiceConfig#getThreads()}。
+	 */
 	private Integer threads;
+	/**
+	 * 是否输出 sherpa-onnx 调试日志。
+	 */
 	private boolean debug;
 	/**
 	 * 是否启用 endpoint（句尾静音自动结束）
@@ -81,6 +93,11 @@ public class OnlineAsrConfig {
 	public OnlineAsrConfig() {
 	}
 
+	/**
+	 * 便捷构造：仅指定模型目录。
+	 *
+	 * @param modelDirName 模型目录名
+	 */
 	public OnlineAsrConfig(String modelDirName) {
 		this.modelDirName = modelDirName;
 	}

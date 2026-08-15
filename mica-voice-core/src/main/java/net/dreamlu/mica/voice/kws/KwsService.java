@@ -21,6 +21,9 @@ public interface KwsService extends AutoCloseable {
 
 	/**
 	 * 对完整音频做关键词识别，返回所有命中（按出现顺序）。
+	 *
+	 * @param audio 完整音频
+	 * @return 命中的关键词结果列表；无命中时返回空列表（不为 null）
 	 */
 	List<KwsResult> spot(AudioData audio);
 

@@ -27,6 +27,8 @@ import org.noear.solon.core.AppContext;
 import java.io.File;
 import java.util.concurrent.atomic.AtomicReference;
 
+import java.io.File;
+
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -140,8 +142,8 @@ class MicaVoiceAutoConfigurationTest {
 		MicaVoiceConfig coreProps =
 			app.context().getBean(MicaVoiceConfig.class);
 		assertNotNull(coreProps);
-		Assertions.assertEquals(new java.io.File("/tmp/test-models"), coreProps.getModelsDir());
-		Assertions.assertEquals(new java.io.File("/tmp/test-output"), coreProps.getOutputDir());
+		Assertions.assertEquals(new File("/tmp/test-models"), coreProps.getModelsDir());
+		Assertions.assertEquals(new File("/tmp/test-output"), coreProps.getOutputDir());
 		Assertions.assertEquals(8, coreProps.getThreads());
 		Assertions.assertTrue(coreProps.isDebug());
 

@@ -22,15 +22,32 @@ import lombok.Setter;
 @Builder
 public class TtsConfig {
 
+	/**
+	 * 模型目录名（位于全局 modelsDir 下的子目录）。
+	 */
 	private String modelDirName;
 
+	/**
+	 * 便捷构造：仅指定模型目录。
+	 *
+	 * @param modelDirName 模型目录名
+	 */
 	public TtsConfig(String modelDirName) {
 		this.modelDirName = modelDirName;
 	}
 
+	/**
+	 * TTS 模型家族，默认 {@link ModelType#VITS}。
+	 */
 	@Builder.Default
 	private ModelType modelType = ModelType.VITS;
+	/**
+	 * 推理线程数；为 null 时回退到 {@link MicaVoiceConfig#getThreads()}。
+	 */
 	private Integer threads;
+	/**
+	 * 是否输出 sherpa-onnx 调试日志。
+	 */
 	private boolean debug;
 	/**
 	 * 默认说话人 id
@@ -48,9 +65,21 @@ public class TtsConfig {
 	@Builder.Default
 	private int callbackSampleStep = 1600;
 
+	/**
+	 * TTS 模型家族。
+	 */
 	public enum ModelType {
+		/**
+		 * VITS（主流轻量模型）
+		 */
 		VITS,
+		/**
+		 * Matcha（Matcha-TTS，ACE 前端）
+		 */
 		MATCHA,
+		/**
+		 * Kokoro
+		 */
 		KOKORO,
 		/**
 		 * 自动（v1 仅支持 VITS，留作扩展）
@@ -60,6 +89,8 @@ public class TtsConfig {
 
 	/**
 	 * null → VITS 的兜底（setter 路径）。
+	 *
+	 * @param modelType 模型家族，null 时回退到 {@link ModelType#VITS}
 	 */
 	public void setModelType(ModelType modelType) {
 		this.modelType = modelType == null ? ModelType.VITS : modelType;

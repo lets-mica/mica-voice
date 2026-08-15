@@ -22,16 +22,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 @Slf4j
 public class KeywordSpotterService implements KwsService {
-
-	private final MicaVoiceConfig props;
-	private final KwsConfig config;
 	private final KeywordSpotter spotter;
 	private final AtomicBoolean closed = new AtomicBoolean(false);
 
+	/**
+	 * 构造 KWS / 关键词唤醒服务。
+	 *
+	 * @param props  全局 mica-voice 配置
+	 * @param config KWS 配置
+	 */
 	public KeywordSpotterService(MicaVoiceConfig props, KwsConfig config) {
-		this.props = props;
-		this.config = config;
-
 		String modelDir = new File(props.getModelsDir(), config.getModelDirName()).getAbsolutePath();
 		String encoder = ModelFileUtil.firstExisting(modelDir,
 			"encoder.int8.onnx", "encoder.onnx");
@@ -115,6 +115,9 @@ public class KeywordSpotterService implements KwsService {
 		}
 	}
 
+	/**
+	 * 确保服务未被关闭，否则抛出 IllegalStateException。
+	 */
 	private void ensureOpen() {
 		if (closed.get()) {
 			throw new IllegalStateException("KeywordSpotterService 已关闭");
@@ -133,12 +136,19 @@ public class KeywordSpotterService implements KwsService {
 	}
 
 	/**
-	 * 在指定目录下查找第一个存在的文件。
+	 * KWS 模型文件查找工具：在给定目录下按候选名依次查找，返回第一个存在的文件路径。
 	 */
 	private static final class ModelFileUtil {
 		private ModelFileUtil() {
 		}
 
+		/**
+		 * 在给定目录下按候选名查找第一个存在的文件。
+		 *
+		 * @param dir        目录绝对路径
+		 * @param candidates 文件候选名
+		 * @return 第一个存在的文件绝对路径；都不存在时返回 null
+		 */
 		static String firstExisting(String dir, String... candidates) {
 			for (String n : candidates) {
 				File f = new File(dir, n);

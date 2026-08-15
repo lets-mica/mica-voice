@@ -2,6 +2,7 @@ package net.dreamlu.mica.voice.vad;
 
 import com.k2fsa.sherpa.onnx.SileroVadModelConfig;
 import com.k2fsa.sherpa.onnx.SpeechSegment;
+import com.k2fsa.sherpa.onnx.TenVadModelConfig;
 import com.k2fsa.sherpa.onnx.Vad;
 import com.k2fsa.sherpa.onnx.VadModelConfig;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,12 @@ public class SileroVadService implements VadService {
 	private final int sampleRate;
 	private final AtomicBoolean closed = new AtomicBoolean(false);
 
+	/**
+	 * 构造 VAD 服务（默认 SILERO）。
+	 *
+	 * @param props  全局 mica-voice 配置
+	 * @param config VAD 配置
+	 */
 	public SileroVadService(MicaVoiceConfig props, VadConfig config) {
 		this.props = props;
 		this.config = config;
@@ -61,15 +68,14 @@ public class SileroVadService implements VadService {
 				break;
 			case TEN:
 				// TEN VAD 沿用同一份 silero builder 风格（实际类不同：TenVadModelConfig）
-				com.k2fsa.sherpa.onnx.TenVadModelConfig ten =
-					com.k2fsa.sherpa.onnx.TenVadModelConfig.builder()
-						.setModel(modelPath)
-						.setThreshold(config.getThreshold())
-						.setMinSilenceDuration(config.getMinSilenceDuration())
-						.setMinSpeechDuration(config.getMinSpeechDuration())
-						.setWindowSize(config.getWindowSize())
-						.setMaxSpeechDuration(config.getMaxSpeechDuration())
-						.build();
+				TenVadModelConfig ten = TenVadModelConfig.builder()
+					.setModel(modelPath)
+					.setThreshold(config.getThreshold())
+					.setMinSilenceDuration(config.getMinSilenceDuration())
+					.setMinSpeechDuration(config.getMinSpeechDuration())
+					.setWindowSize(config.getWindowSize())
+					.setMaxSpeechDuration(config.getMaxSpeechDuration())
+					.build();
 				modelBuilder.setTenVadModelConfig(ten);
 				break;
 			default:
@@ -85,6 +91,11 @@ public class SileroVadService implements VadService {
 			modelPath, sampleRate, threads, config.getModelType());
 	}
 
+	/**
+	 * 在 modelsDir 下查找 VAD 模型文件：先直接放根目录查找，否则递归查找；最终兜底抛 ModelNotFoundException。
+	 *
+	 * @return 模型绝对路径
+	 */
 	private String resolveModel() {
 		String name = config.getModelFileName();
 		// 1. 在 modelsDir 根目录直接查找
@@ -173,6 +184,9 @@ public class SileroVadService implements VadService {
 		vad.clear();
 	}
 
+	/**
+	 * 确保服务未被关闭，否则抛出 IllegalStateException。
+	 */
 	private void ensureOpen() {
 		if (closed.get()) {
 			throw new IllegalStateException("SileroVadService 已关闭");

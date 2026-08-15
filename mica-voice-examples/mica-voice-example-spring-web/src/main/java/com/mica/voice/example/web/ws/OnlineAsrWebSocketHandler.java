@@ -1,6 +1,7 @@
 package com.mica.voice.example.web.ws;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.k2fsa.sherpa.onnx.OnlineRecognizerResult;
 import com.k2fsa.sherpa.onnx.OnlineStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -249,7 +250,7 @@ public class OnlineAsrWebSocketHandler extends TextWebSocketHandler {
 
 	private String readStreamText(SessionContext ctx) {
 		try {
-			com.k2fsa.sherpa.onnx.OnlineRecognizerResult result =
+			OnlineRecognizerResult result =
 				onlineAsrProvider.getObject().getRecognizer().getResult(ctx.stream);
 			String text = result.getText();
 			return text == null ? "" : text.trim();

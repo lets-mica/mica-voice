@@ -30,6 +30,8 @@ public class VadSegment {
 
 	/**
 	 * 时长（秒）。
+	 *
+	 * @return 片段时长（秒）
 	 */
 	public float durationSeconds() {
 		return samples.length / (float) sampleRate;

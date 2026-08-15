@@ -15,6 +15,9 @@ public interface DiarizationService extends AutoCloseable {
 
 	/**
 	 * 对一段完整音频做说话人分离。
+	 *
+	 * @param audio 待分析的完整音频
+	 * @return 说话人片段列表（按时间顺序）
 	 */
 	List<DiarizationSegment> diarize(AudioData audio);
 

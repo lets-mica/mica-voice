@@ -24,6 +24,12 @@ public class OfflineSpeechDenoiserService implements DenoiseService {
 	private final OfflineSpeechDenoiser denoiser;
 	private final AtomicBoolean closed = new AtomicBoolean(false);
 
+	/**
+	 * 构造离线降噪服务。
+	 *
+	 * @param props  全局 mica-voice 配置
+	 * @param config 降噪配置
+	 */
 	public OfflineSpeechDenoiserService(MicaVoiceConfig props, DenoiseConfig config) {
 		this.props = props;
 		this.config = config;
@@ -64,6 +70,12 @@ public class OfflineSpeechDenoiserService implements DenoiseService {
 		log.info("OfflineSpeechDenoiser 初始化完成: model={}, type={}", modelPath, config.getModelType());
 	}
 
+	/**
+	 * 在 modelsDir 下查找降噪模型文件：先直接放根目录查找，否则递归查找。
+	 *
+	 * @return 模型绝对路径
+	 * @throws EngineException 找不到模型时抛出
+	 */
 	private String resolveModel() {
 		String name = config.getModelFileName();
 		File direct = new File(props.getModelsDir(), name);
@@ -97,6 +109,9 @@ public class OfflineSpeechDenoiserService implements DenoiseService {
 		}
 	}
 
+	/**
+	 * 确保服务未被关闭，否则抛出 IllegalStateException。
+	 */
 	private void ensureOpen() {
 		if (closed.get()) {
 			throw new IllegalStateException("OfflineSpeechDenoiserService 已关闭");

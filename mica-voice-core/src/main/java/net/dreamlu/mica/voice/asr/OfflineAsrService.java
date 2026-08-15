@@ -11,6 +11,7 @@ import net.dreamlu.mica.voice.exception.EngineException;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -40,6 +41,12 @@ public class OfflineAsrService implements AsrService {
 	private final OfflineRecognizer recognizer;
 	private final AtomicBoolean closed = new AtomicBoolean(false);
 
+	/**
+	 * 构造离线 ASR 服务。
+	 *
+	 * @param props  全局配置（模型根目录、线程数等）
+	 * @param config 离线 ASR 配置（必须设置 modelDirName）
+	 */
 	public OfflineAsrService(MicaVoiceConfig props, AsrConfig config) {
 		this.config = config;
 
@@ -74,7 +81,13 @@ public class OfflineAsrService implements AsrService {
 	}
 
 	/**
-	 * 简单的 Whisper decoder 路径推导：把 .encoder.onnx → .decoder.onnx
+	 * 根据 Whisper encoder 模型路径推导对应的 decoder 模型路径。
+	 *
+	 * <p>Whisper 模型拆分为 encoder + decoder 两段文件，命名通常形如
+	 * {@code xxx.encoder.onnx} 与 {@code xxx.decoder.onnx}。
+	 *
+	 * @param encoderPath encoder onnx 文件的绝对路径
+	 * @return 同名前缀 + {@code .decoder.onnx} 的路径；推导失败时返回基于兜底规则的路径
 	 */
 	private static String deriveWhisperDecoder(String encoderPath) {
 		if (encoderPath == null) return null;
@@ -89,6 +102,13 @@ public class OfflineAsrService implements AsrService {
 		return encoderPath + ".decoder.onnx";
 	}
 
+	/**
+	 * 根据 {@link AsrConfig.ModelType} 把对应的 sherpa-onnx Offline*ModelConfig
+	 * 设置到 builder 上（仅设置模型族特定字段，tokens / numThreads / debug 由外部统一设置）。
+	 *
+	 * @param b         sherpa-onnx OfflineModelConfig.Builder
+	 * @param modelPath 主模型（int8 优先）绝对路径
+	 */
 	private void applyModelSpecificConfig(OfflineModelConfig.Builder b, String modelPath) {
 		AsrConfig.ModelType type = config.getModelType();
 		if (type == null || type == AsrConfig.ModelType.AUTO) {
@@ -161,6 +181,12 @@ public class OfflineAsrService implements AsrService {
 		return doRecognize(audio);
 	}
 
+	/**
+	 * 统一的离线识别执行流程：创建 stream → 送入波形 → decode → 取结果 → 释放 stream。
+	 *
+	 * @param audio 单声道 float[] 音频
+	 * @return 识别结果
+	 */
 	private AsrResult doRecognize(AudioData audio) {
 		long start = System.currentTimeMillis();
 		OfflineStream stream = recognizer.createStream();
@@ -173,7 +199,7 @@ public class OfflineAsrService implements AsrService {
 			String[] tokens = r.getTokens();
 			List<String> tokenList = new ArrayList<>();
 			if (tokens != null) {
-				java.util.Collections.addAll(tokenList, tokens);
+				Collections.addAll(tokenList, tokens);
 			}
 			return new AsrResult(
 				r.getText(),
@@ -189,6 +215,9 @@ public class OfflineAsrService implements AsrService {
 		}
 	}
 
+	/**
+	 * 确保服务未被关闭，否则抛出 IllegalStateException。
+	 */
 	private void ensureOpen() {
 		if (closed.get()) {
 			throw new IllegalStateException("OfflineAsrService 已关闭");

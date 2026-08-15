@@ -17,9 +17,21 @@ import java.util.Objects;
 @Value
 public class AudioData {
 
+	/**
+	 * 单声道音频样本（取值范围 {@code [-1.0f, 1.0f]}）。
+	 */
 	float[] samples;
+	/**
+	 * 采样率（Hz），例如 16000 / 22050 / 44100。
+	 */
 	int sampleRate;
 
+	/**
+	 * 构造一份音频数据。
+	 *
+	 * @param samples    单声道 float[] 样本，必须非空
+	 * @param sampleRate 采样率，必须大于 0
+	 */
 	public AudioData(float[] samples, int sampleRate) {
 		Objects.requireNonNull(samples, "samples");
 		if (sampleRate <= 0) {

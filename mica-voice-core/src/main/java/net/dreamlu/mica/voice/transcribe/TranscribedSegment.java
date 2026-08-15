@@ -36,7 +36,9 @@ public class TranscribedSegment {
 	Float confidence;
 
 	/**
-	 * 时长（毫秒）
+	 * 时长（毫秒）。
+	 *
+	 * @return {@code endMs - startMs}
 	 */
 	public long durationMs() {
 		return endMs - startMs;

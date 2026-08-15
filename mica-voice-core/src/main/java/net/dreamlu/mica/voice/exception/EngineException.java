@@ -12,10 +12,17 @@ public class EngineException extends MicaVoiceException {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * @param message 错误信息
+	 */
 	public EngineException(String message) {
 		super(message);
 	}
 
+	/**
+	 * @param message 错误信息
+	 * @param cause   原始异常
+	 */
 	public EngineException(String message, Throwable cause) {
 		super(message, cause);
 	}

@@ -32,6 +32,12 @@ public class PyannoteDiarizationService implements DiarizationService {
 	private final OfflineSpeakerDiarization diarization;
 	private final AtomicBoolean closed = new AtomicBoolean(false);
 
+	/**
+	 * 构造基于 Pyannote 的说话人分离服务。
+	 *
+	 * @param props  全局 mica-voice 配置
+	 * @param config 说话人分离配置
+	 */
 	public PyannoteDiarizationService(MicaVoiceConfig props, DiarizationConfig config) {
 		this.props = props;
 		this.config = config;
@@ -81,6 +87,13 @@ public class PyannoteDiarizationService implements DiarizationService {
 		log.info("SpeakerDiarization 初始化完成: segmentation={}, embedding={}", segmentationPath, embeddingPath);
 	}
 
+	/**
+	 * 在 modelsDir 下查找指定名称的模型：先直接放根目录查找，否则递归查找。
+	 *
+	 * @param fileName 模型文件名
+	 * @return 模型绝对路径
+	 * @throws EngineException 找不到模型时抛出
+	 */
 	private String resolveModel(String fileName) {
 		File direct = new File(props.getModelsDir(), fileName);
 		if (direct.isFile()) {
@@ -119,12 +132,17 @@ public class PyannoteDiarizationService implements DiarizationService {
 
 	/**
 	 * 暴露底层 {@link OfflineSpeakerDiarization} 给高级用法（如联合 ASR）。
+	 *
+	 * @return sherpa-onnx 原生 SpeakerDiarization 实例
 	 */
 	public OfflineSpeakerDiarization getDiarization() {
 		ensureOpen();
 		return diarization;
 	}
 
+	/**
+	 * 确保服务未被关闭，否则抛出 IllegalStateException。
+	 */
 	private void ensureOpen() {
 		if (closed.get()) {
 			throw new IllegalStateException("PyannoteDiarizationService 已关闭");

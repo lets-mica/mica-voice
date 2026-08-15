@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -71,9 +72,9 @@ public class ModelInfoController {
 		resp.put("modelsDir", dir == null ? null : dir.getAbsolutePath());
 		if (dir != null && dir.isDirectory()) {
 			String[] subdirs = dir.list((d, n) -> new File(d, n).isDirectory());
-			resp.put("subdirs", subdirs == null ? java.util.Collections.emptyList() : Arrays.asList(subdirs));
+			resp.put("subdirs", subdirs == null ? Collections.emptyList() : Arrays.asList(subdirs));
 		} else {
-			resp.put("subdirs", java.util.Collections.emptyList());
+			resp.put("subdirs", Collections.emptyList());
 		}
 		return resp;
 	}

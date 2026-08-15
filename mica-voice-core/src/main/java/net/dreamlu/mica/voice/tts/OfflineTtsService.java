@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 /**
  * sherpa-onnx {@code OfflineTts} 的 mica-voice 适配（VITS）。
@@ -60,6 +61,12 @@ public class OfflineTtsService implements TtsService {
 	private final OfflineTts tts;
 	private final AtomicBoolean closed = new AtomicBoolean(false);
 
+	/**
+	 * 构造离线 TTS 服务。
+	 *
+	 * @param props  全局 mica-voice 配置
+	 * @param config TTS 配置
+	 */
 	public OfflineTtsService(MicaVoiceConfig props, TtsConfig config) {
 		this.props = props;
 		this.config = config;
@@ -149,6 +156,10 @@ public class OfflineTtsService implements TtsService {
 
 	/**
 	 * 在模型目录里按优先级查找存在的 rule FST 文件，返回按 {@link #RULE_FST_CANDIDATES} 顺序拼接好的列表。
+	 *
+	 * @param modelDir   模型目录绝对路径
+	 * @param candidates 候选文件名数组（按优先级）
+	 * @return 找到的文件绝对路径列表（顺序与 candidates 一致）
 	 */
 	private static List<String> resolveRuleFiles(String modelDir, String[] candidates) {
 		List<String> found = new ArrayList<>(candidates.length);
@@ -186,7 +197,7 @@ public class OfflineTtsService implements TtsService {
 	}
 
 	@Override
-	public TtsAudio synthesizeWithCallback(String text, java.util.function.Consumer<float[]> callback) {
+	public TtsAudio synthesizeWithCallback(String text, Consumer<float[]> callback) {
 		ensureOpen();
 		long start = System.currentTimeMillis();
 		int step = config.getCallbackSampleStep() <= 0 ? 1600 : config.getCallbackSampleStep();
@@ -222,6 +233,10 @@ public class OfflineTtsService implements TtsService {
 
 	/**
 	 * 把 TtsAudio 写成 wav 文件。
+	 *
+	 * @param audio   TTS 合成结果
+	 * @param outFile 目标 wav 文件
+	 * @return 是否成功保存
 	 */
 	public boolean saveWav(TtsAudio audio, File outFile) {
 		ensureOpen();
@@ -233,6 +248,9 @@ public class OfflineTtsService implements TtsService {
 		}
 	}
 
+	/**
+	 * 确保服务未被关闭，否则抛出 IllegalStateException。
+	 */
 	private void ensureOpen() {
 		if (closed.get()) {
 			throw new IllegalStateException("OfflineTtsService 已关闭");

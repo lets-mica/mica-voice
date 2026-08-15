@@ -11,14 +11,24 @@ public class MicaVoiceException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * @param message 错误信息
+	 */
 	public MicaVoiceException(String message) {
 		super(message);
 	}
 
+	/**
+	 * @param message 错误信息
+	 * @param cause   原始异常
+	 */
 	public MicaVoiceException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
+	/**
+	 * @param cause 原始异常
+	 */
 	public MicaVoiceException(Throwable cause) {
 		super(cause);
 	}

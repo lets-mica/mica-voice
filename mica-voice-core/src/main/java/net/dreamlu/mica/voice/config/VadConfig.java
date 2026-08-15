@@ -30,8 +30,14 @@ public class VadConfig {
 	public static final String[] DEFAULT_MODEL_CANDIDATES = new String[]{
 		"silero_vad.onnx"
 	};
+	/**
+	 * VAD 模型文件名（位于全局 modelsDir 根目录）。
+	 */
 	@Builder.Default
 	private String modelFileName = "silero_vad.onnx";
+	/**
+	 * VAD 模型家族。
+	 */
 	@Builder.Default
 	private ModelType modelType = ModelType.SILERO;
 	/**
@@ -39,7 +45,13 @@ public class VadConfig {
 	 */
 	@Builder.Default
 	private int sampleRate = 16000;
+	/**
+	 * 推理线程数；为 null 时回退到 {@link MicaVoiceConfig#getThreads()}。
+	 */
 	private Integer threads;
+	/**
+	 * 是否输出 sherpa-onnx 调试日志。
+	 */
 	private boolean debug;
 	/**
 	 * 触发语音的阈值（越高越严格）
@@ -67,8 +79,17 @@ public class VadConfig {
 	@Builder.Default
 	private int windowSize = 512;
 
+	/**
+	 * VAD 模型家族。
+	 */
 	public enum ModelType {
+		/**
+		 * SILERO VAD：默认推荐（轻量、CPU 友好）
+		 */
 		SILERO,
+		/**
+		 * TEN VAD
+		 */
 		TEN
 	}
 }

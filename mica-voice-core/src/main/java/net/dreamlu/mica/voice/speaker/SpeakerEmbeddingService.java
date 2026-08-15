@@ -14,6 +14,7 @@ import net.dreamlu.mica.voice.exception.EngineException;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -28,18 +29,20 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 @Slf4j
 public class SpeakerEmbeddingService implements SpeakerService {
-
-	private final MicaVoiceConfig props;
 	private final SpeakerConfig config;
 	private final SpeakerEmbeddingExtractor extractor;
 	private final SpeakerEmbeddingManager manager;
 	private final int dim;
 	private final AtomicBoolean closed = new AtomicBoolean(false);
 
+	/**
+	 * 构造声纹识别服务（注册 / 验证 / 1:N 搜索）。
+	 *
+	 * @param props  全局 mica-voice 配置
+	 * @param config 声纹配置
+	 */
 	public SpeakerEmbeddingService(MicaVoiceConfig props, SpeakerConfig config) {
-		this.props = props;
 		this.config = config;
-
 		String modelPath = null;
 		for (String name : config.getModelCandidates()) {
 			String path = ModelSelector.tryResolveModelFile(props.getModelsDir(), name);
@@ -138,7 +141,7 @@ public class SpeakerEmbeddingService implements SpeakerService {
 		String[] all = manager.getAllSpeakerNames();
 		List<String> list = new ArrayList<>(all == null ? 0 : all.length);
 		if (all != null) {
-			java.util.Collections.addAll(list, all);
+			Collections.addAll(list, all);
 		}
 		return list;
 	}
@@ -156,7 +159,11 @@ public class SpeakerEmbeddingService implements SpeakerService {
 	}
 
 	/**
-	 * 从音频中提取嵌入向量。
+	 * 从音频中提取嵌入向量。等待 extractor.isReady 后调用 compute，超时由
+	 * {@link SpeakerConfig#getEmbeddingTimeoutMs()} 控制。
+	 *
+	 * @param audio 完整音频
+	 * @return 嵌入向量
 	 */
 	private float[] extractEmbedding(AudioData audio) {
 		OnlineStream stream = extractor.createStream();
@@ -184,6 +191,9 @@ public class SpeakerEmbeddingService implements SpeakerService {
 		}
 	}
 
+	/**
+	 * 确保服务未被关闭，否则抛出 IllegalStateException。
+	 */
 	private void ensureOpen() {
 		if (closed.get()) {
 			throw new IllegalStateException("SpeakerEmbeddingService 已关闭");

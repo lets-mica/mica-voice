@@ -47,6 +47,11 @@ public class DiarizationConfig {
 	public DiarizationConfig() {
 	}
 
+	/**
+	 * 创建一个流式 Builder。
+	 *
+	 * @return 配置 Builder
+	 */
 	public static Builder builder() {
 		return new Builder();
 	}

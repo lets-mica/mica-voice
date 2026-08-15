@@ -12,6 +12,7 @@ import net.dreamlu.mica.voice.exception.EngineException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 /**
  * 流式 ASR 服务（基于 sherpa-onnx {@code OnlineRecognizer}）。
@@ -41,6 +42,12 @@ public class OnlineAsrService implements AsrService {
 	private final int chunkSize;
 	private final AtomicBoolean closed = new AtomicBoolean(false);
 
+	/**
+	 * 构造在线流式 ASR 服务。
+	 *
+	 * @param props  全局配置（模型根目录、线程数等）
+	 * @param config 在线 ASR 配置（必须设置 modelDirName）
+	 */
 	public OnlineAsrService(MicaVoiceConfig props, OnlineAsrConfig config) {
 		this.props = props;
 		this.config = config;
@@ -154,7 +161,7 @@ public class OnlineAsrService implements AsrService {
 				if (model == null) {
 					throw new EngineException("NeMo CTC 模型缺少 onnx");
 				}
-				b.setNeMoCtc(com.k2fsa.sherpa.onnx.OnlineNeMoCtcModelConfig.builder()
+				b.setNeMoCtc(OnlineNeMoCtcModelConfig.builder()
 					.setModel(model)
 					.build());
 				break;
@@ -214,7 +221,7 @@ public class OnlineAsrService implements AsrService {
 	/**
 	 * 把整段音频按 chunkSize 切块送入，逐块回调 partial，结束后返回最终结果。
 	 */
-	public AsrResult recognizeStreaming(AudioData audio, java.util.function.Consumer<AsrResult> partial) {
+	public AsrResult recognizeStreaming(AudioData audio, Consumer<AsrResult> partial) {
 		ensureOpen();
 		long start = System.currentTimeMillis();
 		OnlineStream stream = recognizer.createStream();
@@ -300,6 +307,9 @@ public class OnlineAsrService implements AsrService {
 		return recognizeStreaming(audio, null);
 	}
 
+	/**
+	 * 确保服务未被关闭，否则抛出 IllegalStateException。
+	 */
 	private void ensureOpen() {
 		if (closed.get()) {
 			throw new IllegalStateException("OnlineAsrService 已关闭");

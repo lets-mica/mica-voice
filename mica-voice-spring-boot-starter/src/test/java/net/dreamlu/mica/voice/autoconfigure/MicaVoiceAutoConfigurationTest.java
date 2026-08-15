@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Configuration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.File;
+
 /**
  * {@link MicaVoiceAutoConfiguration} 单元测试。
  *
@@ -50,8 +52,8 @@ class MicaVoiceAutoConfigurationTest {
 			// 转换后注入给 core 的 MicaVoiceConfig
 			MicaVoiceConfig core =
 				ctx.getBean("micaVoiceCoreProperties", MicaVoiceConfig.class);
-			assertThat(core.getModelsDir()).isEqualTo(new java.io.File("models"));
-			assertThat(core.getOutputDir()).isEqualTo(new java.io.File("output"));
+			assertThat(core.getModelsDir()).isEqualTo(new File("models"));
+			assertThat(core.getOutputDir()).isEqualTo(new File("output"));
 			assertThat(core.getThreads()).isEqualTo(2);
 			assertThat(core.isDebug()).isFalse();
 		});
@@ -99,8 +101,8 @@ class MicaVoiceAutoConfigurationTest {
 
 			MicaVoiceConfig core =
 				ctx.getBean("micaVoiceCoreProperties", MicaVoiceConfig.class);
-			assertThat(core.getModelsDir()).isEqualTo(new java.io.File("/tmp/test-models"));
-			assertThat(core.getOutputDir()).isEqualTo(new java.io.File("/tmp/test-output"));
+			assertThat(core.getModelsDir()).isEqualTo(new File("/tmp/test-models"));
+			assertThat(core.getOutputDir()).isEqualTo(new File("/tmp/test-output"));
 			assertThat(core.getThreads()).isEqualTo(8);
 			assertThat(core.isDebug()).isTrue();
 		});

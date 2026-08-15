@@ -43,6 +43,11 @@ public class SpeakerConfig {
 		this.modelCandidates = DEFAULT_MODEL_CANDIDATES.clone();
 	}
 
+	/**
+	 * 创建一个流式 Builder。
+	 *
+	 * @return 配置 Builder
+	 */
 	public static Builder builder() {
 		return new Builder();
 	}

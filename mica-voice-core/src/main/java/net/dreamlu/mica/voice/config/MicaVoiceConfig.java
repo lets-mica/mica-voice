@@ -29,11 +29,27 @@ public class MicaVoiceConfig {
 	 */
 	public static final String SYS_MODELS_DIR = "mica.voice.models-dir";
 
+	/**
+	 * 模型根目录（默认 {@code ./models}，可用系统属性 {@code mica.voice.models-dir} 覆盖）。
+	 */
 	private File modelsDir;
+	/**
+	 * 输出目录（默认 {@code ./output}，ensureOutputDir 时按需创建）。
+	 */
 	private File outputDir;
+	/**
+	 * 默认推理线程数。
+	 */
 	private int threads;
+	/**
+	 * 是否输出 sherpa-onnx 调试日志。
+	 */
 	private boolean debug;
 
+	/**
+	 * 使用默认配置构造：模型根目录来自系统属性 {@code mica.voice.models-dir}（默认 {@code models}），
+	 * 输出目录 {@code ./output}，线程数 2，debug = false。
+	 */
 	public MicaVoiceConfig() {
 		String dir = System.getProperty(SYS_MODELS_DIR, "models");
 		this.modelsDir = new File(dir);
@@ -49,6 +65,12 @@ public class MicaVoiceConfig {
 		return new Builder();
 	}
 
+	/**
+	 * 设置线程数。必须 &gt; 0。
+	 *
+	 * @param threads 推理线程数
+	 * @throws IllegalArgumentException 当 threads &lt;= 0 时
+	 */
 	public void setThreads(int threads) {
 		if (threads <= 0) {
 			throw new IllegalArgumentException("threads must be > 0");
@@ -58,6 +80,9 @@ public class MicaVoiceConfig {
 
 	/**
 	 * 确保输出目录存在。
+	 *
+	 * @return 输出目录对象
+	 * @throws IllegalStateException 当输出目录不存在且无法创建时
 	 */
 	public File ensureOutputDir() {
 		if (outputDir != null && !outputDir.exists() && !outputDir.mkdirs()) {

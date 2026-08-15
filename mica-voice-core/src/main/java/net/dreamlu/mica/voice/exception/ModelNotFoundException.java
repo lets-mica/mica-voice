@@ -27,12 +27,19 @@ public class ModelNotFoundException extends MicaVoiceException {
 	 */
 	private final String[] candidates;
 
+	/**
+	 * @param modelDirName 期望的模型目录名
+	 * @param candidates   按优先级排列的候选模型文件名（可为 null）
+	 */
 	public ModelNotFoundException(String modelDirName, String[] candidates) {
 		super(buildMessage(modelDirName, candidates));
 		this.modelDirName = modelDirName;
 		this.candidates = candidates == null ? new String[0] : candidates.clone();
 	}
 
+	/**
+	 * 构建人类可读的错误信息，包含目录名、候选文件名以及下载提示。
+	 */
 	private static String buildMessage(String modelDirName, String[] candidates) {
 		StringBuilder sb = new StringBuilder("找不到模型目录: ").append(modelDirName);
 		if (candidates != null && candidates.length > 0) {
@@ -42,6 +49,11 @@ public class ModelNotFoundException extends MicaVoiceException {
 		return sb.toString();
 	}
 
+	/**
+	 * 获取候选文件名的防御性拷贝。
+	 *
+	 * @return 候选文件名数组
+	 */
 	public String[] getCandidates() {
 		return candidates.clone();
 	}

@@ -58,7 +58,12 @@ public class ModelSelector {
 	}
 
 	/**
-	 * 同上，但只查找而不抛异常；找不到返回 null。
+	 * 同 {@link #resolveModelFile(File, String, String...)}，但找不到时不抛异常，直接返回 null。
+	 *
+	 * @param modelsDir  模型根目录
+	 * @param dirName    子目录名
+	 * @param candidates 按优先级排列的文件候选名
+	 * @return 第一个存在的文件绝对路径；不存在返回 null
 	 */
 	public String tryResolveModelFile(File modelsDir, String dirName, String... candidates) {
 		String dir = resolveModelDir(modelsDir, dirName);
@@ -79,6 +84,10 @@ public class ModelSelector {
 
 	/**
 	 * 在指定目录里按候选名查找第一个存在的文件。
+	 *
+	 * @param dir        目录绝对路径
+	 * @param candidates 按优先级排列的文件候选名
+	 * @return 第一个存在的文件绝对路径；都不存在返回 null
 	 */
 	public String resolveInDir(String dir, String... candidates) {
 		if (dir == null || candidates == null) {

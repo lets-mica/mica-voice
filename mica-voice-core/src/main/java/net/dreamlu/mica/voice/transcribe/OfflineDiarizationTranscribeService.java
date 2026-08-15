@@ -35,6 +35,12 @@ public class OfflineDiarizationTranscribeService {
 	private final AsrService asr;
 	private final AtomicBoolean closed = new AtomicBoolean(false);
 
+	/**
+	 * 构造"说话人分离 + 转写"联合服务。
+	 *
+	 * @param diarization 说话人分离服务
+	 * @param asr         ASR 服务
+	 */
 	public OfflineDiarizationTranscribeService(DiarizationService diarization, AsrService asr) {
 		if (diarization == null) {
 			throw new IllegalArgumentException("DiarizationService 不能为空");
@@ -48,6 +54,9 @@ public class OfflineDiarizationTranscribeService {
 
 	/**
 	 * 联合分析：分离 + 转写。
+	 *
+	 * @param audio 待分析的完整音频
+	 * @return 转写结果（含每段对应的说话人 id 与文本）
 	 */
 	public TranscribeResult transcribe(AudioData audio) {
 		ensureOpen();
@@ -115,6 +124,9 @@ public class OfflineDiarizationTranscribeService {
 			.build();
 	}
 
+	/**
+	 * 关闭服务：级联关闭 {@link DiarizationService} 与 {@link AsrService}。重复调用安全。
+	 */
 	public void close() {
 		if (closed.compareAndSet(false, true)) {
 			try {
@@ -130,6 +142,9 @@ public class OfflineDiarizationTranscribeService {
 		}
 	}
 
+	/**
+	 * 确保服务未被关闭，否则抛出 IllegalStateException。
+	 */
 	private void ensureOpen() {
 		if (closed.get()) {
 			throw new IllegalStateException("OfflineDiarizationTranscribeService 已关闭");
