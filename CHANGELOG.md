@@ -2,7 +2,7 @@
 
 ## 发行版本
 
-### [1.0.0] - 待发布
+### [1.0.0] - 2026-08-15
 
 - **核心 SDK（`mica-voice-core`）**：统一的语音 AI 门面 `MicaVoice`，一行调用即可获取离线 ASR、在线流式 ASR、TTS、声纹识别、VAD、说话人分离、关键词唤醒 KWS、音频降噪等服务（均实现 `AutoCloseable`）
 - **离线 ASR**：支持 Paraformer / SenseVoice / Whisper / Moonshine / Zipformer / NeMo CTC 等模型家族，SenseVoice 支持多语言（中 / 英 / 日 / 韩 / 粤）与逆文本规范化
