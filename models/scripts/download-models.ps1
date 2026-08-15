@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    并行分段下载 sherpa-onnx 测试模型（SenseVoice / X-ASR / ASR / TTS / 声纹）。
+    并行分段下载 sherpa-onnx 测试模型（SenseVoice / X-ASR / ASR / TTS / 声纹 / VAD / KWS / Diarization / Denoise）。
 
 .DESCRIPTION
     Windows PowerShell 下载脚本：
@@ -8,9 +8,14 @@
       - 支持断点续传（已完成的分段自动跳过）
       - 单段 600 秒超时 + 低速检测，避免连接卡死
       - 下载源：SenseVoice / X-ASR 走 HuggingFace（hf-mirror.com 镜像），其余走 GitHub
+      - .tar.bz2 走 Windows 自带 tar.exe 解压
+      - 解压后会把 KWS / Diarization 实际文件名软链/复制到 mica-voice 配置默认期望的命名
 
 .PARAMETER Target
-    下载目标：sensevoice / x-asr / asr / asr-online / tts / speaker / all（默认 all）
+    下载目标：sensevoice / x-asr / asr / asr-online / tts / tts-fanchen / tts-zh-en /
+              speaker / vad / denoise / denoise-dpdfnet / kws / diarization /
+              v11 / all（默认 all）
+              v11 = vad + denoise + kws + diarization（v1.1 新增能力）
 
 .PARAMETER Parts
     并行分段数（默认 4）
@@ -21,6 +26,8 @@
 .EXAMPLE
     .\models\scripts\download-models.ps1 -Target sensevoice
     .\models\scripts\download-models.ps1 -Target x-asr -Parts 6
+    .\models\scripts\download-models.ps1 -Target vad
+    .\models\scripts\download-models.ps1 -Target v11
 #>
 param(
     [string]$Target = "all",
@@ -182,6 +189,27 @@ function Download-File {
 }
 
 # ---------------------------------------------------------------------------
+# 解压后把 KWS / Diarization 文件复制到 mica-voice 默认期望的命名
+# （兼容 Windows 无管理员权限时无法创建符号链接的情况，统一用 Copy-Item）
+# ---------------------------------------------------------------------------
+function Ensure-Like-File {
+    param(
+        [Parameter(Mandatory = $true)][string]$Source,
+        [Parameter(Mandatory = $true)][string]$Target
+    )
+    if (Test-Path -LiteralPath $Source) {
+        if (-not (Test-Path -LiteralPath $Target)) {
+            Copy-Item -LiteralPath $Source -Destination $Target -Force
+            Write-Host "  [link] $Target <- $Source"
+        } else {
+            Write-Host "  [skip] $Target 已存在"
+        }
+    } else {
+        Write-Host "  [warn] 源文件不存在，无法生成 $Target : $Source"
+    }
+}
+
+# ---------------------------------------------------------------------------
 # 下载定义
 # ---------------------------------------------------------------------------
 $GITHUB = "https://github.com/k2-fsa/sherpa-onnx/releases/download"
@@ -229,21 +257,71 @@ $targets = @{
         @{ url = "$GITHUB/speaker-recongition-models/3dspeaker_speech_eres2net_base_sv_zh-cn_3dspeaker_16k.onnx"; out = "$ModelsDir/3dspeaker_speech_eres2net_base_sv_zh-cn_3dspeaker_16k.onnx" },
         @{ url = "$GITHUB/speaker-segmentation-models/0-four-speakers-zh.wav"; out = "$ModelsDir/0-four-speakers-zh.wav" }
     )
+    # VAD（v1.1）：SILERO VAD 单文件，放 models/ 根
+    vad = @(
+        @{ url = "$GITHUB/asr-models/silero_vad.onnx"; out = "$ModelsDir/silero_vad.onnx" }
+    )
+    # Denoise GTCRN（v1.1）：speech-enhancement-models 单文件，保存为 mica-voice 默认名
+    denoise = @(
+        @{ url = "$GITHUB/speech-enhancement-models/gtcrn_simple.onnx"; out = "$ModelsDir/sherpa-onnx-gtcrn.onnx" }
+    )
+    # Denoise DPDFNet（v1.1）：高质量离线降噪，16kHz baseline
+    "denoise-dpdfnet" = @(
+        @{ url = "$GITHUB/speech-enhancement-models/dpdfnet_baseline.onnx"; out = "$ModelsDir/sherpa-onnx-dpdfnet.onnx" }
+    )
+    # KWS（v1.1）：下载 tarball 解压；解压后会把 epoch/chunk 后缀的文件复制成 mica-voice 默认期望的 encoder/decoder/joiner/tokens.txt
+    #   mica-voice KwsConfig 默认 modelDirName = sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-01
+    #   KwsConfig 默认 keywordsFile   = keywords.txt（位于 modelDirName 内）
+    kws = @(
+        @{ url = "$GITHUB/kws-models/sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-01.tar.bz2"; out = "$ModelsDir/sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-01.tar.bz2" }
+    )
+    # 说话人分离（v1.1）：下载 tarball，解压后把 model.onnx 复制成 mica-voice 默认期望的单文件命名
+    #   mica-voice DiarizationConfig 默认 segmentationModelFileName = sherpa-onnx-pyannote-segmentation-3-0.onnx（位于 models/ 根）
+    #   embedding 模型由 `speaker` target 负责
+    diarization = @(
+        @{ url = "$GITHUB/speaker-segmentation-models/sherpa-onnx-pyannote-segmentation-3-0.tar.bz2"; out = "$ModelsDir/sherpa-onnx-pyannote-segmentation-3-0.tar.bz2" }
+    )
 }
 
 # 选择目标（兼容 asr-sensevoice 别名）
 $selected = @()
 if ($Target -eq "asr-sensevoice") { $Target = "sensevoice" }
-if ($Target -eq "all") {
-    foreach ($k in @("sensevoice", "x-asr", "asr", "asr-online", "tts", "tts-fanchen", "speaker")) {
+if ($Target -eq "v11") {
+    foreach ($k in @("vad", "denoise", "kws", "diarization")) {
+        $selected += $targets[$k]
+    }
+} elseif ($Target -eq "all") {
+    foreach ($k in @("sensevoice", "x-asr", "asr", "asr-online", "tts", "tts-fanchen", "speaker", "vad", "denoise", "kws", "diarization")) {
         $selected += $targets[$k]
     }
 } elseif ($targets.ContainsKey($Target)) {
     $selected = $targets[$Target]
 } else {
     Write-Host "未知目标: $Target"
-    Write-Host "可选: asr-sensevoice / sensevoice / x-asr / asr / asr-online / tts / tts-fanchen / speaker / all"
+    Write-Host "可选: asr-sensevoice / sensevoice / x-asr / asr / asr-online / tts / tts-fanchen / tts-zh-en /"
+    Write-Host "      speaker / vad / denoise / denoise-dpdfnet / kws / diarization / v11 / all"
     exit 1
+}
+
+# 解压后需额外处理的 target（先下载/解压，再生成 mica-voice 默认期望的软链/副本）
+$postExtractTargets = @{
+    # KWS：把 epoch/chunk 后缀文件复制成 encoder/decoder/joiner.onnx + keywords.txt
+    kws = {
+        $dir = Join-Path $ModelsDir "sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-01"
+        Ensure-Like-File -Source (Join-Path $dir "encoder-epoch-12-avg-2-chunk-16-left-64.int8.onnx") -Target (Join-Path $dir "encoder.int8.onnx")
+        Ensure-Like-File -Source (Join-Path $dir "encoder-epoch-12-avg-2-chunk-16-left-64.onnx")      -Target (Join-Path $dir "encoder.onnx")
+        Ensure-Like-File -Source (Join-Path $dir "decoder-epoch-12-avg-2-chunk-16-left-64.onnx")      -Target (Join-Path $dir "decoder.onnx")
+        Ensure-Like-File -Source (Join-Path $dir "joiner-epoch-12-avg-2-chunk-16-left-64.int8.onnx")  -Target (Join-Path $dir "joiner.int8.onnx")
+        Ensure-Like-File -Source (Join-Path $dir "joiner-epoch-12-avg-2-chunk-16-left-64.onnx")       -Target (Join-Path $dir "joiner.onnx")
+        # keywords.txt（默认位于 modelDirName 内；原包内是 test_wavs/test_keywords.txt）
+        Ensure-Like-File -Source (Join-Path $dir "test_wavs/test_keywords.txt") -Target (Join-Path $dir "keywords.txt")
+    }
+    # Diarization：把 tarball 解压目录里的 model.onnx 复制成 mica-voice 默认期望的根目录单文件
+    diarization = {
+        $dir = Join-Path $ModelsDir "sherpa-onnx-pyannote-segmentation-3-0"
+        Ensure-Like-File -Source (Join-Path $dir "model.onnx")     -Target (Join-Path $ModelsDir "sherpa-onnx-pyannote-segmentation-3-0.onnx")
+        Ensure-Like-File -Source (Join-Path $dir "model.int8.onnx") -Target (Join-Path $ModelsDir "sherpa-onnx-pyannote-segmentation-3-0.int8.onnx")
+    }
 }
 
 foreach ($item in $selected) {
@@ -252,6 +330,31 @@ foreach ($item in $selected) {
     Write-Host ""
     Write-Host "==> 下载: $(Split-Path -Leaf $item.out)"
     Download-File -Url $item.url -OutFile $item.out -Parts $Parts
+}
+
+# 处理需要先下载/解压 .tar.bz2 的 target
+$bz2Targets = @("asr", "asr-online", "tts", "tts-fanchen", "tts-zh-en", "kws", "diarization")
+if ($bz2Targets -contains $Target) {
+    foreach ($item in $selected) {
+        if ($item.out.EndsWith(".tar.bz2")) {
+            $archiveFile = $item.out
+            $extractDir = Join-Path $ModelsDir ([System.IO.Path]::GetFileNameWithoutExtension([System.IO.Path]::GetFileNameWithoutExtension($archiveFile)))
+            if (Test-Path -LiteralPath $archiveFile) {
+                Write-Host ""
+                Write-Host "[unpack] $archiveFile -> $extractDir"
+                & tar -xjf "$archiveFile" -C "$ModelsDir"
+                Remove-Item -LiteralPath $archiveFile -Force
+            } elseif (Test-Path -LiteralPath $extractDir) {
+                Write-Host "[skip] $extractDir 已存在，跳过解压"
+            }
+        }
+    }
+    # 执行 target 特定的解压后处理
+    if ($postExtractTargets.ContainsKey($Target)) {
+        Write-Host ""
+        Write-Host "[post] 解压后处理 ($Target)"
+        & $postExtractTargets[$Target]
+    }
 }
 
 Write-Host ""
