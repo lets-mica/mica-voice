@@ -38,6 +38,8 @@ public class MicaVoiceAutoConfiguration {
 	 * 把 starter 的扁平配置转换成 core 用的运行时
 	 * {@link net.dreamlu.mica.voice.config.MicaVoiceConfig}。
 	 * 该 Bean 是 core 层各 Service 构造时的统一入口（命名 micaVoiceCoreProperties）。
+	 *
+	 * @return core 层统一的 MicaVoiceConfig
 	 */
 	@Bean(name = "micaVoiceCoreProperties")
 	public MicaVoiceConfig coreProperties() {

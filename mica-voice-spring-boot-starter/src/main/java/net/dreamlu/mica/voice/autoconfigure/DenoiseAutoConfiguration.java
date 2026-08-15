@@ -33,6 +33,11 @@ public class DenoiseAutoConfiguration {
 	private final MicaVoiceConfig coreProps;
 	private final MicaVoiceProperties props;
 
+	/**
+	 * 音频降噪服务。
+	 *
+	 * @return 音频降噪服务
+	 */
 	@Bean(destroyMethod = "close")
 	@ConditionalOnMissingBean(name = "micaVoiceDenoiseService")
 	public DenoiseService micaVoiceDenoiseService() {

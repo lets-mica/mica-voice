@@ -30,7 +30,7 @@ import org.noear.solon.annotation.Configuration;
  *     <li>每个能力（ASR / TTS / Speaker / VAD / Diarization / KWS / Denoise）都有独立 {@code enabled} 开关，默认按需启用；</li>
  *     <li>运行时真正装配时，{@link MicaVoiceAutoConfiguration} 会把这里的内容转成 core 的
  *         {@link net.dreamlu.mica.voice.config.MicaVoiceConfig} + 各能力 Config 后传给
- *         {@link net.dreamlu.mica.voice.MicaVoice} 门面。</li>
+ *         {@link net.dreamlu.mica.voice.core.MicaVoice} 门面。</li>
  * </ul>
  *
  * @author dreamlu

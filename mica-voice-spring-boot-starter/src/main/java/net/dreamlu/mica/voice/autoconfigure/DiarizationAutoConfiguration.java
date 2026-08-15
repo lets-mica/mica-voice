@@ -31,6 +31,11 @@ public class DiarizationAutoConfiguration {
 	private final MicaVoiceConfig coreProps;
 	private final MicaVoiceProperties props;
 
+	/**
+	 * 说话人分离服务。
+	 *
+	 * @return 说话人分离服务
+	 */
 	@Bean(destroyMethod = "close")
 	@ConditionalOnMissingBean(name = "micaVoiceDiarizationService")
 	public DiarizationService micaVoiceDiarizationService() {

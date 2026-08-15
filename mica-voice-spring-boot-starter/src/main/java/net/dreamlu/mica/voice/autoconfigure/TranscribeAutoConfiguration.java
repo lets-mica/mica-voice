@@ -36,6 +36,11 @@ public class TranscribeAutoConfiguration {
 	private final ObjectProvider<OfflineAsrService> offlineAsrProvider;
 	private final ObjectProvider<DiarizationService> diarizationProvider;
 
+	/**
+	 * 说话人分离 + 转写联合服务。
+	 *
+	 * @return 联合服务
+	 */
 	@Bean(destroyMethod = "close")
 	@ConditionalOnBean(name = {"micaVoiceOfflineAsrService", "micaVoiceDiarizationService"})
 	public OfflineDiarizationTranscribeService micaVoiceDiarizationTranscribeService() {

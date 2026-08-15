@@ -15,7 +15,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
  *     <li>嵌套配置（{@link NestedConfigurationProperty}）会随外层 enabled 一起被 Spring 解析</li>
  *     <li>运行时真正装配时，{@link net.dreamlu.mica.voice.autoconfigure.MicaVoiceAutoConfiguration}
  *         会把这里的内容转成 core 的 {@link net.dreamlu.mica.voice.config.MicaVoiceConfig}
- *         + 各能力 Config 后传给 {@link net.dreamlu.mica.voice.MicaVoice} 门面</li>
+ *         + 各能力 Config 后传给 {@link net.dreamlu.mica.voice.core.MicaVoice} 门面</li>
  * </ul>
  *
  * @author dreamlu
@@ -71,6 +71,9 @@ public class MicaVoiceProperties {
 	@NestedConfigurationProperty
 	private Denoise denoise = new Denoise();
 
+	/**
+	 * ASR 配置。
+	 */
 	@Getter
 	@Setter
 	public static class Asr {
@@ -81,6 +84,9 @@ public class MicaVoiceProperties {
 		@NestedConfigurationProperty
 		private Online online = new Online();
 
+		/**
+		 * 离线 ASR 配置。
+		 */
 		@Getter
 		@Setter
 		public static class Offline {
@@ -111,6 +117,9 @@ public class MicaVoiceProperties {
 			private boolean inverseTextNormalization = true;
 		}
 
+		/**
+		 * 在线流式 ASR 配置。
+		 */
 		@Getter
 		@Setter
 		public static class Online {
@@ -152,6 +161,9 @@ public class MicaVoiceProperties {
 		}
 	}
 
+	/**
+	 * TTS 配置。
+	 */
 	@Getter
 	@Setter
 	public static class Tts {
@@ -165,6 +177,9 @@ public class MicaVoiceProperties {
 		private int callbackSampleStep = 1600;
 	}
 
+	/**
+	 * 声纹识别配置。
+	 */
 	@Getter
 	@Setter
 	public static class Speaker {
@@ -182,6 +197,9 @@ public class MicaVoiceProperties {
 		private long embeddingTimeoutMs = 30_000L;
 	}
 
+	/**
+	 * 语音端点检测（VAD）配置。
+	 */
 	@Getter
 	@Setter
 	public static class Vad {
@@ -201,6 +219,9 @@ public class MicaVoiceProperties {
 		private int windowSize = 512;
 	}
 
+	/**
+	 * 说话人分离配置。
+	 */
 	@Getter
 	@Setter
 	public static class Diarization {
@@ -218,6 +239,9 @@ public class MicaVoiceProperties {
 		private float minDurationOn = 0.3f;
 	}
 
+	/**
+	 * 关键词唤醒（KWS）配置。
+	 */
 	@Getter
 	@Setter
 	public static class Kws {
@@ -236,6 +260,9 @@ public class MicaVoiceProperties {
 		private String keywordsFile = "keywords.txt";
 	}
 
+	/**
+	 * 音频降噪配置。
+	 */
 	@Getter
 	@Setter
 	public static class Denoise {

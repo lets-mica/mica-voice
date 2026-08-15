@@ -33,6 +33,11 @@ public class SpeakerAutoConfiguration {
 	private final MicaVoiceConfig coreProps;
 	private final MicaVoiceProperties props;
 
+	/**
+	 * 声纹识别服务。
+	 *
+	 * @return 声纹识别服务
+	 */
 	@Bean(destroyMethod = "close")
 	@ConditionalOnMissingBean(name = "micaVoiceSpeakerService")
 	public SpeakerService micaVoiceSpeakerService() {

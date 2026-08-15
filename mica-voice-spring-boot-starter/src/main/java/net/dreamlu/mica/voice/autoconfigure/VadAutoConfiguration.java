@@ -33,6 +33,11 @@ public class VadAutoConfiguration {
 	private final MicaVoiceConfig coreProps;
 	private final MicaVoiceProperties props;
 
+	/**
+	 * 语音端点检测（VAD）服务。
+	 *
+	 * @return VAD 服务
+	 */
 	@Bean(destroyMethod = "close")
 	@ConditionalOnMissingBean(name = "micaVoiceVadService")
 	public VadService micaVoiceVadService() {

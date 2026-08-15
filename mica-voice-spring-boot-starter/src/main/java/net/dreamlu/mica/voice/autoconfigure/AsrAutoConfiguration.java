@@ -51,6 +51,8 @@ public class AsrAutoConfiguration {
 
 	/**
 	 * 离线 ASR。
+	 *
+	 * @return 离线 ASR 服务
 	 */
 	@Bean(destroyMethod = "close")
 	@ConditionalOnMissingBean(name = "micaVoiceOfflineAsrService")
@@ -71,6 +73,8 @@ public class AsrAutoConfiguration {
 
 	/**
 	 * 在线流式 ASR。
+	 *
+	 * @return 在线流式 ASR 服务
 	 */
 	@Bean(destroyMethod = "close")
 	@ConditionalOnMissingBean(name = "micaVoiceOnlineAsrService")

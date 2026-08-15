@@ -31,6 +31,11 @@ public class KwsAutoConfiguration {
 	private final MicaVoiceConfig coreProps;
 	private final MicaVoiceProperties props;
 
+	/**
+	 * 关键词唤醒服务。
+	 *
+	 * @return 关键词唤醒服务
+	 */
 	@Bean(destroyMethod = "close")
 	@ConditionalOnMissingBean(name = "micaVoiceKwsService")
 	public KwsService micaVoiceKwsService() {

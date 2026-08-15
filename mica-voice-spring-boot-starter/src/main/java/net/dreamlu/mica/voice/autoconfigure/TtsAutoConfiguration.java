@@ -33,6 +33,11 @@ public class TtsAutoConfiguration {
 	private final MicaVoiceConfig coreProps;
 	private final MicaVoiceProperties props;
 
+	/**
+	 * TTS 语音合成服务。
+	 *
+	 * @return TTS 语音合成服务
+	 */
 	@Bean(destroyMethod = "close")
 	@ConditionalOnMissingBean(name = "micaVoiceTtsService")
 	public TtsService micaVoiceTtsService() {
