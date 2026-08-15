@@ -1,6 +1,9 @@
 package net.dreamlu.mica.voice.config;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -14,35 +17,31 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class AsrConfig {
 
 	private String modelDirName;
+
+	public AsrConfig(String modelDirName) {
+		this.modelDirName = modelDirName;
+	}
+
+	@Builder.Default
 	private ModelType modelType = ModelType.PARAFORMER;
 	private Integer threads;
 	private boolean debug;
 	/**
 	 * SenseVoice 专用：auto/zh/en/ja/ko/yue
 	 */
+	@Builder.Default
 	private String language = "auto";
 	/**
 	 * SenseVoice 专用：是否做逆文本规范化（数字/标点还原）
 	 */
+	@Builder.Default
 	private boolean inverseTextNormalization = true;
-
-	public AsrConfig() {
-	}
-
-	public AsrConfig(String modelDirName) {
-		this.modelDirName = modelDirName;
-	}
-
-	public static Builder builder() {
-		return new Builder();
-	}
-
-	public void setModelType(ModelType modelType) {
-		this.modelType = modelType == null ? ModelType.AUTO : modelType;
-	}
 
 	/**
 	 * 模型家族枚举，对应 sherpa-onnx 的 Offline*ModelConfig。
@@ -78,41 +77,10 @@ public class AsrConfig {
 		AUTO
 	}
 
-	public static final class Builder {
-		private final AsrConfig c = new AsrConfig();
-
-		public Builder modelDirName(String name) {
-			c.modelDirName = name;
-			return this;
-		}
-
-		public Builder modelType(ModelType t) {
-			c.modelType = t;
-			return this;
-		}
-
-		public Builder threads(Integer t) {
-			c.threads = t;
-			return this;
-		}
-
-		public Builder debug(boolean d) {
-			c.debug = d;
-			return this;
-		}
-
-		public Builder language(String l) {
-			c.language = l;
-			return this;
-		}
-
-		public Builder inverseTextNormalization(boolean b) {
-			c.inverseTextNormalization = b;
-			return this;
-		}
-
-		public AsrConfig build() {
-			return c;
-		}
+	/**
+	 * null → AUTO 的兜底（setter 路径）。
+	 */
+	public void setModelType(ModelType modelType) {
+		this.modelType = modelType == null ? ModelType.AUTO : modelType;
 	}
 }

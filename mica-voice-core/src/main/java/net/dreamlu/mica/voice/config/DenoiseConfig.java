@@ -1,6 +1,9 @@
 package net.dreamlu.mica.voice.config;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -16,59 +19,25 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class DenoiseConfig {
 
+	@Builder.Default
 	private String modelFileName = "sherpa-onnx-gtcrn.onnx";
+	@Builder.Default
 	private ModelType modelType = ModelType.GTCRN;
 	private Integer threads;
 	private boolean debug;
 	/**
 	 * 仅 DPDFNet：衰减限制（dB），控制降噪强度。
 	 */
+	@Builder.Default
 	private float attenuationLimitDb = 12.0f;
-
-	public DenoiseConfig() {
-	}
-
-	public static Builder builder() {
-		return new Builder();
-	}
 
 	public enum ModelType {
 		GTCRN,
 		DPDFNet
-	}
-
-	public static final class Builder {
-		private final DenoiseConfig c = new DenoiseConfig();
-
-		public Builder modelFileName(String n) {
-			c.modelFileName = n;
-			return this;
-		}
-
-		public Builder modelType(ModelType t) {
-			c.modelType = t == null ? ModelType.GTCRN : t;
-			return this;
-		}
-
-		public Builder threads(Integer t) {
-			c.threads = t;
-			return this;
-		}
-
-		public Builder debug(boolean d) {
-			c.debug = d;
-			return this;
-		}
-
-		public Builder attenuationLimitDb(float v) {
-			c.attenuationLimitDb = v;
-			return this;
-		}
-
-		public DenoiseConfig build() {
-			return c;
-		}
 	}
 }

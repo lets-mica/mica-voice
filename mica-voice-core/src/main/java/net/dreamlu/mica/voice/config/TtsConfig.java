@@ -1,6 +1,9 @@
 package net.dreamlu.mica.voice.config;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -14,39 +17,36 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class TtsConfig {
 
 	private String modelDirName;
+
+	public TtsConfig(String modelDirName) {
+		this.modelDirName = modelDirName;
+	}
+
+	@Builder.Default
 	private ModelType modelType = ModelType.VITS;
 	private Integer threads;
 	private boolean debug;
 	/**
 	 * 默认说话人 id
 	 */
+	@Builder.Default
 	private int defaultSpeakerId = 0;
 	/**
 	 * 默认语速
 	 */
+	@Builder.Default
 	private float defaultSpeed = 1.0f;
 	/**
 	 * 回调式合成时，每多少采样回调一次（默认 1600 ≈ 100ms @ 16kHz）
 	 */
+	@Builder.Default
 	private int callbackSampleStep = 1600;
-
-	public TtsConfig() {
-	}
-
-	public TtsConfig(String modelDirName) {
-		this.modelDirName = modelDirName;
-	}
-
-	public static Builder builder() {
-		return new Builder();
-	}
-
-	public void setModelType(ModelType modelType) {
-		this.modelType = modelType == null ? ModelType.VITS : modelType;
-	}
 
 	public enum ModelType {
 		VITS,
@@ -58,46 +58,10 @@ public class TtsConfig {
 		AUTO
 	}
 
-	public static final class Builder {
-		private final TtsConfig c = new TtsConfig();
-
-		public Builder modelDirName(String name) {
-			c.modelDirName = name;
-			return this;
-		}
-
-		public Builder modelType(ModelType t) {
-			c.modelType = t;
-			return this;
-		}
-
-		public Builder threads(Integer t) {
-			c.threads = t;
-			return this;
-		}
-
-		public Builder debug(boolean d) {
-			c.debug = d;
-			return this;
-		}
-
-		public Builder defaultSpeakerId(int id) {
-			c.defaultSpeakerId = id;
-			return this;
-		}
-
-		public Builder defaultSpeed(float s) {
-			c.defaultSpeed = s;
-			return this;
-		}
-
-		public Builder callbackSampleStep(int n) {
-			c.callbackSampleStep = n;
-			return this;
-		}
-
-		public TtsConfig build() {
-			return c;
-		}
+	/**
+	 * null → VITS 的兜底（setter 路径）。
+	 */
+	public void setModelType(ModelType modelType) {
+		this.modelType = modelType == null ? ModelType.VITS : modelType;
 	}
 }
