@@ -49,6 +49,7 @@ public class DiarizationAutoConfiguration {
 			.clusterThreshold(cfg.getClusterThreshold())
 			.minDurationOff(cfg.getMinDurationOff())
 			.minDurationOn(cfg.getMinDurationOn())
+			.windowShiftRatio(cfg.getWindowShiftRatio())
 			.build();
 		log.info("mica-voice 装配 DiarizationService: seg={}, emb={}",
 			cfg.getSegmentationModelFileName(), cfg.getEmbeddingModelFileName());

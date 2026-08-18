@@ -51,6 +51,7 @@ public class PyannoteDiarizationService implements DiarizationService {
 		OfflineSpeakerSegmentationPyannoteModelConfig pyannoteCfg =
 			OfflineSpeakerSegmentationPyannoteModelConfig.builder()
 				.setModel(segmentationPath)
+				.setWindowShiftRatio(config.getWindowShiftRatio())
 				.build();
 		OfflineSpeakerSegmentationModelConfig segmentation =
 			OfflineSpeakerSegmentationModelConfig.builder()

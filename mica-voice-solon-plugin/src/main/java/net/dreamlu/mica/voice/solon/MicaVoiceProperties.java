@@ -215,6 +215,10 @@ public class MicaVoiceProperties {
 		private float clusterThreshold = 0.5f;
 		private float minDurationOff = 0.5f;
 		private float minDurationOn = 0.3f;
+		/**
+		 * 窗口移动比例（窗口重叠步进 = windowShiftRatio × 窗口长度）
+		 */
+		private float windowShiftRatio = 0.1f;
 	}
 
 	@Getter

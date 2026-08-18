@@ -211,6 +211,7 @@ mica:
       # cluster-threshold: 0.5           # fast clustering 阈值
       # min-duration-off: 0.5            # 最小关闭时长（秒）：相邻两段合并的最大间隔
       # min-duration-on: 0.3             # 最小开启时长（秒）：短于此视为噪声丢弃
+      # window-shift-ratio: 0.1          # segmentation 窗口移动比例（步进 = 比例 × 窗口长度）
 
     # ===================== 关键词唤醒 KWS（需 kws 模型 + keywords.txt） =====================
     kws:

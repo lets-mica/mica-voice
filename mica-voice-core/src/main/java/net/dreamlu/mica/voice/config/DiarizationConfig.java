@@ -15,14 +15,6 @@ import lombok.Setter;
 @Setter
 public class DiarizationConfig {
 
-	/**
-	 * segmentation 模型候选名（Pyannote 系）。
-	 */
-	public static final String[] DEFAULT_SEGMENTATION_CANDIDATES = new String[]{
-		"sherpa-onnx-pyannote-segmentation-3-0.onnx",
-		"pyannote-3.0.onnx"
-	};
-
 	private String segmentationModelFileName = "sherpa-onnx-pyannote-segmentation-3-0.onnx";
 	private String embeddingModelFileName = "3dspeaker_speech_eres2net_base_sv_zh-cn_3dspeaker_16k.onnx";
 	private Integer threads;
@@ -43,6 +35,10 @@ public class DiarizationConfig {
 	 * 最小开启时长（秒）：短于此视为噪声丢弃
 	 */
 	private float minDurationOn = 0.3f;
+	/**
+	 * 窗口移动比例（窗口重叠步进 = windowShiftRatio × 窗口长度，默认 0.1）
+	 */
+	private float windowShiftRatio = 0.1f;
 
 	public DiarizationConfig() {
 	}
@@ -96,6 +92,11 @@ public class DiarizationConfig {
 
 		public Builder minDurationOn(float v) {
 			c.minDurationOn = v;
+			return this;
+		}
+
+		public Builder windowShiftRatio(float v) {
+			c.windowShiftRatio = v;
 			return this;
 		}
 
