@@ -43,7 +43,7 @@
     <!-- ===================== Properties ===================== -->
     <properties>
         <!-- 版本号（CI 通过 sed 读取此标签判断 SNAPSHOT） -->
-        <revision>1.0.0</revision>
+        <revision>1.0.1-SNAPSHOT</revision>
         <!-- 公共配置 -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
