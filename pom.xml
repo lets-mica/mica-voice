@@ -47,7 +47,7 @@
         <!-- 公共配置 -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <!-- Java 版本。JDK 8 baseline：与 sherpa-onnx 1.13.5 兼容。 -->
+        <!-- Java 版本。JDK 8 baseline：与 mica-sherpa-onnx 兼容。 -->
         <java.version>1.8</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
@@ -57,7 +57,7 @@
         <maven-flatten.version>1.8.0</maven-flatten.version>
         <central-publishing-plugin.version>0.11.0</central-publishing-plugin.version>
         <!-- mica 生态 -->
-        <mica.sherpa.onnx.version>1.13.5</mica.sherpa.onnx.version>
+        <mica.sherpa.onnx.version>1.13.6</mica.sherpa.onnx.version>
         <!-- mica-auto：编译期自动生成 spring.factories / spring-configuration-metadata 等元数据。
             与 Spring Boot 版本配套：SB 2.7.x → mica-auto 2.x.x（最新稳定 2.3.5） -->
         <mica.auto.version>2.3.5</mica.auto.version>
