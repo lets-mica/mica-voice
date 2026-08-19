@@ -216,7 +216,7 @@ mica:
     # ===================== 关键词唤醒 KWS（需 kws 模型 + keywords.txt） =====================
     kws:
       enabled: false                     # KWS 开关（默认 false）
-      model-dir-name: sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-23  # KWS 模型目录名
+      model-dir-name: sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-01  # KWS 模型目录名
       # threads: 2                       # 覆盖全局线程数
       # debug: false                     # 覆盖全局 debug
       # sample-rate: 16000               # 特征采样率（推荐 16000）

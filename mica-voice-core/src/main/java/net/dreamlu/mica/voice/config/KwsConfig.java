@@ -8,7 +8,7 @@ import lombok.Setter;
  *
  * <p>需要 2 类文件：
  * <ul>
- *     <li>模型目录名（如 {@code sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-23}）</li>
+ *     <li>模型目录名（如 {@code sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-01}）</li>
  *     <li>关键词文件（{@code keywords.txt}，每行一个关键词 + tokens）</li>
  * </ul>
  *
@@ -18,7 +18,7 @@ import lombok.Setter;
 @Setter
 public class KwsConfig {
 
-	private String modelDirName = "sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-23";
+	private String modelDirName = "sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-01";
 	private Integer threads;
 	private boolean debug;
 	/**

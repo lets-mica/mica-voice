@@ -228,7 +228,7 @@ public class MicaVoiceProperties {
 		 * 扩展能力
 		 */
 		private boolean enabled = false;
-		private String modelDirName = "sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-23";
+		private String modelDirName = "sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-01";
 		private Integer threads;
 		private boolean debug;
 		private int sampleRate = 16000;

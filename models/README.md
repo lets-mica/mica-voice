@@ -311,7 +311,7 @@ models/
 
 ```
 models/
-└── dir=sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-23/          # kws.model-dir-name
+└── dir=sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-01/          # kws.model-dir-name
     ├── encoder.onnx                                                    # 或 encoder.int8.onnx
     ├── decoder.onnx                                                    # 或 decoder.int8.onnx
     ├── joiner.onnx                                                     # 或 joiner.int8.onnx

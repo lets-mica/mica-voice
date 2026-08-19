@@ -90,7 +90,7 @@ body:
         - "3dspeaker_speech_eres2net_*（声纹 embedding）"
         - "sherpa-onnx-pyannote-segmentation-3-0.onnx（diarization segmentation）"
         - "silero_vad.onnx / ten_vad.onnx"
-        - "sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-23（KWS）"
+        - "sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-01（KWS）"
         - "sherpa-onnx-gtcrn.onnx / dpdfnet"
         - "其它 / 自定义"
   - type: textarea

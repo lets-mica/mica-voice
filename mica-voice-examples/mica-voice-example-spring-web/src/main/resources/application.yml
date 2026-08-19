@@ -75,7 +75,7 @@ mica:
     # 关键词唤醒
     kws:
       enabled: false        # 需要 transducer 模型目录 + keywords.txt
-      model-dir-name: sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-23
+      model-dir-name: sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-01
 
     # 音频降噪
     denoise:
