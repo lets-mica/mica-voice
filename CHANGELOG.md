@@ -2,6 +2,26 @@
 
 ## 发行版本
 
+### [1.0.1] - 待发布
+
+**新功能**
+
+- **核心 SDK（`mica-voice-core`）**：新增窗口移动比例配置，并集成到相关服务中，提升音频窗口滑动的灵活性
+- **自动装配**：补充各 Service Bean 与配置类的 JavaDoc 注释，增强 IDE 提示与可维护性
+
+**问题修复**
+
+- **关键词唤醒 KWS**：优化关键词识别结果处理逻辑，避免空结果或异常输出（感谢 `@yaochao` 反馈，Gitee Issue `#IK9TAJ`）
+- **关键词唤醒 KWS**：修正 KWS 模型目录名为 `sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-01`，与 sherpa-onnx 官方命名保持一致
+
+**文档**
+
+- **README**：更新主 README 内容，优化 `mica-voice-examples` 子模块标题描述，删除自动装配对应 starter 类的冗余说明
+
+**构建 / 依赖**
+
+- 升级底层 native 依赖 `mica-sherpa-onnx` 至 `1.13.6`
+
 ### [1.0.0] - 2026-08-15
 
 - **核心 SDK（`mica-voice-core`）**：统一的语音 AI 门面 `MicaVoice`，一行调用即可获取离线 ASR、在线流式 ASR、TTS、声纹识别、VAD、说话人分离、关键词唤醒 KWS、音频降噪等服务（均实现 `AutoCloseable`）
