@@ -86,27 +86,30 @@ public class KeywordSpotterService implements KwsService {
 	public List<KwsResult> spot(AudioData audio) {
 		ensureOpen();
 		OnlineStream stream = spotter.createStream();
+		List<KwsResult> out = new ArrayList<>();
 		try {
 			stream.acceptWaveform(audio.getSamples(), audio.getSampleRate());
 			stream.inputFinished();
 			while (spotter.isReady(stream)) {
 				spotter.decode(stream);
+				// sherpa-onnx KeywordSpotter 的 result 是「最近一次跨越 @关键词 边界」的命中：
+				// 每次命中都会刷新关键字。因此边 decode 边取 result，
+				// 命中后立即收集并 reset(stream)，否则后续命中会被覆盖。
+				KeywordSpotterResult r = spotter.getResult(stream);
+				if (r != null && r.getKeyword() != null && !r.getKeyword().isEmpty()) {
+					List<String> tokens = new ArrayList<>();
+					if (r.getTokens() != null) {
+						Collections.addAll(tokens, r.getTokens());
+					}
+					out.add(KwsResult.builder()
+						.keyword(r.getKeyword())
+						.tokens(tokens)
+						.timestamps(r.getTimestamps())
+						.triggeredAtSample(0L)
+						.build());
+					spotter.reset(stream);
+				}
 			}
-			KeywordSpotterResult r = spotter.getResult(stream);
-			if (r == null || r.getKeyword() == null || r.getKeyword().isEmpty()) {
-				return Collections.emptyList();
-			}
-			List<KwsResult> out = new ArrayList<>();
-			List<String> tokens = new ArrayList<>();
-			if (r.getTokens() != null) {
-				Collections.addAll(tokens, r.getTokens());
-			}
-			out.add(KwsResult.builder()
-				.keyword(r.getKeyword())
-				.tokens(tokens)
-				.timestamps(r.getTimestamps())
-				.triggeredAtSample(0L)
-				.build());
 			return out;
 		} catch (Throwable t) {
 			throw new EngineException("关键词识别失败: " + t.getMessage(), t);

@@ -31,7 +31,8 @@ import java.util.List;
 public class KwsExample {
 
 	public static final String MODEL_DIR = "sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-01";
-	public static final String DEFAULT_WAV = "0-four-speakers-zh.wav";
+	public static final String DEFAULT_WAV = MODEL_DIR + "/test_wavs/4.wav";
+	public static final String DEFAULT_KEYWORDS = "test_wavs/test_keywords.txt";
 
 	public static void main(String[] args) {
 		File wav = ConsoleUtil.resolve(args.length > 0 ? args[0] : DEFAULT_WAV);
@@ -42,6 +43,7 @@ public class KwsExample {
 			.build();
 		KwsConfig config = KwsConfig.builder()
 			.modelDirName(MODEL_DIR)
+			.keywordsFile(DEFAULT_KEYWORDS)
 			.keywordsThreshold(0.25f)
 			.keywordsScore(2.0f)
 			.build();
