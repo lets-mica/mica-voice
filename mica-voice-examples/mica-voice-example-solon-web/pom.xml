@@ -16,7 +16,7 @@
 
     <properties>
         <!-- 与 mica-voice-solon-plugin 对齐 -->
-        <solon.version>4.0.5</solon.version>
+        <solon.version>4.0.6</solon.version>
     </properties>
 
     <dependencyManagement>
