@@ -63,7 +63,7 @@
         <mica.auto.version>2.3.5</mica.auto.version>
         <!-- 常用依赖 -->
         <slf4j.version>1.7.36</slf4j.version>
-        <lombok.version>1.18.34</lombok.version>
+        <lombok.version>1.18.46</lombok.version>
         <!-- Spring Boot（starter 子模块用）。
              锁 2.7.x：JDK 8 兼容的最高 SB 系列（JDK 17 也能跑），
              与 mica-voice-core 的 JDK 8 baseline 一致。 -->
