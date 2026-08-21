@@ -18,7 +18,7 @@
         <!-- Solon 4.x：JDK 8 编译（兼容 JDK 8 ~ 26），与 mica-ppocr-solon-plugin 对齐 -->
         <solon.version>4.0.5</solon.version>
         <!-- 测试日志 -->
-        <logback.version>1.5.6</logback.version>
+        <logback.version>1.6.3</logback.version>
     </properties>
 
     <dependencyManagement>
