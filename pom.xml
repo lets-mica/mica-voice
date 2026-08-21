@@ -60,7 +60,7 @@
         <mica.sherpa.onnx.version>1.13.6</mica.sherpa.onnx.version>
         <!-- mica-auto：编译期自动生成 spring.factories / spring-configuration-metadata 等元数据。
             与 Spring Boot 版本配套：SB 2.7.x → mica-auto 2.x.x（最新稳定 2.3.5） -->
-        <mica.auto.version>2.3.5</mica.auto.version>
+        <mica.auto.version>4.0.1</mica.auto.version>
         <!-- 常用依赖 -->
         <slf4j.version>1.7.36</slf4j.version>
         <lombok.version>1.18.46</lombok.version>
