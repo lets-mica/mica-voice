@@ -117,7 +117,7 @@ PARALLEL=8 bash models/scripts/download-models.sh tts                  # 手动�
 | `diarization` | `diarization` | 说话人分离 pyannote-segmentation-3.0 | ~5.7MB |
 | `all` | `all` | 以上全部 | ~1.5GB |
 
-> 镜像说明：`sensevoice` / `x-asr` 走 HuggingFace，**默认 `hf-mirror.com`（HuggingFace 官方内容的国内反代镜像，国内无需科学上网）**。
+> **镜像说明**：`sensevoice` / `x-asr` 走 HuggingFace，**默认 `hf-mirror.com`（HuggingFace 官方内容的国内反代镜像，国内无需科学上网）**。
 > 切换回官方源：
 >   - PowerShell：`-Mirror huggingface`
 >   - bash：`HF_BASE=https://huggingface.co bash models/scripts/download-models.sh sensevoice`

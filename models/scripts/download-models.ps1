@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     并行分段下载 sherpa-onnx 测试模型（SenseVoice / X-ASR / ASR / TTS / 声纹 / VAD / KWS / Diarization / Denoise）。
 
@@ -54,6 +54,8 @@ function Download-File {
         [Parameter(Mandatory = $true)][string]$OutFile,
         [int]$Parts = 4
     )
+    # 先把要下载的地址打出来，方便用户确认（特别是 hf-mirror 走代理或被劫持时一眼能看出）
+    Write-Host "  [url] $Url"
     $file = Get-Item -LiteralPath $OutFile -ErrorAction SilentlyContinue
     $need = $true
 
@@ -71,8 +73,27 @@ function Download-File {
             Start-Sleep -Seconds 2
         }
     }
+
+    # 已完整下载则跳过（HEAD 拿到了大小，本地文件大小一致）
+    # 这个判断必须在「小文件/HEAD 拿不到大小」分支之前，否则 50MB 以下或 HEAD 被 CDN 拒绝的
+    # 文件每次都会重下。
+    if ($total -gt 0 -and $file -and $file.Length -eq $total) {
+        Write-Host "[skip] $OutFile 已完整下载 ($([math]::Round($total/1MB,1)) MB)"
+        return
+    }
+    if ($total -gt 0 -and $file -and $file.Length -gt $total) {
+        Write-Host "  [warn] 本地文件大于远端大小，删除后重下"
+        Remove-Item -LiteralPath $OutFile -Force
+        $file = $null
+    }
+
     if ($total -le 0) {
-        # 拿不到大小（部分 CDN 对 HEAD 不返回 Content-Length），直接整体下载
+        # 拿不到大小（部分 CDN 对 HEAD 不返回 Content-Length）。
+        # 本地已有非空文件就先跳过——宁可少下一次也不要覆盖用户已经下好的东西。
+        if ($file -and $file.Length -gt 0) {
+            Write-Host "  [skip] 无法 HEAD 验证大小，但本地文件已存在 ($([math]::Round($file.Length/1KB,1)) KB)，跳过"
+            return
+        }
         Write-Host "  [info] 无法获取大小，直接下载..."
         Invoke-WebRequest -Uri $Url -OutFile $OutFile -UseBasicParsing -TimeoutSec 600 -MaximumRedirection 5
         if (Test-Path -LiteralPath $OutFile) {
@@ -87,15 +108,6 @@ function Download-File {
         Invoke-WebRequest -Uri $Url -OutFile $OutFile -UseBasicParsing -TimeoutSec 600 -MaximumRedirection 5
         Write-Host "[ok] $OutFile ($([math]::Round((Get-Item -LiteralPath $OutFile).Length/1MB,1)) MB)"
         return
-    }
-
-    # 已完整下载则跳过
-    if ($file -and $file.Length -eq $total) {
-        Write-Host "[skip] $OutFile 已完整下载 ($([math]::Round($total/1MB,1)) MB)"
-        return
-    }
-    if ($file -and $file.Length -gt $total) {
-        Remove-Item -LiteralPath $OutFile -Force
     }
 
     $partSize = [long][math]::Ceiling($total / $Parts)
@@ -323,6 +335,27 @@ foreach ($item in $selected) {
     New-Item -ItemType Directory -Force -Path $dir | Out-Null
     Write-Host ""
     Write-Host "==> 下载: $(Split-Path -Leaf $item.out)"
+    Write-Host "    URL : $($item.url)"
+    Write-Host "    目标: $($item.out)"
+
+    # .tar.bz2 已经被解压过（脚本解压完会删源 tarball），就直接跳过整段下载。
+    # 否则每次重跑都会重新拉一遍大文件。
+    if ($item.out.EndsWith(".tar.bz2")) {
+        $stem = [System.IO.Path]::GetFileNameWithoutExtension([System.IO.Path]::GetFileNameWithoutExtension($item.out))
+        $extractDir = Join-Path $ModelsDir $stem
+        if ((Test-Path -LiteralPath $extractDir) -and `
+            ((Get-ChildItem -LiteralPath $extractDir -Recurse -File -ErrorAction SilentlyContinue | Measure-Object).Count -gt 0)) {
+            # 清掉上次未跑完留下来的 .part* 残片，避免下次误判或占空间
+            $partPattern = [System.IO.Path]::GetFileName($item.out) + ".part*"
+            Get-ChildItem -LiteralPath $ModelsDir -Filter $partPattern -ErrorAction SilentlyContinue | ForEach-Object {
+                Write-Host "  [clean] 清理残留分片: $($_.Name)"
+                Remove-Item -LiteralPath $_.FullName -Force
+            }
+            Write-Host "  [skip] 解压目录已存在且非空: $extractDir，跳过下载"
+            continue
+        }
+    }
+
     Download-File -Url $item.url -OutFile $item.out -Parts $Parts
 }
 
