@@ -69,7 +69,7 @@
              与 mica-voice-core 的 JDK 8 baseline 一致。 -->
         <spring.boot.version>2.7.18</spring.boot.version>
         <!-- Solon 4.x：JDK 8 编译（兼容 JDK 8 ~ 26），与 mica-ppocr-solon-plugin 对齐 -->
-        <solon.version>4.0.5</solon.version>
+        <solon.version>4.0.6</solon.version>
     </properties>
 
     <!-- ===================== Dependency Management ===================== -->
