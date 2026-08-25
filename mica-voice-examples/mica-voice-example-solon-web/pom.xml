@@ -14,11 +14,6 @@
     <name>${project.artifactId}</name>
     <description>Solon Web 示例：展示 mica-voice-solon-plugin 的 REST 接入（ASR 上传、TTS 下载、声纹注册/验证）</description>
 
-    <properties>
-        <!-- 与 mica-voice-solon-plugin 对齐 -->
-        <solon.version>4.0.5</solon.version>
-    </properties>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -47,8 +42,8 @@
             <artifactId>solon-web-staticfiles</artifactId>
         </dependency>
         <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
         </dependency>
         <!-- Lombok（编译期） -->
         <dependency>
