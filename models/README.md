@@ -125,6 +125,11 @@ PARALLEL=8 bash models/scripts/download-models.sh tts                  # 手动�
 > ModelScope（魔搭）暂未提供这两个模型的官方同步仓库，所以脚本没有 ModelScope 选项。其余目标走 GitHub Releases。
 > 脚本支持多段并行与断点续传，已完整下载的文件自动跳过，中断后重跑即可续传。
 
+**网盘下载：**
+
+链接（夸克网盘）：https://pan.quark.cn/s/d2da0116a472?pwd=kc5e
+提取码：kc5e
+
 ## git 策略
 
 - `models/` 下**模型文件不提交**（`.gitignore` 忽略 `models/*`，体积大，按需自行下载）；
