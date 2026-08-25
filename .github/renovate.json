@@ -2,5 +2,15 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
+  ],
+  "packageRules": [
+    {
+      "matchPackagePatterns": [
+        "^net.dreamlu:mica-auto$",
+        "^org.junit.jupiter:junit-jupiter$",
+        "^org.springframework.boot:spring-boot-dependencies$"
+      ],
+      "enabled": false
+    }
   ]
 }
