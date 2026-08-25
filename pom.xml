@@ -67,7 +67,7 @@
         <!-- Spring Boot（starter 子模块用）。
              锁 2.7.x：JDK 8 兼容的最高 SB 系列（JDK 17 也能跑），
              与 mica-voice-core 的 JDK 8 baseline 一致。 -->
-        <spring.boot.version>2.7.18</spring.boot.version>
+        <spring.boot.version>4.1.1</spring.boot.version>
     </properties>
 
     <!-- ===================== Dependency Management ===================== -->
