@@ -8,7 +8,8 @@
       "matchPackagePatterns": [
         "^net.dreamlu:mica-auto$",
         "^org.junit.jupiter:junit-jupiter$",
-        "^org.springframework.boot:spring-boot-dependencies$"
+        "^org.springframework.boot:spring-boot-dependencies$",
+        "^org.springframework.boot:spring-boot-maven-plugin$"
       ],
       "enabled": false
     }

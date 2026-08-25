@@ -62,12 +62,14 @@
             与 Spring Boot 版本配套：SB 2.7.x → mica-auto 2.x.x（最新稳定 2.3.5） -->
         <mica.auto.version>2.3.5</mica.auto.version>
         <!-- 常用依赖 -->
-        <slf4j.version>1.7.36</slf4j.version>
+        <slf4j.version>2.0.18</slf4j.version>
         <lombok.version>1.18.46</lombok.version>
         <!-- Spring Boot（starter 子模块用）。
              锁 2.7.x：JDK 8 兼容的最高 SB 系列（JDK 17 也能跑），
              与 mica-voice-core 的 JDK 8 baseline 一致。 -->
         <spring.boot.version>2.7.18</spring.boot.version>
+        <!-- Solon 4.x：JDK 8 编译（兼容 JDK 8 ~ 26），与 mica-ppocr-solon-plugin 对齐 -->
+        <solon.version>4.0.5</solon.version>
     </properties>
 
     <!-- ===================== Dependency Management ===================== -->
@@ -99,6 +101,11 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
             <!-- Lombok：编译期生成 getter/setter/builder/equals/hashCode 等，
