@@ -57,7 +57,7 @@
         <maven-flatten.version>1.8.0</maven-flatten.version>
         <central-publishing-plugin.version>0.11.0</central-publishing-plugin.version>
         <!-- mica 生态 -->
-        <mica.sherpa.onnx.version>1.13.6</mica.sherpa.onnx.version>
+        <mica.sherpa.onnx.version>1.13.7</mica.sherpa.onnx.version>
         <!-- mica-auto：编译期自动生成 spring.factories / spring-configuration-metadata 等元数据。
             与 Spring Boot 版本配套：SB 2.7.x → mica-auto 2.x.x（最新稳定 2.3.5） -->
         <mica.auto.version>2.3.5</mica.auto.version>
