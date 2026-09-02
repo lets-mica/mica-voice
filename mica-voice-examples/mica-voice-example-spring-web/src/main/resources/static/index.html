@@ -56,6 +56,7 @@
         <div class="version">v1.0 控制台</div>
         <div class="nav-item active" data-panel="asr">🎙 语音识别 ASR</div>
         <div class="nav-item" data-panel="recorder">📡 实时录音 ASR (WebSocket)</div>
+        <div class="nav-item" data-panel="stream-tts">⚡ 流式 TTS (WebSocket)</div>
         <div class="nav-item" data-panel="tts">🔊 语音合成 TTS</div>
         <div class="nav-item" data-panel="speaker">👤 声纹识别</div>
         <div class="nav-item" data-panel="info">⚙ 模型信息</div>
@@ -117,6 +118,48 @@
                 <audio id="tts-audio" controls></audio>
             </div>
             <div class="result" id="tts-result" style="display:none"></div>
+        </section>
+
+        <section class="panel" id="panel-stream-tts">
+            <h2>流式 TTS（WebSocket 逐句合成）</h2>
+            <p>模拟 LLM 逐 token 输出：浏览器定时把文本增量推给后端
+                <code>StreamingTtsWebSocketHandler</code>（/mica/voice/ws/streaming-tts），
+                服务端收到一个完整句子就立即开始合成，音频按 ~100ms PCM16 块回推，Web Audio 边收边播。
+                文本推完后再点"flush"结算末尾残句。</p>
+            <div class="form-group">
+                <label>模拟文本（LLM 输出源，可用标点切多句）</label>
+                <textarea id="stream-tts-text">大家好，欢迎来到 mica-voice 流式语音合成演示。这个页面会模拟大模型逐字输出的过程，您不需要等待整段文字输入完成。每当服务端拼出一个完整的句子，语音合成就会立刻开始。比如现在这一句，应该在上一句播放的同时就已经被合成了。短句的响应非常快，长句则稍微需要一点时间。请留意听感上的节奏，句子与句子之间的间隔很小。下面我们用一段更长的文本来充分观察流式效果。春天来了，万物复苏，柳树抽出了嫩绿的新芽。清晨的阳光洒在窗前，鸟儿在枝头轻声歌唱。我们坐在公园的长椅上，感受微风拂过脸庞。这时候，远处的广播里传来熟悉的旋律，让人想起许多往事。时间就这样慢慢地流淌，平凡的日子也有动人的瞬间。当然，如果模型支持中英混排，也可以加入一些英文句子，比如 The quick brown fox jumps over the lazy dog。数字和日期也应该能正常读出，比如圆周率约等于三点一四，今天是二零二六年九月二号。这一段故意不带句号结尾，需要点击 flush 才会被结算合成</textarea>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label>说话人 id</label>
+                    <input type="number" id="stream-tts-speaker" value="0" min="0">
+                </div>
+                <div class="form-group">
+                    <label>语速</label>
+                    <input type="number" id="stream-tts-speed" value="1.0" step="0.1" min="0.5" max="2.0">
+                </div>
+                <div class="form-group">
+                    <label>token 间隔(ms)</label>
+                    <input type="number" id="stream-tts-interval" value="100" min="10" step="10">
+                </div>
+                <div class="form-group">
+                    <label>每次吐字</label>
+                    <input type="number" id="stream-tts-token-size" value="2" min="1" step="1">
+                </div>
+            </div>
+            <div class="row">
+                <button id="stream-tts-connect" onclick="streamTtsConnect()">连接</button>
+                <button id="stream-tts-config" onclick="streamTtsConfig()" disabled>下发 config</button>
+                <button id="stream-tts-stream" onclick="streamTtsStart()" disabled>▶ 模拟 LLM 输出</button>
+                <button class="secondary" id="stream-tts-flush" onclick="streamTtsFlush()" disabled>flush（结束本轮）</button>
+                <button class="danger" id="stream-tts-close" onclick="streamTtsClose()" disabled>断开</button>
+            </div>
+            <div class="hint" id="stream-tts-status" style="margin:8px 0 0">未连接</div>
+            <h3 style="margin:16px 0 8px">📤 已发送文本（模拟 LLM 实时输出）</h3>
+            <div class="result" id="stream-tts-sent" style="display:block;min-height:90px;max-height:150px;overflow-y:auto">（点击"模拟 LLM 输出"后，这里会实时追加发往服务端的文字）</div>
+            <h3 style="margin:16px 0 8px">📥 收流日志</h3>
+            <div class="result" id="stream-tts-log" style="display:block;min-height:120px;max-height:260px;overflow-y:auto">（点击"连接"，然后"模拟 LLM 输出"）</div>
         </section>
 
         <!-- Speaker -->
@@ -401,6 +444,217 @@
     function recorderStop() {
         if (recWs && recWs.readyState === WebSocket.OPEN) {
             recWs.send(JSON.stringify({ type: 'stop' }));
+        }
+    }
+
+    // ============ Streaming TTS (WebSocket) ============
+    let streamTtsWs = null;
+    let streamTtsCtx = null;           // Web Audio 上下文
+    let streamTtsSampleRate = 0;       // TTS 模型采样率（ready 消息下发）
+    let streamTtsNextTime = 0;         // 下个音频块的计划播放时刻
+    let streamTtsTimer = null;         // LLM 模拟定时器
+    let streamTtsFrames = 0;           // 已收音频帧计数
+    let streamTtsAudioSamples = 0;     // 已收音频样本总数（用于进度日志）
+    let streamTtsLastLogSec = 0;       // 上次输出音频进度日志的秒数
+
+    function streamTtsLog(msg, isOk) {
+        const el = document.getElementById('stream-tts-log');
+        const div = document.createElement('div');
+        div.className = isOk === false ? 'fail' : (isOk === true ? 'ok' : '');
+        div.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+        el.appendChild(div);
+        el.scrollTop = el.scrollHeight;
+    }
+
+    function streamTtsSetConnected(on) {
+        document.getElementById('stream-tts-connect').disabled = on;
+        document.getElementById('stream-tts-config').disabled = !on;
+        document.getElementById('stream-tts-stream').disabled = !on;
+        document.getElementById('stream-tts-flush').disabled = !on;
+        document.getElementById('stream-tts-close').disabled = !on;
+    }
+
+    function streamTtsSend(obj) {
+        if (streamTtsWs && streamTtsWs.readyState === WebSocket.OPEN) {
+            streamTtsWs.send(JSON.stringify(obj));
+        }
+    }
+
+    // PCM16LE(Int16Array) → Float32Array（严格按 little-endian 读）
+    function streamTtsPcmToFloat32(pcm) {
+        const out = new Float32Array(pcm.length);
+        for (let i = 0; i < pcm.length; i++) {
+            out[i] = pcm[i] / 32768.0;
+        }
+        return out;
+    }
+
+    function streamTtsEnsureAudio() {
+        if (!streamTtsCtx) {
+            streamTtsCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (streamTtsCtx.state === 'suspended') {
+            streamTtsCtx.resume().catch(() => {});
+        }
+    }
+
+    // 把一段 Float32 排进播放时间线，块与块无缝衔接
+    function streamTtsScheduleChunk(float32) {
+        if (!streamTtsCtx || float32.length === 0 || streamTtsSampleRate <= 0) return;
+        const buffer = streamTtsCtx.createBuffer(1, float32.length, streamTtsSampleRate);
+        buffer.copyToChannel(float32, 0);
+        const src = streamTtsCtx.createBufferSource();
+        src.buffer = buffer;
+        src.connect(streamTtsCtx.destination);
+        const now = streamTtsCtx.currentTime;
+        if (streamTtsNextTime < now) streamTtsNextTime = now;   // 积压已播完则追平
+        src.start(streamTtsNextTime);
+        streamTtsNextTime += buffer.duration;
+    }
+
+    function streamTtsResetAudio() {
+        streamTtsNextTime = 0;
+        streamTtsFrames = 0;
+        streamTtsAudioSamples = 0;
+        streamTtsLastLogSec = 0;
+        if (streamTtsCtx) {
+            streamTtsCtx.close().catch(() => {});
+            streamTtsCtx = null;
+        }
+    }
+
+    function streamTtsConnect() {
+        streamTtsResetAudio();
+        const proto = location.protocol === 'https:' ? 'wss' : 'ws';
+        streamTtsWs = new WebSocket(`${proto}://${location.host}/mica/voice/ws/streaming-tts`);
+        streamTtsWs.binaryType = 'arraybuffer';
+        streamTtsWs.onopen = () => {
+            streamTtsSetConnected(true);
+            document.getElementById('stream-tts-status').textContent = '已连接，等待 ready…';
+            streamTtsLog('连接建立，等待 ready…', true);
+        };
+        streamTtsWs.onmessage = (ev) => {
+            if (typeof ev.data === 'string') {
+                // —— JSON 控制帧 ——
+                let msg;
+                try {
+                    msg = JSON.parse(ev.data);
+                } catch (e) {
+                    streamTtsLog('收到无法解析的文本帧: ' + ev.data, false);
+                    return;
+                }
+                if (msg.type === 'ready') {
+                    streamTtsSampleRate = msg.sampleRate;
+                    document.getElementById('stream-tts-status').textContent =
+                        `已就绪 sampleRate=${msg.sampleRate}Hz numSpeakers=${msg.numSpeakers}`;
+                    streamTtsLog(`ready: sampleRate=${msg.sampleRate}Hz, numSpeakers=${msg.numSpeakers}, ` +
+                        `textQueue=${msg.textQueueCapacity}, frameQueue=${msg.frameQueueCapacity}`, true);
+                    streamTtsEnsureAudio();
+                } else if (msg.type === 'config-ack') {
+                    streamTtsLog(`config-ack: speakerId=${msg.speakerId}, speed=${msg.speed}`, true);
+                } else if (msg.type === 'done') {
+                    document.getElementById('stream-tts-status').textContent = '本轮完成';
+                    const doneSec = streamTtsSampleRate > 0 ? streamTtsAudioSamples / streamTtsSampleRate : 0;
+                    streamTtsLog(`✅ done: 本轮共收 ${streamTtsFrames} 帧 ≈ ${doneSec.toFixed(1)}s 音频，flush→done ${msg.costMs}ms`, true);
+                } else if (msg.type === 'error') {
+                    streamTtsLog('❌ error: ' + msg.message, false);
+                }
+            } else {
+                // —— 音频二进制帧（binaryType=arraybuffer）——
+                const view = new DataView(ev.data);
+                const n = view.byteLength / 2;
+                const pcm = new Int16Array(n);
+                for (let i = 0; i < n; i++) {
+                    pcm[i] = view.getInt16(i * 2, true);
+                }
+                streamTtsFrames++;
+                streamTtsAudioSamples += n;
+                const totalSec = streamTtsSampleRate > 0 ? streamTtsAudioSamples / streamTtsSampleRate : 0;
+                if (streamTtsFrames === 1) {
+                    streamTtsLog(`收到首个音频帧（${n} samples ≈ ${(1000 * n / streamTtsSampleRate).toFixed(0)}ms），开始出声…`, true);
+                } else if (Math.floor(totalSec) > streamTtsLastLogSec) {
+                    // 每秒输出一条进度，让"边收边播"的流式效果可见
+                    streamTtsLastLogSec = Math.floor(totalSec);
+                    streamTtsLog(`⏱ 播放中… 已收音频 ${streamTtsLastLogSec}s（${streamTtsFrames} 帧）`, false);
+                }
+                streamTtsEnsureAudio();
+                streamTtsScheduleChunk(streamTtsPcmToFloat32(pcm));
+            }
+        };
+        streamTtsWs.onerror = () => {
+            document.getElementById('stream-tts-status').textContent = 'WS 错误';
+            streamTtsLog('WebSocket 错误', false);
+        };
+        streamTtsWs.onclose = () => {
+            streamTtsSetConnected(false);
+            streamTtsStopStreaming();
+            document.getElementById('stream-tts-status').textContent = '已断开';
+            streamTtsLog('连接已断开', false);
+            streamTtsWs = null;
+        };
+    }
+
+    function streamTtsConfig() {
+        streamTtsSend({
+            type: 'config',
+            speakerId: parseInt(document.getElementById('stream-tts-speaker').value, 10) || 0,
+            speed: parseFloat(document.getElementById('stream-tts-speed').value) || 1.0
+        });
+        streamTtsLog('下发 config…', false);
+    }
+
+    function streamTtsStopStreaming() {
+        if (streamTtsTimer) {
+            clearInterval(streamTtsTimer);
+            streamTtsTimer = null;
+        }
+    }
+
+    // 模拟 LLM 逐 token：定时把 textarea 文本切成小块推送，同时逐字回显到"已发送文本"框
+    function streamTtsStart() {
+        streamTtsStopStreaming();
+        const text = document.getElementById('stream-tts-text').value;
+        if (!text) {
+            streamTtsLog('请先输入要模拟的文本', false);
+            return;
+        }
+        const sentEl = document.getElementById('stream-tts-sent');
+        sentEl.textContent = '';   // 新一轮，清空回显
+        const interval = Math.max(10, parseInt(document.getElementById('stream-tts-interval').value, 10) || 100);
+        const size = Math.max(1, parseInt(document.getElementById('stream-tts-token-size').value, 10) || 2);
+        let pos = 0;
+        streamTtsLog(`开始模拟 LLM 输出：共 ${text.length} 字，每 ${interval}ms 吐 ${size} 字`, false);
+        streamTtsTimer = setInterval(() => {
+            if (!streamTtsWs || streamTtsWs.readyState !== WebSocket.OPEN) {
+                streamTtsStopStreaming();
+                return;
+            }
+            if (pos >= text.length) {
+                streamTtsStopStreaming();
+                streamTtsLog('LLM 输出完毕（文字已全部推送给服务端），请点击"flush"结束本轮', false);
+                return;
+            }
+            const end = Math.min(pos + size, text.length);
+            const chunk = text.substring(pos, end);
+            streamTtsSend({ type: 'text', text: chunk });
+            sentEl.textContent += chunk;
+            sentEl.scrollTop = sentEl.scrollHeight;
+            pos = end;
+        }, interval);
+    }
+
+    function streamTtsFlush() {
+        streamTtsStopStreaming();
+        streamTtsSend({ type: 'flush' });
+        streamTtsLog('已发送 flush，等待 done…', false);
+    }
+
+    function streamTtsClose() {
+        streamTtsStopStreaming();
+        if (streamTtsWs) {
+            streamTtsSend({ type: 'close' });
+            streamTtsWs.close();
+            streamTtsWs = null;
         }
     }
 
