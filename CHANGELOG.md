@@ -2,6 +2,16 @@
 
 ## 发行版本
 
+### [1.0.2] - 2026-09-03
+
+**新功能**
+
+- feat(streaming-tts): mica-voice-example-spring-web 添加流式 TTS WebSocket 示例。
+
+**构建 / 依赖**
+
+- 升级底层 native 依赖 `mica-sherpa-onnx` 至 `1.13.6`
+
 ### [1.0.1] - 2026-08-21
 
 **新功能**
