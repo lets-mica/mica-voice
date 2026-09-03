@@ -53,7 +53,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <!-- 插件版本 -->
         <maven-jar-plugin.version>3.5.1</maven-jar-plugin.version>
-        <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.16.0</maven-compiler-plugin.version>
         <maven-flatten.version>1.8.0</maven-flatten.version>
         <central-publishing-plugin.version>0.11.0</central-publishing-plugin.version>
         <!-- mica 生态 -->
