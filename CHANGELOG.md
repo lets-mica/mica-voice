@@ -10,7 +10,7 @@
 
 **构建 / 依赖**
 
-- 升级底层 native 依赖 `mica-sherpa-onnx` 至 `1.13.6`
+- 升级底层 native 依赖 `mica-sherpa-onnx` 至 `1.13.7`
 
 ### [1.0.1] - 2026-08-21
 
