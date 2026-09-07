@@ -14,8 +14,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Locale;
-
 /**
  * TTS 自动装配。
  *
@@ -30,9 +28,6 @@ import java.util.Locale;
 @AutoConfigureAfter(MicaVoiceAutoConfiguration.class)
 public class TtsAutoConfiguration {
 
-	private final MicaVoiceConfig coreProps;
-	private final MicaVoiceProperties props;
-
 	/**
 	 * TTS 语音合成服务。
 	 *
@@ -40,17 +35,11 @@ public class TtsAutoConfiguration {
 	 */
 	@Bean(destroyMethod = "close")
 	@ConditionalOnMissingBean(name = "micaVoiceTtsService")
-	public TtsService micaVoiceTtsService() {
+	public TtsService micaVoiceTtsService(MicaVoiceConfig coreProps, MicaVoiceProperties props) {
 		MicaVoiceProperties.Tts cfg = props.getTts();
-		TtsConfig.ModelType type;
-		try {
-			type = Enum.valueOf(TtsConfig.ModelType.class, cfg.getModelType().toUpperCase(Locale.ROOT));
-		} catch (Exception ex) {
-			type = TtsConfig.ModelType.VITS;
-		}
 		TtsConfig ttsConfig = TtsConfig.builder()
 			.modelDirName(cfg.getModelDirName())
-			.modelType(type)
+			.modelType(cfg.getModelType())
 			.threads(cfg.getThreads())
 			.debug(cfg.isDebug())
 			.defaultSpeakerId(cfg.getDefaultSpeakerId())

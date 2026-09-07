@@ -25,8 +25,6 @@ import org.noear.solon.annotation.Bean;
 import org.noear.solon.annotation.Condition;
 import org.noear.solon.annotation.Configuration;
 
-import java.util.Locale;
-
 /**
  * TTS 自动装配。
  *
@@ -44,15 +42,9 @@ public class TtsAutoConfiguration {
 	public TtsService micaVoiceTtsService(MicaVoiceProperties props,
 	                                      MicaVoiceConfig coreProps) {
 		MicaVoiceProperties.Tts cfg = props.getTts();
-		TtsConfig.ModelType type;
-		try {
-			type = Enum.valueOf(TtsConfig.ModelType.class, cfg.getModelType().toUpperCase(Locale.ROOT));
-		} catch (Exception ex) {
-			type = TtsConfig.ModelType.VITS;
-		}
 		TtsConfig ttsConfig = TtsConfig.builder()
 			.modelDirName(cfg.getModelDirName())
-			.modelType(type)
+			.modelType(cfg.getModelType())
 			.threads(cfg.getThreads())
 			.debug(cfg.isDebug())
 			.defaultSpeakerId(cfg.getDefaultSpeakerId())

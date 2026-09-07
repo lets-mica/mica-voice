@@ -53,8 +53,7 @@ public class MicaVoiceAutoConfiguration {
 	 */
 	@Bean(name = "micaVoiceCoreProperties", typed = true)
 	public MicaVoiceConfig coreProperties(@Inject MicaVoiceProperties props) {
-		MicaVoiceConfig p =
-			new MicaVoiceConfig();
+		MicaVoiceConfig p = new MicaVoiceConfig();
 		p.setModelsDir(new File(props.getModelsDir()));
 		p.setOutputDir(new File(props.getOutputDir()));
 		if (props.getThreads() != null) {

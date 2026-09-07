@@ -25,7 +25,6 @@ import org.noear.solon.annotation.Bean;
 import org.noear.solon.annotation.Condition;
 import org.noear.solon.annotation.Configuration;
 import org.noear.solon.annotation.Inject;
-import java.util.Locale;
 
 /**
  * VAD 自动装配。
@@ -44,15 +43,9 @@ public class VadAutoConfiguration {
 	public VadService micaVoiceVadService(@Inject MicaVoiceProperties props,
 	                                      @Inject MicaVoiceConfig coreProps) {
 		MicaVoiceProperties.Vad cfg = props.getVad();
-		VadConfig.ModelType type;
-		try {
-			type = Enum.valueOf(VadConfig.ModelType.class, cfg.getModelType().toUpperCase(Locale.ROOT));
-		} catch (Exception ex) {
-			type = VadConfig.ModelType.SILERO;
-		}
 		VadConfig vadConfig = VadConfig.builder()
 			.modelFileName(cfg.getModelFileName())
-			.modelType(type)
+			.modelType(cfg.getModelType())
 			.sampleRate(cfg.getSampleRate())
 			.threads(cfg.getThreads())
 			.debug(cfg.isDebug())

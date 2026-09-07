@@ -32,8 +32,6 @@ import java.io.File;
 @ConditionalOnProperty(prefix = "mica.voice", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class MicaVoiceAutoConfiguration {
 
-	private final MicaVoiceProperties props;
-
 	/**
 	 * 把 starter 的扁平配置转换成 core 用的运行时
 	 * {@link net.dreamlu.mica.voice.config.MicaVoiceConfig}。
@@ -42,9 +40,8 @@ public class MicaVoiceAutoConfiguration {
 	 * @return core 层统一的 MicaVoiceConfig
 	 */
 	@Bean(name = "micaVoiceCoreProperties")
-	public MicaVoiceConfig coreProperties() {
-		MicaVoiceConfig p =
-			new MicaVoiceConfig();
+	public MicaVoiceConfig coreProperties(MicaVoiceProperties props) {
+		MicaVoiceConfig p = new MicaVoiceConfig();
 		p.setModelsDir(new File(props.getModelsDir()));
 		p.setOutputDir(new File(props.getOutputDir()));
 		if (props.getThreads() != null) {

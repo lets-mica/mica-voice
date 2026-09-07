@@ -27,8 +27,6 @@ import org.noear.solon.annotation.Condition;
 import org.noear.solon.annotation.Configuration;
 import org.noear.solon.annotation.Inject;
 
-import java.util.Locale;
-
 /**
  * ASR 自动装配：离线 + 在线两个独立 Bean。
  *
@@ -43,22 +41,10 @@ import java.util.Locale;
 @Condition(onClass = net.dreamlu.mica.voice.core.MicaVoice.class)
 public class AsrAutoConfiguration {
 
-	private static <E extends Enum<E>> E parseModelType(String raw, Class<E> type, E fallback) {
-		if (raw == null || raw.isEmpty()) {
-			return fallback;
-		}
-		try {
-			return Enum.valueOf(type, raw.toUpperCase(Locale.ROOT));
-		} catch (IllegalArgumentException ex) {
-			log.warn("无效的模型类型: {}，回退到 {}", raw, fallback);
-			return fallback;
-		}
-	}
-
 	/**
 	 * 离线 ASR。
 	 *
-	 * @param props    mica-voice 业务配置属性
+	 * @param props     mica-voice 业务配置属性
 	 * @param coreProps mica-voice 核心配置
 	 * @return {@link OfflineAsrService}
 	 */
@@ -67,11 +53,11 @@ public class AsrAutoConfiguration {
 		onBeanName = "micaVoiceCoreProperties",
 		onExpression = "${mica.voice.asr.offline.enabled:true} == true")
 	public OfflineAsrService micaVoiceOfflineAsrService(MicaVoiceProperties props,
-	                                                  MicaVoiceConfig coreProps) {
+														MicaVoiceConfig coreProps) {
 		MicaVoiceProperties.Asr.Offline cfg = props.getAsr().getOffline();
 		AsrConfig asrConfig = AsrConfig.builder()
 			.modelDirName(cfg.getModelDirName())
-			.modelType(parseModelType(cfg.getModelType(), AsrConfig.ModelType.class, AsrConfig.ModelType.PARAFORMER))
+			.modelType(cfg.getModelType())
 			.threads(cfg.getThreads())
 			.debug(cfg.isDebug())
 			.language(cfg.getLanguage())
@@ -84,7 +70,7 @@ public class AsrAutoConfiguration {
 	/**
 	 * 在线流式 ASR。
 	 *
-	 * @param props    mica-voice 业务配置属性
+	 * @param props     mica-voice 业务配置属性
 	 * @param coreProps mica-voice 核心配置
 	 * @return {@link OnlineAsrService}
 	 */
@@ -93,11 +79,11 @@ public class AsrAutoConfiguration {
 		onBeanName = "micaVoiceCoreProperties",
 		onExpression = "${mica.voice.asr.online.enabled:false} == true")
 	public OnlineAsrService micaVoiceOnlineAsrService(@Inject MicaVoiceProperties props,
-	                                                  @Inject MicaVoiceConfig coreProps) {
+													  @Inject MicaVoiceConfig coreProps) {
 		MicaVoiceProperties.Asr.Online cfg = props.getAsr().getOnline();
 		OnlineAsrConfig onlineConfig = OnlineAsrConfig.builder()
 			.modelDirName(cfg.getModelDirName())
-			.modelType(parseModelType(cfg.getModelType(), OnlineAsrConfig.ModelType.class, OnlineAsrConfig.ModelType.PARAFORMER))
+			.modelType(cfg.getModelType())
 			.threads(cfg.getThreads())
 			.debug(cfg.isDebug())
 			.enableEndpoint(cfg.isEnableEndpoint())

@@ -14,8 +14,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Locale;
-
 /**
  * 音频降噪自动装配。
  *
@@ -30,9 +28,6 @@ import java.util.Locale;
 @AutoConfigureAfter(MicaVoiceAutoConfiguration.class)
 public class DenoiseAutoConfiguration {
 
-	private final MicaVoiceConfig coreProps;
-	private final MicaVoiceProperties props;
-
 	/**
 	 * 音频降噪服务。
 	 *
@@ -40,17 +35,11 @@ public class DenoiseAutoConfiguration {
 	 */
 	@Bean(destroyMethod = "close")
 	@ConditionalOnMissingBean(name = "micaVoiceDenoiseService")
-	public DenoiseService micaVoiceDenoiseService() {
+	public DenoiseService micaVoiceDenoiseService(MicaVoiceConfig coreProps, MicaVoiceProperties props) {
 		MicaVoiceProperties.Denoise cfg = props.getDenoise();
-		DenoiseConfig.ModelType type;
-		try {
-			type = Enum.valueOf(DenoiseConfig.ModelType.class, cfg.getModelType().toUpperCase(Locale.ROOT));
-		} catch (Exception ex) {
-			type = DenoiseConfig.ModelType.GTCRN;
-		}
 		DenoiseConfig denoiseConfig = DenoiseConfig.builder()
 			.modelFileName(cfg.getModelFileName())
-			.modelType(type)
+			.modelType(cfg.getModelType())
 			.threads(cfg.getThreads())
 			.debug(cfg.isDebug())
 			.attenuationLimitDb(cfg.getAttenuationLimitDb())

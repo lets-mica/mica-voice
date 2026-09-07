@@ -25,7 +25,6 @@ import org.noear.solon.annotation.Bean;
 import org.noear.solon.annotation.Condition;
 import org.noear.solon.annotation.Configuration;
 import org.noear.solon.annotation.Inject;
-import java.util.Locale;
 
 /**
  * 音频降噪自动装配。
@@ -44,15 +43,9 @@ public class DenoiseAutoConfiguration {
 	public DenoiseService micaVoiceDenoiseService(@Inject MicaVoiceProperties props,
 	                                              @Inject MicaVoiceConfig coreProps) {
 		MicaVoiceProperties.Denoise cfg = props.getDenoise();
-		DenoiseConfig.ModelType type;
-		try {
-			type = Enum.valueOf(DenoiseConfig.ModelType.class, cfg.getModelType().toUpperCase(Locale.ROOT));
-		} catch (Exception ex) {
-			type = DenoiseConfig.ModelType.GTCRN;
-		}
 		DenoiseConfig denoiseConfig = DenoiseConfig.builder()
 			.modelFileName(cfg.getModelFileName())
-			.modelType(type)
+			.modelType(cfg.getModelType())
 			.threads(cfg.getThreads())
 			.debug(cfg.isDebug())
 			.attenuationLimitDb(cfg.getAttenuationLimitDb())

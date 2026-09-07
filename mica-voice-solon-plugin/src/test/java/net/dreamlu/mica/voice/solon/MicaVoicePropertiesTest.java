@@ -16,6 +16,8 @@
 
 package net.dreamlu.mica.voice.solon;
 
+import net.dreamlu.mica.voice.config.AsrConfig;
+import net.dreamlu.mica.voice.config.TtsConfig;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,11 +40,11 @@ class MicaVoicePropertiesTest {
 
 		// 嵌套默认
 		assertTrue(props.getAsr().getOffline().isEnabled());
-		assertEquals("PARAFORMER", props.getAsr().getOffline().getModelType());
+		assertEquals(AsrConfig.ModelType.PARAFORMER, props.getAsr().getOffline().getModelType());
 		assertEquals("auto", props.getAsr().getOffline().getLanguage());
 		assertFalse(props.getAsr().getOnline().isEnabled());
 		assertTrue(props.getTts().isEnabled());
-		assertEquals("VITS", props.getTts().getModelType());
+		assertEquals(TtsConfig.ModelType.VITS, props.getTts().getModelType());
 		assertTrue(props.getSpeaker().isEnabled());
 		assertFalse(props.getVad().isEnabled());
 		assertFalse(props.getDiarization().isEnabled());
@@ -67,10 +69,10 @@ class MicaVoicePropertiesTest {
 	void shouldSetNestedAsrConfig() {
 		MicaVoiceProperties props = new MicaVoiceProperties();
 		props.getAsr().getOffline().setModelDirName("custom-asr");
-		props.getAsr().getOffline().setModelType("SENSE_VOICE");
+		props.getAsr().getOffline().setModelType(AsrConfig.ModelType.SENSE_VOICE);
 		props.getAsr().getOffline().setLanguage("en");
 		assertEquals("custom-asr", props.getAsr().getOffline().getModelDirName());
-		assertEquals("SENSE_VOICE", props.getAsr().getOffline().getModelType());
+		assertEquals(AsrConfig.ModelType.SENSE_VOICE, props.getAsr().getOffline().getModelType());
 		assertEquals("en", props.getAsr().getOffline().getLanguage());
 	}
 

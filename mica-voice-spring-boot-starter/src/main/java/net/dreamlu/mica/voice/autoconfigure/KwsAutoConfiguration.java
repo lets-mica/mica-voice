@@ -28,9 +28,6 @@ import org.springframework.context.annotation.Configuration;
 @AutoConfigureAfter(MicaVoiceAutoConfiguration.class)
 public class KwsAutoConfiguration {
 
-	private final MicaVoiceConfig coreProps;
-	private final MicaVoiceProperties props;
-
 	/**
 	 * 关键词唤醒服务。
 	 *
@@ -38,7 +35,7 @@ public class KwsAutoConfiguration {
 	 */
 	@Bean(destroyMethod = "close")
 	@ConditionalOnMissingBean(name = "micaVoiceKwsService")
-	public KwsService micaVoiceKwsService() {
+	public KwsService micaVoiceKwsService(MicaVoiceConfig coreProps, MicaVoiceProperties props) {
 		MicaVoiceProperties.Kws cfg = props.getKws();
 		KwsConfig kwsConfig = KwsConfig.builder()
 			.modelDirName(cfg.getModelDirName())

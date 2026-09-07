@@ -18,7 +18,12 @@ package net.dreamlu.mica.voice.solon;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.dreamlu.mica.voice.config.AsrConfig;
+import net.dreamlu.mica.voice.config.DenoiseConfig;
+import net.dreamlu.mica.voice.config.OnlineAsrConfig;
 import net.dreamlu.mica.voice.config.SpeakerConfig;
+import net.dreamlu.mica.voice.config.TtsConfig;
+import net.dreamlu.mica.voice.config.VadConfig;
 import org.noear.solon.annotation.BindProps;
 import org.noear.solon.annotation.Configuration;
 
@@ -95,7 +100,7 @@ public class MicaVoiceProperties {
 			/**
 			 * 模型家族（PARAFORMER / SENSE_VOICE / WHISPER / MOONSHINE / ZIPFORMER / NEMO_CTC / AUTO）
 			 */
-			private String modelType = "PARAFORMER";
+			private AsrConfig.ModelType modelType = AsrConfig.ModelType.PARAFORMER;
 			/**
 			 * 线程数；为空则用全局 threads
 			 */
@@ -128,7 +133,7 @@ public class MicaVoiceProperties {
 			 * <li>AUTO（自动根据目录文件推断）</li>
 			 * </ul>
 			 */
-			private String modelType = "PARAFORMER";
+			private OnlineAsrConfig.ModelType modelType = OnlineAsrConfig.ModelType.PARAFORMER;
 			private Integer threads;
 			private boolean debug;
 			private boolean enableEndpoint = true;
@@ -156,7 +161,7 @@ public class MicaVoiceProperties {
 	public static class Tts {
 		private boolean enabled = true;
 		private String modelDirName = "vits-icefall-zh-aishell3";
-		private String modelType = "VITS";
+		private TtsConfig.ModelType modelType = TtsConfig.ModelType.VITS;
 		private Integer threads;
 		private boolean debug;
 		private int defaultSpeakerId = 0;
@@ -189,7 +194,7 @@ public class MicaVoiceProperties {
 		 */
 		private boolean enabled = false;
 		private String modelFileName = "silero_vad.onnx";
-		private String modelType = "SILERO";
+		private VadConfig.ModelType modelType = VadConfig.ModelType.SILERO;
 		private int sampleRate = 16000;
 		private Integer threads;
 		private boolean debug;
@@ -247,7 +252,7 @@ public class MicaVoiceProperties {
 		 */
 		private boolean enabled = false;
 		private String modelFileName = "sherpa-onnx-gtcrn.onnx";
-		private String modelType = "GTCRN";
+		private DenoiseConfig.ModelType modelType = DenoiseConfig.ModelType.GTCRN;
 		private Integer threads;
 		private boolean debug;
 		private float attenuationLimitDb = 12.0f;

@@ -34,21 +34,6 @@ import java.util.Locale;
 @AutoConfigureAfter(MicaVoiceAutoConfiguration.class)
 public class AsrAutoConfiguration {
 
-	private final MicaVoiceConfig coreProps;
-	private final MicaVoiceProperties props;
-
-	private static <E extends Enum<E>> E parseModelType(String raw, Class<E> type, E fallback) {
-		if (raw == null || raw.isEmpty()) {
-			return fallback;
-		}
-		try {
-			return Enum.valueOf(type, raw.toUpperCase(Locale.ROOT));
-		} catch (IllegalArgumentException ex) {
-			log.warn("无效的模型类型: {}，回退到 {}", raw, fallback);
-			return fallback;
-		}
-	}
-
 	/**
 	 * 离线 ASR。
 	 *
@@ -57,11 +42,11 @@ public class AsrAutoConfiguration {
 	@Bean(destroyMethod = "close")
 	@ConditionalOnMissingBean(name = "micaVoiceOfflineAsrService")
 	@ConditionalOnProperty(prefix = "mica.voice.asr.offline", name = "enabled", havingValue = "true", matchIfMissing = true)
-	public OfflineAsrService micaVoiceOfflineAsrService() {
+	public OfflineAsrService micaVoiceOfflineAsrService(MicaVoiceConfig coreProps, MicaVoiceProperties props) {
 		MicaVoiceProperties.Asr.Offline cfg = props.getAsr().getOffline();
 		AsrConfig asrConfig = AsrConfig.builder()
 			.modelDirName(cfg.getModelDirName())
-			.modelType(parseModelType(cfg.getModelType(), AsrConfig.ModelType.class, AsrConfig.ModelType.PARAFORMER))
+			.modelType(cfg.getModelType())
 			.threads(cfg.getThreads())
 			.debug(cfg.isDebug())
 			.language(cfg.getLanguage())
@@ -79,11 +64,11 @@ public class AsrAutoConfiguration {
 	@Bean(destroyMethod = "close")
 	@ConditionalOnMissingBean(name = "micaVoiceOnlineAsrService")
 	@ConditionalOnProperty(prefix = "mica.voice.asr.online", name = "enabled", havingValue = "true")
-	public OnlineAsrService micaVoiceOnlineAsrService() {
+	public OnlineAsrService micaVoiceOnlineAsrService(MicaVoiceConfig coreProps, MicaVoiceProperties props) {
 		MicaVoiceProperties.Asr.Online cfg = props.getAsr().getOnline();
 		OnlineAsrConfig onlineConfig = OnlineAsrConfig.builder()
 			.modelDirName(cfg.getModelDirName())
-			.modelType(parseModelType(cfg.getModelType(), OnlineAsrConfig.ModelType.class, OnlineAsrConfig.ModelType.PARAFORMER))
+			.modelType(cfg.getModelType())
 			.threads(cfg.getThreads())
 			.debug(cfg.isDebug())
 			.enableEndpoint(cfg.isEnableEndpoint())

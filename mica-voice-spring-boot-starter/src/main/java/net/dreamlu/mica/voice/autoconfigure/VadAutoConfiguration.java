@@ -14,8 +14,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Locale;
-
 /**
  * VAD 自动装配。
  *
@@ -30,9 +28,6 @@ import java.util.Locale;
 @AutoConfigureAfter(MicaVoiceAutoConfiguration.class)
 public class VadAutoConfiguration {
 
-	private final MicaVoiceConfig coreProps;
-	private final MicaVoiceProperties props;
-
 	/**
 	 * 语音端点检测（VAD）服务。
 	 *
@@ -40,17 +35,11 @@ public class VadAutoConfiguration {
 	 */
 	@Bean(destroyMethod = "close")
 	@ConditionalOnMissingBean(name = "micaVoiceVadService")
-	public VadService micaVoiceVadService() {
+	public VadService micaVoiceVadService(MicaVoiceConfig coreProps, MicaVoiceProperties props) {
 		MicaVoiceProperties.Vad cfg = props.getVad();
-		VadConfig.ModelType type;
-		try {
-			type = Enum.valueOf(VadConfig.ModelType.class, cfg.getModelType().toUpperCase(Locale.ROOT));
-		} catch (Exception ex) {
-			type = VadConfig.ModelType.SILERO;
-		}
 		VadConfig vadConfig = VadConfig.builder()
 			.modelFileName(cfg.getModelFileName())
-			.modelType(type)
+			.modelType(cfg.getModelType())
 			.sampleRate(cfg.getSampleRate())
 			.threads(cfg.getThreads())
 			.debug(cfg.isDebug())

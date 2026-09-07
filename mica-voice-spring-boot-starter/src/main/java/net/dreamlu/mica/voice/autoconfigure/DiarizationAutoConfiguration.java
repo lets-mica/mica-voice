@@ -28,9 +28,6 @@ import org.springframework.context.annotation.Configuration;
 @AutoConfigureAfter(MicaVoiceAutoConfiguration.class)
 public class DiarizationAutoConfiguration {
 
-	private final MicaVoiceConfig coreProps;
-	private final MicaVoiceProperties props;
-
 	/**
 	 * 说话人分离服务。
 	 *
@@ -38,7 +35,7 @@ public class DiarizationAutoConfiguration {
 	 */
 	@Bean(destroyMethod = "close")
 	@ConditionalOnMissingBean(name = "micaVoiceDiarizationService")
-	public DiarizationService micaVoiceDiarizationService() {
+	public DiarizationService micaVoiceDiarizationService(MicaVoiceConfig coreProps, MicaVoiceProperties props) {
 		MicaVoiceProperties.Diarization cfg = props.getDiarization();
 		DiarizationConfig diarConfig = DiarizationConfig.builder()
 			.segmentationModelFileName(cfg.getSegmentationModelFileName())

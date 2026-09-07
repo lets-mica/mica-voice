@@ -16,6 +16,7 @@
 
 package net.dreamlu.mica.voice.solon;
 
+import net.dreamlu.mica.voice.config.AsrConfig;
 import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
@@ -132,7 +133,7 @@ class MicaVoiceAutoConfigurationTest {
 		Assertions.assertEquals(Integer.valueOf(8), props.getThreads());
 		Assertions.assertTrue(props.isDebug());
 		Assertions.assertEquals("custom-asr", props.getAsr().getOffline().getModelDirName());
-		Assertions.assertEquals("SENSE_VOICE", props.getAsr().getOffline().getModelType());
+		Assertions.assertEquals(AsrConfig.ModelType.SENSE_VOICE, props.getAsr().getOffline().getModelType());
 		Assertions.assertEquals("custom-tts", props.getTts().getModelDirName());
 		Assertions.assertEquals(3, props.getTts().getDefaultSpeakerId());
 		Assertions.assertEquals(0.7f, props.getSpeaker().getThreshold());

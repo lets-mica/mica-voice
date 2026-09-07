@@ -42,22 +42,19 @@ import org.noear.solon.annotation.Inject;
 @Condition(onClass = MicaVoice.class)
 public class TranscribeAutoConfiguration {
 
-	@Inject(required = false)
-	private OfflineAsrService micaVoiceOfflineAsrService;
-
-	@Inject(required = false)
-	private DiarizationService micaVoiceDiarizationService;
-
 	@Bean(name = "micaVoiceDiarizationTranscribeService", typed = true)
 	@Condition(onMissingBeanName = "micaVoiceDiarizationTranscribeService",
 		onBeanName = "micaVoiceOfflineAsrService")
-	public OfflineDiarizationTranscribeService micaVoiceDiarizationTranscribeService() {
+	public OfflineDiarizationTranscribeService micaVoiceDiarizationTranscribeService(
+		@Inject(required = false) OfflineAsrService micaVoiceOfflineAsrService,
+		@Inject(required = false) DiarizationService micaVoiceDiarizationService
+	) {
 		if (micaVoiceOfflineAsrService == null || micaVoiceDiarizationService == null) {
-			log.warn("mica-voice OfflineDiarizationTranscribeService 装配失败：依赖 {} / {} 不全",
-				"micaVoiceOfflineAsrService", "micaVoiceDiarizationService");
+			log.warn("mica-voice OfflineDiarizationTranscribeService 装配失败：依赖 {} / {} 不全", "micaVoiceOfflineAsrService", "micaVoiceDiarizationService");
 			return null;
+		} else {
+			log.info("mica-voice 装配 OfflineDiarizationTranscribeService");
+			return MicaVoice.transcribe(micaVoiceDiarizationService, micaVoiceOfflineAsrService);
 		}
-		log.info("mica-voice 装配 OfflineDiarizationTranscribeService");
-		return MicaVoice.transcribe(micaVoiceDiarizationService, micaVoiceOfflineAsrService);
 	}
 }

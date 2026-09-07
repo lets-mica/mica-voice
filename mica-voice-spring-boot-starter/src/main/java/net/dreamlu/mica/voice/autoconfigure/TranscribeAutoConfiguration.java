@@ -33,9 +33,6 @@ import org.springframework.context.annotation.Configuration;
 @AutoConfigureAfter({AsrAutoConfiguration.class, DiarizationAutoConfiguration.class})
 public class TranscribeAutoConfiguration {
 
-	private final ObjectProvider<OfflineAsrService> offlineAsrProvider;
-	private final ObjectProvider<DiarizationService> diarizationProvider;
-
 	/**
 	 * 说话人分离 + 转写联合服务。
 	 *
@@ -43,7 +40,10 @@ public class TranscribeAutoConfiguration {
 	 */
 	@Bean(destroyMethod = "close")
 	@ConditionalOnBean(name = {"micaVoiceOfflineAsrService", "micaVoiceDiarizationService"})
-	public OfflineDiarizationTranscribeService micaVoiceDiarizationTranscribeService() {
+	public OfflineDiarizationTranscribeService micaVoiceDiarizationTranscribeService(
+		ObjectProvider<OfflineAsrService> offlineAsrProvider,
+		ObjectProvider<DiarizationService> diarizationProvider
+	) {
 		OfflineAsrService asr = offlineAsrProvider.getIfAvailable();
 		DiarizationService diarization = diarizationProvider.getIfAvailable();
 		if (asr == null || diarization == null) {

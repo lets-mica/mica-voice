@@ -30,9 +30,6 @@ import java.util.Arrays;
 @AutoConfigureAfter(MicaVoiceAutoConfiguration.class)
 public class SpeakerAutoConfiguration {
 
-	private final MicaVoiceConfig coreProps;
-	private final MicaVoiceProperties props;
-
 	/**
 	 * 声纹识别服务。
 	 *
@@ -40,7 +37,7 @@ public class SpeakerAutoConfiguration {
 	 */
 	@Bean(destroyMethod = "close")
 	@ConditionalOnMissingBean(name = "micaVoiceSpeakerService")
-	public SpeakerService micaVoiceSpeakerService() {
+	public SpeakerService micaVoiceSpeakerService(MicaVoiceConfig coreProps, MicaVoiceProperties props) {
 		MicaVoiceProperties.Speaker cfg = props.getSpeaker();
 		SpeakerConfig speakerConfig = SpeakerConfig.builder()
 			.modelCandidates(cfg.getModelCandidates() == null
