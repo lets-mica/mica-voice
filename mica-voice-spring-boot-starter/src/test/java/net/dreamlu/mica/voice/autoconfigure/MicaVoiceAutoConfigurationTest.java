@@ -1,5 +1,6 @@
 package net.dreamlu.mica.voice.autoconfigure;
 
+import net.dreamlu.mica.voice.config.AsrConfig;
 import net.dreamlu.mica.voice.config.MicaVoiceConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -88,7 +89,7 @@ class MicaVoiceAutoConfigurationTest {
 			assertThat(p.isDebug()).isTrue();
 
 			assertThat(p.getAsr().getOffline().getModelDirName()).isEqualTo("custom-asr");
-			assertThat(p.getAsr().getOffline().getModelType()).isEqualTo("SENSE_VOICE");
+			assertThat(p.getAsr().getOffline().getModelType()).isEqualTo(AsrConfig.ModelType.SENSE_VOICE);
 			assertThat(p.getAsr().getOffline().getLanguage()).isEqualTo("en");
 			assertThat(p.getTts().getModelDirName()).isEqualTo("custom-tts");
 			assertThat(p.getTts().getDefaultSpeakerId()).isEqualTo(3);
