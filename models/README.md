@@ -15,7 +15,7 @@
 | ⭐ `x-asr-zh-en-chunk-960ms/` | ~587MB | **在线流式 ASR（X-ASR，Zipformer2 transducer，960ms 分块，效果更好）** | `x-asr` | [HuggingFace GilgameshWind](https://huggingface.co/GilgameshWind/X-ASR-zh-en) |
 | ⭐ `vits-icefall-zh-aishell3/` | ~204MB | **TTS（VITS，单说话人，纯中文首选，体积最小）** | `tts` | [tts-models release](https://github.com/k2-fsa/sherpa-onnx/releases/tag/tts-models) |
 | `vits-zh-hf-fanchen-C/` | ~290MB | TTS（VITS fanchen-C，187 说话人） | `tts-fanchen` | [tts-models release](https://github.com/k2-fsa/sherpa-onnx/releases/tag/tts-models) |
-| `vits-melo-tts-zh_en/` | ~310MB | TTS（VITS Melo，中英混合，jieba + espeak-ng） | `tts-zh-en` | [tts-models release](https://github.com/k2-fsa/sherpa-onnx/releases/tag/tts-models) |
+| `vits-melo-tts-zh_en/` | ~310MB | TTS（VITS Melo，中英混合，jieba 分词 + lexicon 英文） | `tts-zh-en` | [tts-models release](https://github.com/k2-fsa/sherpa-onnx/releases/tag/tts-models) |
 | ⭐ `3dspeaker_speech_eres2net_base_sv_zh-cn_3dspeaker_16k.onnx` | ~38MB | **声纹嵌入提取（同时供 speaker / diarization 使用）** | `speaker` | [speaker-recongition-models](https://github.com/k2-fsa/sherpa-onnx/releases/tag/speaker-recongition-models) |
 | `0-four-speakers-zh.wav` | ~1.8MB | 测试音频（4 人对话，56.8 秒） | `speaker` | [speaker-segmentation-models](https://github.com/k2-fsa/sherpa-onnx/releases/tag/speaker-segmentation-models) |
 | ⭐ `sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-01/` | ~30MB | **关键词唤醒（Zipformer Transducer, WenetSpeech 中文）** | `kws` | [kws-models release](https://github.com/k2-fsa/sherpa-onnx/releases/tag/kws-models) |
@@ -55,7 +55,7 @@
 | `x-asr` | online ASR (X-ASR 960ms chunk) | Zipformer2 Transducer，~586MB |
 | `tts` | TTS (VITS icefall-aishell3) | 单说话人，~30MB |
 | `tts-fanchen` | TTS (VITS fanchen-C) | 187 说话人大模型，~290MB |
-| `tts-zh-en` | TTS (VITS Melo 中英) | melo-tts 中英混合（jieba + espeak），~310MB |
+| `tts-zh-en` | TTS (VITS Melo 中英) | melo-tts 中英混合（jieba 分词 + lexicon 英文），~310MB |
 | `speaker` | 声纹识别 | embedding 模型 + 4 人测试音频，~95MB |
 | `vad` | VAD | SILERO VAD，~1MB，单文件落到 `models/silero_vad.onnx` |
 | `denoise` | Denoise GTCRN | ~523KB，落盘为 `models/sherpa-onnx-gtcrn.onnx` |
@@ -248,15 +248,15 @@ models/
     ├── model.int8.onnx                                  # 可选 int8 版本
     ├── tokens.txt                                       # 词表（必填）
     ├── lexicon.txt                                      # 发音词典（icefall 系必填，melo 系可选）
-    ├── espeak-ng-data/                                  # 可选：melo-tts 中英混合必需
-    │   └── phonindex, phondata, ...
-    ├── dict/                                            # 可选：icefall 系发音字典目录
+    ├── dict/                                            # 可选：jieba / icefall 分词词典目录
     │   └── *.txt
     └── tokens.txt                                       # 多说话人时同一 tokens，多 speaker 嵌入在 model.onnx 里
 ```
 
-> Melo 中英（`vits-melo-tts-zh_en`）还需要 `espeak-ng-data/`；纯中文 icefall 模型还会带 `dict/`。
-> SDK 会自动检测 `lexicon.txt` / `dict/` / `espeak-ng-data/` 并设置 `dataDir / dictDir`。
+> Melo 中英（`vits-melo-tts-zh_en`）的英文靠 `lexicon.txt`（含 11 万+ 英文词条）发音，
+> 不需要 `espeak-ng-data/`；`dict/` 由 native 侧按模型 metadata 自动处理。
+> **sherpa-onnx 2.0.0 起已移除 espeak-ng / piper-phonemize**，`dataDir` 配置被完全忽略
+> （初始化不报错，只是不生效），piper / coqui 系模型请改用 lexicon 系模型。
 
 ### 4. 声纹识别 Speaker（`mica.voice.speaker`）
 
@@ -367,7 +367,7 @@ models/
 | ---- | ------ | -------- | -------- |
 | 离线 ASR | `mica.voice.asr.offline` | `models/<model-dir-name>/` | `model.onnx` + `tokens.txt`（部分带 `*.json` / `config.yaml`） |
 | 在线 ASR | `mica.voice.asr.online` | `models/<model-dir-name>/` | `encoder*onnx` + `decoder*onnx`（+ `joiner*onnx`）+ `tokens.txt` |
-| TTS | `mica.voice.tts` | `models/<model-dir-name>/` | `model.onnx` + `tokens.txt`（+ `lexicon.txt` / `dict/` / `espeak-ng-data/`） |
+| TTS | `mica.voice.tts` | `models/<model-dir-name>/` | `model.onnx` + `tokens.txt`（+ `lexicon.txt` / `dict/`） |
 | 声纹 | `mica.voice.speaker` | `models/` 根下 | `*eres2net*.onnx` / `*campplus*.onnx` |
 | VAD | `mica.voice.vad` | `models/` 根下 | `silero_vad.onnx` / `ten_vad.onnx` |
 | KWS | `mica.voice.kws` | `models/<model-dir-name>/` | encoder/decoder/joiner + `tokens.txt` + `keywords.txt` |

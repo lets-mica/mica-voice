@@ -10,7 +10,7 @@
 #   x-asr             X-ASR 在线流式 ASR（Zipformer Transducer 960ms, ~586MB）
 #   tts               TTS（VITS icefall-aishell3 单说话人, ~30MB）
 #   tts-fanchen       TTS 大模型（VITS fanchen-C 187 说话人, ~290MB）
-#   tts-zh-en         TTS 中英混合（VITS Melo + jieba + espeak, ~310MB）
+#   tts-zh-en         TTS 中英混合（VITS Melo + jieba 分词 + lexicon 英文, ~310MB）
 #   speaker           声纹模型 + 测试音频（~95MB）
 #   vad               SILERO VAD（~1MB，单文件）
 #   denoise           GTCRN 降噪（~523KB，单文件）

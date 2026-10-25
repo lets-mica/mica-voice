@@ -2,6 +2,29 @@
 
 ## 发行版本
 
+### [2.0.0] - 2026-10-25
+
+升级底层 native 依赖 `mica-sherpa-onnx` 至 `2.0.0`（对应上游 sherpa-onnx v2.0.0）。
+
+> ⚠️ **破坏性变更**：`VadSegment.getStartSample()` 返回类型由 `int` 改为 `long`。
+> 上游 #4079 把 VAD 样本位置加宽到 int64，用于修复长时音频（> 约 12.4 小时 @16kHz）
+> 累计样本数溢出 int 导致的 SIGSEGV。调用方若用 `int` 接收需改为 `long`，
+> **不要**用 `(int)` 强转回去，否则会把上游刚修掉的溢出问题重新引入。
+
+- **修复（VAD）**：`VadService.detect()` / `acceptWaveform()` 之前把整段音频一次性喂给 native。
+  但 sherpa-onnx 的 `AcceptWaveform` 对**单次调用内所有窗口做 OR 聚合**，只有整批都不含语音时才结束片段，
+  上游源码注释即写明 `Please don't use a very large n`。结果是长音频只检出末尾一个片段
+  （实测 56s 音频仅返回 1 段 0.31s）。现改为按 `windowSize`（默认 512）逐窗喂入，
+  同一音频正确返回 6 段、覆盖 62.5%。**该问题在 1.13.8 上同样存在，并非本次升级引入。**
+- **TTS**：不再设置已废弃的 `dataDir`。上游 #4055 移除了 espeak-ng / piper-phonemize，
+  `vits-data-dir` 只打印 WARNING 后即被忽略（初始化仍成功，属静默失效）。
+  检测到 `dict/phontab`（piper / coqui 系）时改为输出明确 WARN，并提示改用 lexicon 系模型
+  或 `GenerationConfig.phonemeCodepoints` + 外部音素化。
+- **TTS**：不再设置 `dictDir`（sherpa-onnx v1.12.15 起已被 native 侧忽略，jieba 分词由模型 metadata 驱动），减少日志噪音。
+- **文档**：修正 melo 中英模型说明 —— 英文由 `lexicon.txt`（11 万+ 英文词条）驱动，
+  不需要 `espeak-ng-data/`。实测 2.0.0 与 1.13.8 合成同一段中英混排文本：
+  时长 4.71s vs 4.69s、OOV 均为 0，音素化行为一致。
+
 ### [1.0.3] - 2026-09-22
 
 - refactor(config): 统一模型类型配置为枚举类型

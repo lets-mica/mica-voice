@@ -258,7 +258,7 @@ $targets = @{
     "tts-fanchen" = @(
         @{ url = "$GITHUB/tts-models/vits-zh-hf-fanchen-C.tar.bz2"; out = "$ModelsDir/vits-zh-hf-fanchen-C.tar.bz2" }
     )
-    # TTS 中英混合模型（GitHub，melo-tts，jieba + espeak-ng-data）
+    # TTS 中英混合模型（GitHub，melo-tts，jieba 分词 + lexicon 英文）
     "tts-zh-en" = @(
         @{ url = "$GITHUB/tts-models/vits-melo-tts-zh_en.tar.bz2"; out = "$ModelsDir/vits-melo-tts-zh_en.tar.bz2" }
     )

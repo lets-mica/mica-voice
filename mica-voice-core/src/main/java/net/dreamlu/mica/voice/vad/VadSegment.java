@@ -17,8 +17,13 @@ public class VadSegment {
 
 	/**
 	 * 起始样本偏移（samples）。
+	 *
+	 * <p>类型为 {@code long}：sherpa-onnx 2.0.0 起把 VAD 样本位置加宽到 int64
+	 * （上游 #4079，修复长时音频累计样本数溢出 int 导致的 SIGSEGV）。
+	 * 长时音频（&gt; 约 12.4 小时 @16kHz）的偏移量会超出 int 范围，这里必须同步加宽，
+	 * 不能强转回 int。
 	 */
-	int startSample;
+	long startSample;
 	/**
 	 * 片段样本数据。
 	 */

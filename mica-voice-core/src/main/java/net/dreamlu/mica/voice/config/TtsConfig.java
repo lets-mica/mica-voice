@@ -10,8 +10,11 @@ import lombok.Setter;
  * TTS（语音合成）配置。
  *
  * <p>当前以 VITS 模型为主（轻量、多说话人）。模型目录里应包含
- * {@code model.onnx / lexicon.txt / tokens.txt}；icefall 系还会带 {@code dict/} 子目录，
- * SDK 会自动检测并设置 dictDir / dataDir。
+ * {@code model.onnx / lexicon.txt / tokens.txt}；icefall / melo 系还会带 {@code dict/} 子目录，
+ * 该目录由 native 侧按模型 metadata 自行处理，无需 SDK 设置 dictDir。
+ *
+ * <p>注意：sherpa-onnx 2.0.0 起 {@code dataDir}（piper 系音素化数据目录）已被完全忽略，
+ * piper / coqui 系模型不再支持内置音素化，请改用 lexicon 系模型。
  *
  * @author dreamlu
  */

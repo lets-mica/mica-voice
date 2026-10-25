@@ -21,7 +21,7 @@ import java.util.function.Consumer;
  * <ul>
  *     <li>HF 系（如 vits-zh-hf-fanchen-C）：model/lexicon/tokens 三个文件</li>
  *     <li>icefall 系（如 vits-icefall-zh-aishell3）：额外带 dict/ 子目录 + rule FST / FAR</li>
- *     <li>Melo 系（如 vits-melo-tts-zh_en）：dict/（jieba），自动走 MeloTtsLexicon 前端支持中英混合</li>
+ *     <li>Melo 系（如 vits-melo-tts-zh_en）：dict/（jieba），native 侧走 melo 专用 lexicon 前端支持中英混合</li>
  * </ul>
  *
  * <p>还会自动发现并启用模型目录下的 rule FST（{@code phone.fst / date.fst / number.fst / new_heteronym.fst}）
@@ -96,21 +96,24 @@ public class OfflineTtsService implements TtsService {
 			.setLexicon(lexicon)
 			.setTokens(tokens);
 
-		// icefall 系模型自带 dict/ 子目录，需额外设置 dictDir。
-		// 注意：sherpa-onnx 1.12+ 的 Validate() 在 data_dir 设置时会要求 data_dir/phontab 等
-		// piper 必备文件都存在，而 icefall/melo 模型不带这些文件，会直接 return false 抛
-		// "Invalid OfflineTtsConfig"。因此这里只设 dictDir（dict_dir 在 1.12+ 已废弃，
-		// 设了 sherpa-onnx 会打 "you don't need to provide dict_dir" 警告，但不会报错）；
-		// dataDir 只在确认包含 phontab 时才设置（piper / coqui / inflect 模型）。
+		// sherpa-onnx v1.12.15 起 dict_dir 已被忽略（native 侧固定打印
+		// "you don't need to provide dict_dir ... Ignore it"），jieba 分词由模型自带
+		// metadata 驱动，因此这里不再设置 dictDir。
+		//
+		// sherpa-onnx v2.0.0 起 data_dir 同样被忽略（上游 #4055 移除 espeak-ng 与
+		// piper-phonemize），native 侧只打印 WARNING 后继续，Validate() 仍返回 true ——
+		// 也就是「初始化成功但配置不生效」，属于静默失效。这里显式检测并告警，
+		// 避免 piper 系模型在无声中合成出错误音素。
 		File dictDir = new File(modelDir, "dict");
 		if (dictDir.isDirectory()) {
-			vitsBuilder.setDictDir(dictDir.getAbsolutePath());
+			log.debug("TTS 检测到 dict 目录（jieba / icefall）：{}", dictDir.getAbsolutePath());
 			File phontab = new File(dictDir, "phontab");
 			if (phontab.isFile()) {
-				vitsBuilder.setDataDir(dictDir.getAbsolutePath());
-				log.info("TTS 检测到 piper 系 dict（含 phontab），启用 dataDir: {}", dictDir.getAbsolutePath());
-			} else {
-				log.info("TTS 检测到 dict 目录（jieba / icefall）：{}", dictDir.getAbsolutePath());
+				log.warn("TTS 模型疑似 piper / coqui 系（存在 {}）。sherpa-onnx 2.0.0 已移除 " +
+						"espeak-ng / piper-phonemize，dataDir 不再生效，内置音素化不可用，合成音素可能错误。" +
+						"请改用 lexicon 系模型（HF / icefall / melo），或通过 GenerationConfig.phonemeCodepoints " +
+						"配合外部音素化（如 piper_phonemize）后调用 generateWithConfig。模型目录: {}",
+					phontab.getAbsolutePath(), modelDir);
 			}
 		}
 
@@ -150,6 +153,9 @@ public class OfflineTtsService implements TtsService {
 		} catch (Throwable t) {
 			throw new EngineException("初始化 OfflineTts 失败（model=" + modelPath + "）", t);
 		}
+		// 不调用 2.0.0 新增的 tts.getLang()：它不是 TTS 初始化的必要条件，
+		// 一旦调用会让「仅使用 TTS 且把 mica-sherpa-onnx 降级到 1.13.x」的用户
+		// 在初始化阶段直接 NoSuchMethodError。保持依赖面最小。
 		log.info("OfflineTtsService 初始化完成: model={}, sampleRate={}Hz, numSpeakers={}",
 			modelPath, tts.getSampleRate(), tts.getNumSpeakers());
 	}
