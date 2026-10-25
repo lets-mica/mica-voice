@@ -22,8 +22,12 @@ public interface VadService extends AutoCloseable {
 	 */
 	List<VadSegment> detect(AudioData audio);
 
-/**
+	/**
 	 * 流式检测：每帧（chunk）调用一次 {@link #acceptWaveform(float[])}，用 {@link #poll()} 取出已完成的片段。
+	 *
+	 * <p>传入的 chunk 长度不限：实现会按 VAD 窗口大小（默认 512 样本）重新切分后再喂给 native。
+	 * 之所以要重新切分，是因为 sherpa-onnx 对单次调用内所有窗口做 OR 聚合，
+	 * 一次喂入过长音频会导致片段边界严重失真（只会检出一个锚在尾部的片段）。
 	 *
 	 * @param samples 当前帧的样本（单声道 float[]）
 	 */

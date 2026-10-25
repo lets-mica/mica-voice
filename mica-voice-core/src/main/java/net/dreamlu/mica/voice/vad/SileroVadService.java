@@ -116,6 +116,34 @@ public class SileroVadService implements VadService {
 		throw new ModelNotFoundException(name, new String[]{name});
 	}
 
+	/**
+	 * 按 VAD 窗口大小分块喂数据给 native。
+	 *
+	 * <p><b>为什么要分块</b>：sherpa-onnx 的 {@code VoiceActivityDetector::AcceptWaveform}
+	 * 内部对一次调用里的所有窗口做的是 <b>OR 聚合</b>（{@code is_speech |= this_window_is_speech}），
+	 * 只有「整批都不含语音」时才会走段结束分支。一次性喂入很长的一段音频，结果是：
+	 * 只要这段里有任意一帧是语音，就只会产出 <b>一个</b> 片段，且起点被锚在缓冲区尾部
+	 * （{@code Tail() - 2*window - minSpeech}），其余全部丢失。
+	 *
+	 * <p>上游源码里就写着 {@code // NOTE(fangjun): Please don't use a very large n.}，
+	 * 官方示例（{@code sherpa-onnx-vad-with-offline-asr.cc}）也都是按 {@code window_size} 逐窗喂入。
+	 *
+	 * @param samples 待喂入的样本
+	 */
+	private void feed(float[] samples) {
+		int window = config.getWindowSize() > 0 ? config.getWindowSize() : 512;
+		if (samples.length <= window) {
+			vad.acceptWaveform(samples);
+			return;
+		}
+		for (int i = 0; i < samples.length; i += window) {
+			int len = Math.min(window, samples.length - i);
+			float[] chunk = new float[len];
+			System.arraycopy(samples, i, chunk, 0, len);
+			vad.acceptWaveform(chunk);
+		}
+	}
+
 	@Override
 	public List<VadSegment> detect(AudioData audio) {
 		ensureOpen();
@@ -124,7 +152,7 @@ public class SileroVadService implements VadService {
 			log.warn("VAD 期望 {}Hz 采样率，实际 {}Hz，建议先用 ffmpeg 重采样",
 				sampleRate, audio.getSampleRate());
 		}
-		vad.acceptWaveform(audio.getSamples());
+		feed(audio.getSamples());
 		vad.flush();
 		List<VadSegment> out = new ArrayList<>();
 		while (!vad.empty()) {
@@ -143,7 +171,7 @@ public class SileroVadService implements VadService {
 	@Override
 	public void acceptWaveform(float[] samples) {
 		ensureOpen();
-		vad.acceptWaveform(samples);
+		feed(samples);
 	}
 
 	@Override
